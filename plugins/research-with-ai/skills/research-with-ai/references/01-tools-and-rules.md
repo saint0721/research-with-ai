@@ -112,6 +112,22 @@ A way to keep the research state in one place with a topic wiki the agent writes
 - So that reflection is not missed, a check hook at the end of each response checks "was there a result but the log was not updated?" (4.1 Hook).
 - The wiki is an internal document; external documents are written from the source documents.
 
+### 5.4 Connecting a note vault and the wiki
+How to divide roles and connect the code repository's wiki with the researcher's note vault (e.g. an Obsidian vault) when both are used. If both record the research state, numbers and decisions change separately in two places, so one is fixed as the canonical record and the other points to it.
+
+| Item | Code repository wiki | Note vault |
+| --- | --- | --- |
+| Role | Canonical record of research state, decisions and numbers | Write-ups people reread, explanations, report and presentation drafts, method document drafts |
+| Written by | The agent overwrites it in the same turn | The agent writes up when the researcher asks or when a stage ends |
+| Unit | Status index, topic pages, log | One hub document plus dated notes per project folder |
+| Rules | Wiki rules in the project instructions | Instruction file at the vault root (style, file names, hub rules) and per-folder instruction files |
+- Notes do not copy wiki numbers; they point to result documents and topic pages as sources. When a note must state a number, it gives the source and the time it was taken.
+- When the researcher changes or corrects a decision in a note, reflect it in the wiki log and the matching topic page in the same turn. If only the note changes, the agent in the next session does not know about the new decision.
+- Before writing a note, the agent reads the vault's instruction file and the folder's instruction file. The rules live in the vault; the project instructions only state where they are.
+- Put an index of all material in the folder at the end of each hub document so that new notes are listed automatically. Then the hub does not need a manual edit for every new note.
+- The note vault is not a place to pile up conversation logs. What was decided in conversation goes to the wiki log; only write-ups worth rereading go to notes.
+- After editing notes with a script, check the frontmatter (6.2).
+
 ## 6. Document system
 Where to record what, when something happens, and the format of documents.
 
@@ -154,7 +170,8 @@ A way to make lessons from work accumulate in the method documents (instructions
 | Method documents (00–06) | Targets of changes. The source of the skill and the installed skill itself |
 | Folder instructions and template | Rules for how candidates are recorded and applied |
 | Improvement log | One line each for when which candidate was applied to which document |
-- Link the method document folder directly as the skill folder (body = skill body, chapter documents = reference files). Editing a document changes the skill immediately, so no conversion or installation step is needed. For this, links between documents are written as standard markdown links.
+- When working alone, the method document folder can be linked directly as the skill folder (body = skill body, chapter documents = reference files). Editing a document changes the skill immediately, so no conversion or installation step is needed. For this, links between documents are written as standard markdown links.
+- When you install a published skill and contribute to it, follow the steps in 8.4.
 
 ### 8.2 Operation
 1. **Apply what the researcher sets immediately**: in a turn where the researcher corrects you or sets a new way of working, edit the relevant document and chapter within that turn and add one line to the improvement log. The researcher's words are the decision, so do not wait. If you fix it later, sessions in between work by the old rule.
@@ -169,3 +186,17 @@ A way to make lessons from work accumulate in the method documents (instructions
 - Do not make a principle out of a single event. Promote to a common principle only lessons that appeared twice or more or whose effect has been confirmed.
 - These documents are shared, so before applying, check that no names, numbers or paths slipped in.
 - If there are no candidates, do no cleanup.
+
+### 8.4 Refining in notes and publishing to the shared skill
+How a contributor to a published skill refines the method documents in their own note vault and publishes only versions that are well refined. Corrections during research are applied to the notes at once, but the installed skill and other users receive only reviewed versions.
+
+| Step | What to do | Criterion |
+| --- | --- | --- |
+| Refine in notes | Apply corrections and accepted candidates to the method documents in the notes at once, as in 8.2 | Until published, the edited note takes precedence over the installed copy |
+| Choose what to publish | Collect the changes since the last publication from the improvement log and check that the wording is settled and agrees with the other chapters | Publish only what the researcher judges refined. The agent may ask once in one line when changes pile up |
+| Move to the public repository | Remove note-only frontmatter and note links and save under the repository file names. If there are other language editions, re-translate only the changed documents | Search for names, numbers, paths, accounts and secret values |
+| Check | Check the format with the skill validator and the plugin validator, and bump the version | Checks pass |
+| Publish | Commit, then push with the researcher's permission | Never push without permission |
+| Update installed copies | Fetch the skill again in every tool where it is installed (update the plugin; re-copy a copied install) | Confirm in a new session that the skill loads in its new version |
+- Publish a version that bundles several log lines, not each correction. Frequent version changes spread unreviewed rules to users.
+- Before publishing, turn research-specific content that exists only in the notes (cases, numbers, paths) into general rules or remove it.

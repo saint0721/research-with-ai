@@ -103,7 +103,7 @@ https://github.com/saint0721/research-with-ai 의 research-with-ai 스킬을 설
 | 참고 문서 | 내용 |
 | --- | --- |
 | `00-overview-and-principles.md` | 원칙, 승인 범위, 연구 흐름과 방향 전환, 운영, 오류 신호, 보고 전 점검표 |
-| `01-tools-and-rules.md` | 도구, 지침 계층, 메모리, 스킬, 훅, LLM 위키, 문서화, 감시, 점진 개선 |
+| `01-tools-and-rules.md` | 도구, 지침 계층, 메모리, 스킬, 훅, LLM 위키와 노트 저장소, 문서화, 감시, 점진 개선 |
 | `02-topic-question-prior-work.md` | 주제, 방법 도출 7단계, 질문과 판정 규칙, 선행연구, 공백과 신규성 |
 | `03-experiment-and-model.md` | 설계 대화, 과학적·손실 검토, 재현성, 공정 비교, 코드, 개발 순서, 학습 중 측정, 판정 |
 | `04-operations.md` | 리더와 워커, 긴 작업, 서버와 GPU, 감시, 보안과 비용, 커밋 |
@@ -135,6 +135,8 @@ https://github.com/saint0721/research-with-ai 의 research-with-ai 스킬을 설
 ## 내 판으로 고쳐 쓰기
 
 이 스킬은 연구와 함께 자라도록 만든 것임. 방법 문서를 자기 노트에 두고 설치한 스킬의 파일을 그 노트로 가는 심볼릭 링크로 두면, 고치는 즉시 반영됨. 연구자가 에이전트를 정정하면 에이전트가 그 턴에 해당 문서를 고침(원칙 17). 다른 사람과 나눌 때는 링크가 아니라 실제 파일을 복사함(`cp -RL`).
+
+공개된 스킬을 설치해 쓰면서 기여할 때는 자기 노트에서 먼저 다듬고, 다듬어졌다고 판단한 판만 교정 몇 개씩 묶어 올린 뒤 설치본을 갱신함(`01-tools-and-rules.md` 8.4).
 
 ## 구조
 
@@ -191,7 +193,7 @@ research-with-ai/
   title   = {research-with-ai: Using AI Agents as Research Collaborators},
   year    = {2026},
   url     = {https://github.com/saint0721/research-with-ai},
-  version = {0.1.0}
+  version = {0.2.0}
 }
 ```
 

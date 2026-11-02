@@ -2,7 +2,7 @@
   "name": "research-with-ai",
   "displayName": "Research with AI",
   "description": "How to use an AI agent as a research collaborator, from topic and prior work to experiment and model development, training diagnosis and manuscript review. Domain-agnostic. English edition.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "saint0721"
   },

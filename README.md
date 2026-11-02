@@ -103,7 +103,7 @@ Core principles (from `references/00-overview-and-principles.md`):
 | Reference document | Covers |
 | --- | --- |
 | `00-overview-and-principles.md` | Principles, approval scope, research flow and direction changes, operations, error signals, pre-report checklist |
-| `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki, documentation, monitoring, incremental improvement |
+| `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki and note vault, documentation, monitoring, incremental improvement |
 | `02-topic-question-prior-work.md` | Topic, seven-step method derivation, questions and decision rules, prior work, gaps and novelty |
 | `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, development order, in-training measurement, judgement |
 | `04-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
@@ -135,6 +135,8 @@ Phrasings that improve results when a researcher talks to an AI. They work witho
 ## Keeping your own edits
 
 The skill is meant to grow with your research. Keep the method documents in your own notes and make the files in the installed skill symbolic links to them; edits then take effect at once. When the researcher corrects the agent, the agent edits the matching document in the same turn (principle 17). When sharing your version, copy real files, not links (`cp -RL`).
+
+If you install the published skill and also contribute to it, refine the documents in your own notes first and publish only versions you judge refined, bundling several corrections per version; then update your installed copy (`01-tools-and-rules.md` §8.4).
 
 ## Structure
 
@@ -198,7 +200,7 @@ If you use this skill in your research or reference it in a publication, see [CI
   title   = {research-with-ai: Using AI Agents as Research Collaborators},
   year    = {2026},
   url     = {https://github.com/saint0721/research-with-ai},
-  version = {0.1.0}
+  version = {0.2.0}
 }
 ```
 
