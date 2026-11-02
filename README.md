@@ -1,14 +1,10 @@
----
-project: AI 활용 연구 방법
-type: guide
-document_role: "AI 활용 연구 방법 — 설치와 사용 안내"
-document_status: active
-updated: 2026-11-02
-tags:
-  - project/ai_research_method
-  - guide
----
-# AI 활용 연구 방법 — 설치와 사용 안내
+# research-with-ai
+
+AI 에이전트(Claude Code, Codex)를 연구 동료로 쓰는 방법을 담은 스킬임. 분야와 무관하며, 연구 주제부터 실험·모델 개발, 원고 검증까지 다룸.
+
+*A domain-agnostic skill for using AI coding agents (Claude Code, Codex) as research collaborators: topic and prior work, experiment and model design, training and diagnosis, manuscript review. Written in Korean.*
+
+## 설치와 사용 안내
 
 | 항목 | 내용 |
 | --- | --- |
@@ -23,19 +19,19 @@ tags:
 | 파일 | 내용 | 읽는 때 |
 | --- | --- | --- |
 | `SKILL.md` | 고정된 입구. 발동 조건과 "00을 먼저 읽고 표가 가리키는 문서만 읽음"이라는 안내 | 연구 작업이면 자동으로 |
-| `… — 00 개요와 원칙.md` | 원칙, 연구 흐름, 운영, 오류 신호, 보고 전 점검표 | 연구 작업이면 항상 먼저 |
-| `… — 01 도구와 규칙 체계.md` | 도구와 규칙, 위키, 점진 개선 | 새 연구·저장소 시작, 지침·메모리·스킬·훅·위키를 만들 때 |
-| `… — 02 주제·질문·선행연구·공백.md` | 주제, 방법 도출, 판정 기준, 선행·신규성 | 해당 단계 |
-| `… — 03 실험·모델 개발.md` | 설계, 손실, 환경·공정성, 코드, 학습, 측정, 판정 | 해당 단계 |
-| `… — 04 실행 운영.md` | 워커, 서버·GPU, 긴 작업, 감시, 보안·비용, 커밋 | 해당 단계 |
-| `… — 05 비판·논문화·외부 문서.md` | 모의 심사, 평가 split, 원고 구조·검증 | 해당 단계 |
-| `… — 06 AI가 틀리는 유형과 대응.md` | 오류 유형별 신호와 대응 | AI 출력이 이상할 때 |
+| `00-overview-and-principles.md` | 원칙, 연구 흐름, 운영, 오류 신호, 보고 전 점검표 | 연구 작업이면 항상 먼저 |
+| `01-tools-and-rules.md` | 도구와 규칙, 위키, 점진 개선 | 새 연구·저장소 시작, 지침·메모리·스킬·훅·위키를 만들 때 |
+| `02-topic-question-prior-work.md` | 주제, 방법 도출, 판정 기준, 선행·신규성 | 해당 단계 |
+| `03-experiment-and-model.md` | 설계, 손실, 환경·공정성, 코드, 학습, 측정, 판정 | 해당 단계 |
+| `04-operations.md` | 워커, 서버·GPU, 긴 작업, 감시, 보안·비용, 커밋 | 해당 단계 |
+| `05-critique-and-writing.md` | 모의 심사, 평가 split, 원고 구조·검증 | 해당 단계 |
+| `06-ai-errors.md` | 오류 유형별 신호와 대응 | AI 출력이 이상할 때 |
 | `README.md` | 이 안내 | 설치할 때, 사람이 읽음 |
 - 사례는 두지 않음. 특정 연구의 숫자와 이름이 섞이면 판단이 한쪽으로 끌리므로, 교훈은 일반 규칙과 이유로만 씀.
 
 ### 1.2 설치
 - 받은 스킬 폴더(`research-with-ai/`)를 에이전트의 스킬 위치에 둠. 예: Claude Code는 `~/.claude/skills/`, Codex는 `~/.codex/skills/`.
-- 원본 문서를 직접 고쳐 가며 쓰려면, 스킬 폴더 안의 00~06과 `README.md`를 원본 노트로 가는 심볼릭 링크로 두고 `SKILL.md`만 실제 파일로 둠. 그러면 원본을 고치는 즉시 스킬이 바뀜.
+- 문서를 직접 고쳐 가며 쓰려면, 원본 문서를 따로 두고 스킬 폴더의 00~06을 그 원본으로 가는 심볼릭 링크로 둠. 그러면 원본을 고치는 즉시 스킬이 바뀜.
 - 다른 사람에게 줄 때는 링크가 아니라 실제 파일이 복사되게 함(예: `cp -RL`).
 - 설치 뒤 새 세션에서 "실험 설계하자"처럼 말해 스킬이 스스로 불리는지 확인함.
 

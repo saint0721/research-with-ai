@@ -1,13 +1,3 @@
----
-project: AI 활용 연구 방법
-type: guide
-document_role: "AI 활용 연구 방법 — 비판·논문화·외부 문서 방법"
-document_status: active
-updated: 2026-11-02
-tags:
-  - project/ai_research_method
-  - guide
----
 # AI 활용 연구 방법 — 비판·논문화·외부 문서
 
 | 항목 | 내용 |
