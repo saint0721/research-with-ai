@@ -1,0 +1,12 @@
+{
+  "description": "One-line reminder when the research record has a gap (code without a document, a document or note not ingested into the wiki, a note vault not synced). Reads <project>/.claude/research-with-ai.conf and does nothing without it.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/research_check.sh", "timeout": 20 }
+        ]
+      }
+    ]
+  }
+}

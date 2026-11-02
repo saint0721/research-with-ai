@@ -19,6 +19,13 @@ Claude Code에서 실행:
 
 첫 명령은 이 저장소를 플러그인 마켓플레이스로 추가하고, 둘째 명령은 한국어판을 설치함. 영어판은 `research-with-ai@research-with-ai`로 설치함. 두 판을 함께 설치하지 않음.
 
+참고 문서 03(6.1)이 연구 코드를 쓸 때 읽게 하는 Scientific Coding 플러그인도 함께 설치함. 둘 중 하나를 중복으로 보고 지우지 않음.
+
+```
+/plugin marketplace add cemde/Scientific-Coding-Skill
+/plugin install scientific-coding@scientific-coding-skill
+```
+
 ### 스킬로 직접 (Claude Code, Codex)
 
 저장소를 받아 스킬 폴더 하나를 복사함:
@@ -74,6 +81,24 @@ https://github.com/saint0721/research-with-ai 의 research-with-ai 스킬을 설
   - Constraints: [쓰지 않을 입력·기법, 금지 사항]
   - Approval: [연구자 승인 없이 해도 되는 범위, 예: smoke 성공 뒤 학습]
 ```
+
+### 기록 확인 훅 켜기
+
+플러그인에는 응답 종료 훅(`hooks/research_check.sh`)이 들어 있음. 연구 기록에 빈틈이 있으면 한 줄로 알리고, 없으면 아무것도 출력하지 않음. 빈틈은 문서 없이 코드를 바꾼 커밋, 위키 일지에 반영되지 않은 문서·노트, 노트 저장소에 보내지 않은 위키 작업 사본임. 훅에는 경로가 없음. 프로젝트의 `.claude/research-with-ai.conf` 를 읽고, 이 파일이 없는 프로젝트에서는 아무것도 하지 않음. 필요한 키만 적으면 그 키가 있는 확인만 돌아감.
+
+```bash
+# .claude/research-with-ai.conf
+CODE_PATHS='^(src/|scripts/|paper/)'          # 바뀌면 문서가 필요한 경로
+DOC_PATHS='^docs/'                            # 문서 경로
+WIKI_DIR=.                                    # 위키 git 저장소: "." = 이 저장소, 또는 경로(상대·절대)
+SOURCE_PATHS='^docs/(results|decisions)/'     # 위키가 반영해야 할 문서
+WIKI_LOG='wiki/log.md'                        # WIKI_DIR 안의 위키 일지 파일
+# NOTE_PATHS='^vault/Cards/'                  # 따로 있는 위키 작업 사본의 노트(선택)
+# SYNC_TAG=pushed                             # 노트 저장소에 마지막으로 보낸 지점의 tag(선택)
+# WINDOW='12 hours ago'                       # 살펴볼 기간
+```
+
+같은 커밋·상태는 한 번만 알림. 다른 기계에는 접속하지 않음.
 
 ## 하는 일
 

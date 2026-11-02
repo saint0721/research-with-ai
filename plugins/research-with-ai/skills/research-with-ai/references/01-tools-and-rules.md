@@ -127,6 +127,13 @@ How to divide roles and connect the code repository's wiki with the researcher's
 - Put an index of all material in the folder at the end of each hub document so that new notes are listed automatically. Then the hub does not need a manual edit for every new note.
 - The note vault is not a place to pile up conversation logs. What was decided in conversation goes to the wiki log; only write-ups worth rereading go to notes.
 - After editing notes with a script, check the frontmatter (6.2).
+- A code change without a document, and gaps between source documents, source notes, the wiki and the note vault, are caught by the end-of-response hook that ships with this skill's plugin (4.1 Hook format). Instructions alone still let an agent add a section to a source note and skip the wiki update, and such a gap makes the next session read a wrong state. The hook checks four things mechanically.
+  1. A commit changed a path that needs a document (code, manuscript, and so on) but no document.
+  2. A commit changed a source document the wiki must ingest, and no later commit updated the wiki log.
+  3. A commit changed a source note, and no later commit updated the wiki log (when the notes live in the wiki working copy, separate from the code repository).
+  4. The wiki working copy that is pushed to the note vault has uncommitted changes, or the last-push marker is not the latest commit.
+  - When nothing is wrong it prints nothing. It reports a commit or state once, in one line that says only what is missing. The note vault may be on another machine, so it never connects to it and looks only at the working copy and the push marker.
+  - The hook holds no paths. Each project writes its own values in `.claude/research-with-ai.conf` (paths that need a document, document paths, wiki repository location, source document and note paths, wiki log file, push marker, time window), and only the checks whose values are set run. A project without the file is left alone. If the wiki lives inside the code repository, set the wiki repository location to `.`.
 
 ## 6. Document system
 Where to record what, when something happens, and the format of documents.

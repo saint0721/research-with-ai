@@ -19,6 +19,13 @@ In Claude Code, run:
 
 The first command adds this repository as a plugin marketplace. The second installs the English edition. For the Korean edition, install `research-with-ai-ko@research-with-ai` instead. Install only one edition.
 
+Also install the Scientific Coding plugin, which reference 03 (§6.1) tells the agent to write research code with. Keep both; do not remove one as a duplicate.
+
+```
+/plugin marketplace add cemde/Scientific-Coding-Skill
+/plugin install scientific-coding@scientific-coding-skill
+```
+
 ### As a standalone skill (Claude Code, Codex)
 
 Clone the repository and copy one skill directory:
@@ -74,6 +81,24 @@ Do not copy the skill into a project's `AGENTS.md` or `CLAUDE.md`. Write only th
   - Constraints: [inputs and techniques not to use, prohibitions]
   - Approval: [what may be done without the researcher's approval, e.g. training after a successful smoke test]
 ```
+
+### Turn on the record check hook
+
+The plugin ships a Stop hook (`hooks/research_check.sh`) that prints one line when the research record has a gap and nothing otherwise: a commit that changed code without a document, a document or note not ingested into the wiki log, or a wiki working copy not pushed to the note vault. The hook holds no paths. It reads `.claude/research-with-ai.conf` in your project and does nothing in projects without that file. Set only the keys you need; each check runs only when its keys are set.
+
+```bash
+# .claude/research-with-ai.conf
+CODE_PATHS='^(src/|scripts/|paper/)'          # changes that need a document
+DOC_PATHS='^docs/'                            # where documents live
+WIKI_DIR=.                                    # wiki git repo: "." = this repo, or a path (relative or absolute)
+SOURCE_PATHS='^docs/(results|decisions)/'     # documents the wiki must ingest
+WIKI_LOG='wiki/log.md'                        # wiki log file inside WIKI_DIR
+# NOTE_PATHS='^vault/Cards/'                  # notes in a separate wiki working copy (optional)
+# SYNC_TAG=pushed                             # tag marking the last push to a note vault (optional)
+# WINDOW='12 hours ago'                       # how far back to look
+```
+
+A commit or state is reported once. The hook never connects to another machine.
 
 ## What It Does
 

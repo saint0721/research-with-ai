@@ -346,6 +346,7 @@ After results come in, explain "why it came out that way" with the questions bel
 Rules for deciding adoption, holding, or adjustment after results come in, and choosing the next row.
 
 - Before discarding a row that did not improve, diagnose the cause. Look in the order implementation check → missing standard techniques → in-training measurement (8.4) and checkpoint analysis; the researcher chooses the fix. Do not automatically run pre-decided fix candidates.
+- A diagnostic report starts with one line each on the implementation check and on missing standard techniques (for example a weight that matches a new loss's scale to the other losses), and only then moves to measurement analysis. When a measurement stands out it is easy to skip the first two steps, and then an implementation error or a plain scale imbalance is misread as a problem of mechanism.
 - If the result is weak, before discarding the idea, check whether standard techniques such as sharpening, normalization, or weight schedules are missing.
 - When checking the structure, use prior-work standard values; tune values such as weights and temperatures only after the structure has shown an effect.
 - When lifting an existing constraint, lift it only as a component of the method tied to a measured failure, keep a separate ablation row, and give the baseline the same resources.
