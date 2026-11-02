@@ -65,5 +65,18 @@ AI 에이전트(Claude Code, Codex)를 연구 동료로 쓰는 방법을 담은 
 - 원칙이 바뀌면 00 2장부터, 단계 안의 방법이 바뀌면 해당 참고 문서를 고침.
 - 연구자가 정정하거나 새 방법을 정하면 에이전트가 그 턴에 바로 원본 문서를 고침(00 원칙 17). AI가 스스로 알아낸 교훈만 후보로 남기고 물음(원칙 18). 후보 노트의 위치는 각 사용자의 전역 지침(1.3)에 적음.
 
-## 3. 라이선스
-이 문서 묶음은 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)으로 공개함. 출처를 밝히면 누구나 쓰고 고치고 나눌 수 있음.
+## 3. 출처와 감사
+이 문서 묶음이 가져오거나 바탕으로 삼은 외부 자료임. 각 자료의 권리는 원저작자에게 있음.
+
+| 자료 | 쓴 곳 | 쓴 방식 | 라이선스 |
+| --- | --- | --- | --- |
+| [scientific-coding-skill](https://github.com/cemde/scientific-coding-skill) (Cornelius, 2026) | 03 6.1 과학 코드 원칙 | 원칙을 한국어로 옮겨 요약함. 실제 코딩에는 원본 스킬을 설치해 씀 | MIT |
+| [awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading) (Hyungtae Lim, 2026) | 05 6.1 교정 운영 | 프롬프트 이름과 검사 범위를 소개함. 프롬프트 본문은 옮기지 않고 원본에서 받아 씀 | MIT |
+| [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (Andrej Karpathy) | 01 5장, 8장 | 원천·위키·스키마 세 층과 일지·점검 구조를 따름 | 원문 참조 |
+| [Agentic Context Engineering (ACE)](https://arxiv.org/abs/2510.04618) (Zhang 외, 2025) | 01 8장 | 지침을 통째로 다시 쓰지 않고 항목 단위로 고치는 원칙을 따름 | 논문 |
+| [Hamming](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton·Steinhardt](https://arxiv.org/abs/1807.03341), [J.-B. Huang](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208) | 02 2장 방법 도출 7단계 | 각 단계의 근거로 삼아 절차로 정리함 | 원문 참조 |
+| [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) | 03 7장 개발 순서 | 기준선 고정, 한 번에 한 요소, 사다리 표, 싼 선별, 모듈 분리 관행의 근거로 삼음 | 원문 참조 |
+- 위 자료에서 문장을 그대로 옮긴 곳은 없고, 요약하거나 절차로 다시 썼음. MIT 라이선스 자료는 원본 저장소와 저작권자를 위 표에 밝힘.
+
+## 4. 라이선스
+이 문서 묶음의 글은 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)으로 공개함. 출처를 밝히면 누구나 쓰고 고치고 나눌 수 있음. 3장의 외부 자료는 각자의 라이선스를 따름.

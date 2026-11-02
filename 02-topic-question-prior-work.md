@@ -35,7 +35,7 @@
 - AI의 설명을 먼저 받고 결정은 미룸. "~라는 것을 이해했음. 그러면 ~라는 것인가?"로 이해를 맞춘 뒤 결정함.
 
 ## 2. 문제에서 방법을 도출하는 절차
-측정된 실패에서 방법(모듈)을 끌어내는 7단계 절차임. 연구 방법론 문헌(Hamming, Heilmeier 질문, Black, Lipton·Steinhardt, RegNet)과 주요 논문의 공통 형태를 바탕으로 정리함.
+측정된 실패에서 방법(모듈)을 끌어내는 7단계 절차임. 연구 방법론 문헌([Hamming, "You and Your Research"](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black, "Novelty in Science"](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton·Steinhardt, "Troubling Trends in ML Scholarship"](https://arxiv.org/abs/1807.03341), [J.-B. Huang의 연구 조언](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208))과 주요 논문의 공통 형태를 바탕으로 정리함.
 
 ### 2.1 7단계
 | 단계 | 하는 일 | 확인 질문 |

@@ -205,7 +205,7 @@
 
 ### 6.1 과학 코드 원칙
 과학 코드는 사용자가 아니라 진실을 위한 코드이며, 가장 나쁜 결과는 그럴듯해 보이는 틀린 결과임. 아래 원칙을 모든 연구 코드에 적용함.
-- 연구 코드는 Scientific Coding 스킬([scientific-coding-skill](https://github.com/cemde/scientific-coding-skill))을 써서 작성함. 아래 원칙은 그 스킬에서 가져온 것임. 에이전트에는 플러그인으로 설치해 연구 코드를 쓸 때 스스로 읽게 하고(직접 부르는 스킬이 아님), 스킬을 읽지 못하는 워커에게는 표 아래에 적은 네 줄을 작업 지시서 머리말에 넣음.
+- 연구 코드는 Scientific Coding 스킬([scientific-coding-skill](https://github.com/cemde/scientific-coding-skill), MIT 라이선스)을 써서 작성함. 아래 원칙은 그 스킬의 원칙을 한국어로 옮겨 요약한 것임. 에이전트에는 플러그인으로 설치해 연구 코드를 쓸 때 스스로 읽게 하고(직접 부르는 스킬이 아님), 스킬을 읽지 못하는 워커에게는 표 아래에 적은 네 줄을 작업 지시서 머리말에 넣음.
 
 
 | 원칙 | 뜻 | 관련 장 |
@@ -261,7 +261,7 @@
 - 실습 문서는 논문의 절과 코드 위치를 짝지어, 논문 서술과 코드가 다른 곳이 있으면 그 사실을 함께 적음.
 
 ## 7. 개발과 실행
-모델을 한 번에 하나씩 바꾸며 쌓는 조립식 개발 절차와, 학습이 도는 동안 설계를 손으로 그려 익히는 방법임. 주요 비전 연구의 공통 관행(기준선 고정, 한 번에 한 요소, 사다리 표, 싼 선별 먼저, seed 변동보다 큰 이득만 채택, 실패 원인 조사, 모듈 분리)을 따름.
+모델을 한 번에 하나씩 바꾸며 쌓는 조립식 개발 절차와, 학습이 도는 동안 설계를 손으로 그려 익히는 방법임. 주요 비전 연구의 공통 관행(기준선 고정, 한 번에 한 요소, 사다리 표, 싼 선별 먼저, seed 변동보다 큰 이득만 채택, 실패 원인 조사, 모듈 분리)을 따름. 근거: [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [RegNet](https://arxiv.org/abs/2003.13678), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation).
 
 ### 7.1 개발 순서
 | 단계 | 하는 일 | 다음 단계로 가는 조건 |

@@ -116,7 +116,7 @@
 
 ### 6.1 교정 운영
 교정은 "지적 받기 → 판정 → 고치기 → 다시 확인"의 순서로 돌림. 지적과 수정을 같은 AI가 한 번에 하지 않음.
-- 교정은 임형태(Hyungtae Lim)의 논문 교정 프롬프트 모음([awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading))을 써서 함. 학회·저널 심사 100건 이상에서 뽑은 기준임. 저장소를 한 번 받아 두고, 원고 작업 공간에서 프롬프트 파일을 절대 경로로 불러 씀. 여기에 인용 지지 검사를 따로 더해 세 가지로 돌림.
+- 교정은 임형태(Hyungtae Lim)의 논문 교정 프롬프트 모음([awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading), MIT 라이선스)을 써서 함. 프롬프트는 이 문서에 옮기지 않고 원본 저장소에서 받아 씀. 학회·저널 심사 100건 이상에서 뽑은 기준임. 저장소를 한 번 받아 두고, 원고 작업 공간에서 프롬프트 파일을 절대 경로로 불러 씀. 여기에 인용 지지 검사를 따로 더해 세 가지로 돌림.
 - 세 가지를 이 순서로 돌림.
 
 | 순서 | 프롬프트 | 확인하는 것 |
