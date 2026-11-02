@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this skill, please cite it as below."
+type: software
+title: "research-with-ai: Using AI Agents as Research Collaborators"
+abstract: "A domain-agnostic skill and Claude Code plugin that encodes how to use AI coding agents (Claude Code, Codex) as research collaborators: topic and prior work, decision rules, experiment and model design, reproducibility and fair comparison, training diagnosis, research operations and manuscript review. English and Korean editions."
+authors:
+  - alias: saint0721
+url: "https://github.com/saint0721/research-with-ai"
+repository-code: "https://github.com/saint0721/research-with-ai"
+license: CC-BY-4.0
+version: 0.1.0
+date-released: 2026-11-02

@@ -2,52 +2,55 @@
 
 [한국어](README.ko.md)
 
-A domain-agnostic skill for using AI coding agents (Claude Code, Codex) as research collaborators. It covers choosing a topic and checking prior work, designing experiments and models, running and diagnosing training, and reviewing manuscripts. The English edition is in `en/`, the Korean edition in `ko/`.
+A [Claude Code plugin](https://code.claude.com/docs/en/plugins) and agent skill that teaches AI agents (Claude Code, Codex) to work as research collaborators.
 
-## Installation and use
+AI agents are trained to produce a plausible answer quickly. Research needs the opposite habits: check every answer against the original source, leave decisions to the researcher, fix the judging rules before the results, change one thing at a time, and record failures as carefully as successes. This skill encodes those habits for the whole research cycle, from choosing a topic to reviewing the manuscript. It is domain-agnostic and comes in English and Korean.
 
-| Item | Content |
-| --- | --- |
-| Purpose | How to install the `research-with-ai` skill and connect it to research work, and phrasings that work well when a researcher asks an AI for help |
-| Readers | Researchers who install or share the skill. The skill does not read this file during research |
-| Structure | §1 Installation and project setup, §2 Request patterns that work, §3 Sources and acknowledgements, §4 License |
+## Install
 
-## 1. Installation and project setup
-How to install the skill and wire it in so that it is used in research work without the researcher naming it. The same steps apply when sharing it with others.
+### As a Claude Code plugin
 
-### 1.1 Skill layout
-| File | Content | When it is read |
-| --- | --- | --- |
-| `SKILL.md` | Fixed entry point: trigger description and the instruction "read 00 first, then only the documents its table points to" | Automatically, for research work |
-| `00-overview-and-principles.md` | Principles, research flow, operations, error signals, pre-report checklist | Always first, for research work |
-| `01-tools-and-rules.md` | Tools and rules, wiki, incremental improvement | Starting a new project or repository; creating instructions, memory, skills, hooks or a wiki |
-| `02-topic-question-prior-work.md` | Topic, method derivation, decision rules, prior work and novelty | That stage |
-| `03-experiment-and-model.md` | Design, losses, environment and fairness, code, training, measurement, judgement | That stage |
-| `04-operations.md` | Workers, servers and GPUs, long jobs, monitoring, security and cost, commits | That stage |
-| `05-critique-and-writing.md` | Mock review, evaluation splits, manuscript structure and checks | That stage |
-| `06-ai-errors.md` | Error types with their signals and countermeasures | When AI output looks wrong |
-- There are no case studies. Numbers and names from one project would bias judgement, so lessons are written only as general rules with reasons.
+In Claude Code, run:
 
-### 1.2 Let the AI install it
-Paste the following into Claude Code or Codex; the agent installs, connects and checks the skill.
+```
+/plugin marketplace add saint0721/research-with-ai
+/plugin install research-with-ai@research-with-ai
+```
+
+The first command adds this repository as a plugin marketplace. The second installs the English edition. For the Korean edition, install `research-with-ai-ko@research-with-ai` instead. Install only one edition.
+
+### As a standalone skill (Claude Code, Codex)
+
+Clone the repository and copy one skill directory:
+
+```bash
+git clone https://github.com/saint0721/research-with-ai.git
+
+# Claude Code (all projects)
+cp -r research-with-ai/plugins/research-with-ai/skills/research-with-ai ~/.claude/skills/
+
+# Codex
+cp -r research-with-ai/plugins/research-with-ai/skills/research-with-ai ~/.codex/skills/
+```
+
+Use `plugins/research-with-ai-ko/skills/research-with-ai` for the Korean edition.
+
+### Let your agent install it
+
+Paste the following into Claude Code or Codex:
 
 ```text
 Install the research-with-ai skill from https://github.com/saint0721/research-with-ai.
-1. Clone the repository and copy the English edition folder `en/` to ~/.claude/skills/research-with-ai and ~/.codex/skills/research-with-ai.
+1. Clone the repository and copy plugins/research-with-ai/skills/research-with-ai to ~/.claude/skills/research-with-ai and ~/.codex/skills/research-with-ai.
 2. Append the "Connect to global instructions" block from the README to the end of ~/.claude/CLAUDE.md and ~/.codex/AGENTS.md.
    Ask me which folder should hold the method documents, the improvement log and the improvement candidates, and fill in those paths in the block.
 3. Confirm that in a new session, saying "let's design the experiment" makes the agent read this skill first, and report the result.
 Ask me before overwriting any existing file.
 ```
 
-### 1.3 Manual installation
-- Put one of the repository folders, `en/` (English) or `ko/` (Korean), into the agent's skill location under the name `research-with-ai/`. Do not install both editions. Example: `~/.claude/skills/` for Claude Code, `~/.codex/skills/` for Codex.
-- To keep editing the documents, keep the source documents elsewhere and make 00–06 in the skill folder symbolic links to them. The skill then changes as soon as the source is edited.
-- When giving the skill to someone else, copy real files, not links (e.g. `cp -RL`).
-- After installing, say something like "let's design the experiment" in a new session and check that the skill is loaded on its own.
+### Connect to global instructions
 
-### 1.4 Connect to global instructions
-Automatic triggering alone can miss cases, so add the block below to the global instructions the agent always reads (Claude Code: `~/.claude/CLAUDE.md`, Codex: `~/.codex/AGENTS.md`).
+Automatic triggering alone can miss cases. Add this block to the instructions the agent always reads (Claude Code: `~/.claude/CLAUDE.md`, Codex: `~/.codex/AGENTS.md`):
 
 ```markdown
 ## Research method
@@ -56,8 +59,9 @@ Automatic triggering alone can miss cases, so add the block below to the global 
 - When the user corrects you or sets a new way of working, edit the matching method document in [method folder] in the same turn and add one line to [improvement log]. Lessons you inferred yourself go to [improvement candidates] and you ask the user once.
 ```
 
-### 1.5 Connect to a research repository
-Do not copy the skill into a research repository's instructions (`AGENTS.md` or `CLAUDE.md`); write only the values specific to that project. The skill holds the method, the repository instructions hold the project's values.
+### Connect to a research repository
+
+Do not copy the skill into a project's `AGENTS.md` or `CLAUDE.md`. Write only the values specific to that project; the skill holds the method.
 
 ```markdown
 ## Research method
@@ -71,12 +75,45 @@ Do not copy the skill into a research repository's instructions (`AGENTS.md` or 
   - Approval: [what may be done without the researcher's approval, e.g. training after a successful smoke test]
 ```
 
-### 1.6 Updating
-- When the source documents are edited, a skill linked to them changes at once. Do not edit installed files separately.
-- When a principle changes, edit 00 from §2; when a method within a stage changes, edit that reference document.
-- When the researcher corrects the agent or sets a new method, the agent edits the source document in the same turn (00, principle 17). Only lessons the AI inferred itself are kept as candidates and asked about (principle 18). The location of the candidate note is written in each user's global instructions (§1.4).
+## What It Does
 
-## 2. Request patterns that work
+The skill activates automatically when the agent does research work: choosing a topic, checking prior work, designing experiments or losses, running and diagnosing training, operating servers and workers, or reviewing a manuscript. It always reads the overview first, then only the reference document the task needs.
+
+Core principles (from `references/00-overview-and-principles.md`):
+
+1. **The researcher decides** -- the AI explains, offers numbered options and recommends one
+2. **Explanation first, decision later** -- never take a decision the researcher has not understood
+3. **Plain words with numeric examples** -- no formulas or internal code names when talking to the researcher
+4. **Check the records before proposing** -- do not re-propose closed directions
+5. **Fix judging rules before results** -- splits, thresholds and adoption rules are pre-registered
+6. **Change one thing at a time** -- one change per row, same conditions
+7. **Diagnose before dropping** -- implementation, missing standard techniques, then logs and checkpoints
+8. **Pre-measurement without training only stops** -- it may close a direction, never justify one
+9. **Fix reproducibility and fairness first** -- code, environment, data, config and seeds; match resources, not mechanisms
+10. **Measure everything during training** -- to explain why a result came out as it did
+11. **Close a direction only on trained results**
+12. **Keep the order of work** -- multi-seed runs and extra datasets after the model is fixed
+13. **Record in the same turn** -- log, topic page and status index
+14. **Turn repeated instructions into mechanisms** -- instructions, memory, skills, hooks
+15. **Check AI output against originals** -- papers, citations, numbers, figures
+16. **Record all failures; publish only adopted components and their ablations**
+17. **Apply the researcher's corrections to the method documents at once**
+18. **Ask before adopting lessons the AI inferred by itself**
+
+| Reference document | Covers |
+| --- | --- |
+| `00-overview-and-principles.md` | Principles, approval scope, research flow and direction changes, operations, error signals, pre-report checklist |
+| `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki, documentation, monitoring, incremental improvement |
+| `02-topic-question-prior-work.md` | Topic, seven-step method derivation, questions and decision rules, prior work, gaps and novelty |
+| `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, development order, in-training measurement, judgement |
+| `04-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
+| `05-critique-and-writing.md` | Mock review, evaluation splits, what goes in the paper, manuscript structure and checks |
+| `06-ai-errors.md` | Error types with their signals and countermeasures |
+
+The documents contain no case studies. Numbers and names from one project would bias the agent's judgement, so every lesson is written as a general rule with its reason.
+
+## Request patterns that work
+
 Phrasings that improve results when a researcher talks to an AI. They work without the skill as well.
 
 | Pattern | Example |
@@ -95,18 +132,76 @@ Phrasings that improve results when a researcher talks to an AI. They work witho
 | Delegate in parallel | "Spin up agents to search further", "You review" |
 | Ask for a record | "Write this down", "Add it to the instructions" |
 
-## 3. Sources and acknowledgements
-This collection was made possible by the works below. Many thanks to the authors who shared their research methods and tools. All rights to each work remain with its authors.
+## Keeping your own edits
+
+The skill is meant to grow with your research. Keep the method documents in your own notes and make the files in the installed skill symbolic links to them; edits then take effect at once. When the researcher corrects the agent, the agent edits the matching document in the same turn (principle 17). When sharing your version, copy real files, not links (`cp -RL`).
+
+## Structure
+
+```
+research-with-ai/
+├── .claude-plugin/
+│   └── marketplace.json                  # Marketplace catalog (two editions)
+├── plugins/
+│   ├── research-with-ai/                 # English edition
+│   │   ├── .claude-plugin/plugin.json
+│   │   └── skills/research-with-ai/
+│   │       ├── SKILL.md                  # Entry point
+│   │       └── references/
+│   │           ├── 00-overview-and-principles.md
+│   │           ├── 01-tools-and-rules.md
+│   │           ├── 02-topic-question-prior-work.md
+│   │           ├── 03-experiment-and-model.md
+│   │           ├── 04-operations.md
+│   │           ├── 05-critique-and-writing.md
+│   │           └── 06-ai-errors.md
+│   └── research-with-ai-ko/              # Korean edition (same layout)
+├── CITATION.cff
+├── LICENSE
+├── README.md
+└── README.ko.md
+```
+
+## Contributing
+
+Contributions are welcome, in particular:
+
+- **Validation.** Before/after comparisons of agent behaviour with and without the skill, and cases where it fails.
+- **New rules.** Mistakes AI agents make repeatedly in research work that the documents do not yet cover.
+- **Corrections.** Rules that are wrong, misleading or missing nuance.
+- **Translations.** Keep the English and Korean editions in step, or add another language.
+
+Open an issue or a pull request at [github.com/saint0721/research-with-ai](https://github.com/saint0721/research-with-ai).
+
+## Acknowledgements
+
+This skill grew out of daily research work between a researcher and AI agents. Its rules were written down each time the researcher corrected the agent, and then generalised. It was made possible by the works below; many thanks to the authors who shared their research methods and tools. All rights to each work remain with its authors.
 
 | Work | Used in | How it is used | License |
 | --- | --- | --- | --- |
-| [scientific-coding-skill](https://github.com/cemde/scientific-coding-skill) (Cornelius, 2026) | 03 §6.1 Scientific coding principles | Principles translated and summarized. The original skill is installed for actual coding | MIT |
-| [awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading) (Hyungtae Lim, 2026) | 05 §6.1 Proofreading workflow | Prompt names and scope are introduced. The prompts are not copied; they are taken from the original repository | MIT |
+| [Scientific Coding Skill](https://github.com/cemde/Scientific-Coding-Skill) (Cornelius Emde) | 03 §6.1 Scientific coding principles | Principles translated and summarized. The original skill is installed for actual coding | MIT |
+| [awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading) (Hyungtae Lim) | 05 §6.1 Proofreading workflow | Prompt names and scope are introduced. The prompts are not copied; they are taken from the original repository | MIT |
 | [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (Andrej Karpathy) | 01 §5, §8 | Follows the three layers (sources, wiki, schema) and the log and lint structure | See original |
 | [Agentic Context Engineering (ACE)](https://arxiv.org/abs/2510.04618) (Zhang et al., 2025) | 01 §8 | Follows the principle of editing instructions item by item instead of rewriting them whole | Paper |
 | [Hamming](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton & Steinhardt](https://arxiv.org/abs/1807.03341), [J.-B. Huang](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208) | 02 §2 Seven-step method derivation | Used as the basis of each step and arranged into a procedure | See originals |
-| [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) | 03 §7 Development order | Basis for the practices of a fixed baseline, one change at a time, a ladder table, cheap screening first, and separate modules | See originals |
-- No sentence is copied verbatim from these works; they are summarized or rewritten as procedures. For the MIT-licensed works, the original repositories and copyright holders are named above.
+| [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) | 03 §7 Development practices | Each practice is mapped to its section and source in 03 §7 | See originals |
 
-## 4. License
-The text of this collection is released under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Anyone may use, adapt and share it with attribution. The external works in §3 follow their own licenses.
+No sentence is copied verbatim from these works; they are summarized or rewritten as procedures. For the MIT-licensed works, the original repositories and copyright holders are named above.
+
+## Citation
+
+If you use this skill in your research or reference it in a publication, see [CITATION.cff](CITATION.cff).
+
+```bibtex
+@software{saint0721_2026_researchwithai,
+  author  = {saint0721},
+  title   = {research-with-ai: Using AI Agents as Research Collaborators},
+  year    = {2026},
+  url     = {https://github.com/saint0721/research-with-ai},
+  version = {0.1.0}
+}
+```
+
+## License
+
+The text of this collection is released under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Anyone may use, adapt and share it with attribution. The works listed under Acknowledgements follow their own licenses.
