@@ -261,7 +261,17 @@
 - 실습 문서는 논문의 절과 코드 위치를 짝지어, 논문 서술과 코드가 다른 곳이 있으면 그 사실을 함께 적음.
 
 ## 7. 개발과 실행
-모델을 한 번에 하나씩 바꾸며 쌓는 조립식 개발 절차와, 학습이 도는 동안 설계를 손으로 그려 익히는 방법임. 주요 비전 연구의 공통 관행(기준선 고정, 한 번에 한 요소, 사다리 표, 싼 선별 먼저, seed 변동보다 큰 이득만 채택, 실패 원인 조사, 모듈 분리)을 따름. 근거: [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [RegNet](https://arxiv.org/abs/2003.13678), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation).
+모델을 한 번에 하나씩 바꾸며 쌓는 조립식 개발 절차와, 학습이 도는 동안 설계를 손으로 그려 익히는 방법임. 주요 비전 연구가 모델을 만들 때 공통으로 따른 관행을 바탕으로 함.
+
+| 관행 | 이 문서의 자리 | 근거 |
+| --- | --- | --- |
+| 표준 기준선을 재현하고 학습 설정을 다듬은 뒤 고정함 | 4장, 5.1 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193) |
+| 기본 설정 하나를 두고 한 번에 한 요소만 바꿈 | 7.1 ③, 00 원칙 6 | [MAE](https://arxiv.org/abs/2111.06377), [ConvNeXt](https://arxiv.org/abs/2201.03545) |
+| 줄마다 바꾼 것과 결과를 사다리 표로 남김 | 7.1 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193) |
+| 싸게 거른 뒤 크게 확인함 | 7.1 | [RegNet](https://arxiv.org/abs/2003.13678), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook) |
+| seed 간 편차보다 큰 이득만 채택하고, 기준은 결과 전에 정함 | 7.1, 9장 | [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook) |
+| 떨어진 단계는 원인을 찾은 뒤 버림 | 9장 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/) |
+| 핵심 코드는 고정하고 새 부품은 자기 파일·설정으로 붙임 | 6.2 | [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) |
 
 ### 7.1 개발 순서
 | 단계 | 하는 일 | 다음 단계로 가는 조건 |
@@ -273,6 +283,8 @@
 | ⑤ 학습 | smoke가 성공하면 승인을 기다리지 않고 바로 학습하고, 연구자에게 손그림용 한 장을 줌(7.2). 시작은 실행기의 시작 기록을 본 뒤에만 보고함 | 실패하면 원인 분석 → 수정 → 다시 smoke |
 - 사다리 표에는 줄마다 바꾼 것 하나, 추가 비용, 지표, 직전 줄 대비 차이, 채택 여부를 적음.
 - 설계 밖의 변경(새 방향, 값 조정, 고칠 길)은 연구자가 정함.
+- 후보는 싸게 먼저 거름. 짧은 일정이나 작은 설정, seed 하나로 1차 판정하고, 살아남은 줄만 전체 규모와 여러 seed로 확인함. 걸러진 줄도 결과 그대로 사다리 표에 남김.
+- 최종 채택은 seed 간 편차보다 큰 이득일 때만 함. 편차는 같은 설정을 여러 seed로 돌려 실제로 재고, 채택 기준은 결과 전에 사전 등록 문서에 적음.
 
 ### 7.2 손으로 overview 그리기
 학습이 돌아가는 동안 연구자가 확정한 설계를 손으로 적고, 1.6에서 그린 overview 위에 새 모듈을 더해 다시 그려 보는 방법임. 설계가 머릿속에 들어와야 실패했을 때 다음 수를 스스로 말할 수 있음.

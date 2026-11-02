@@ -261,7 +261,17 @@ Scientific code serves truth, not users, and the worst outcome is a plausible-lo
 - The walkthrough pairs paper sections with code locations, and notes any place where the paper's description and the code differ.
 
 ## 7. Development and execution
-The assembly-style development procedure of changing the model one thing at a time, and the method of learning the design by drawing it by hand while training runs. Follows the common practice of major vision research (fix the baseline, one factor at a time, ladder table, cheap screening first, adopt only gains larger than seed variation, investigate causes of failure, separate modules). Sources: [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [RegNet](https://arxiv.org/abs/2003.13678), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation).
+The assembly-style development procedure of changing the model one thing at a time, and the method of learning the design by drawing it by hand while training runs. Based on practices that major vision research followed when building models.
+
+| Practice | Where in this document | Source |
+| --- | --- | --- |
+| Reproduce a standard baseline, refine its training setup, then freeze it | §4, §5.1 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193) |
+| Keep one default setup and change one factor at a time | §7.1 ③, 00 principle 6 | [MAE](https://arxiv.org/abs/2111.06377), [ConvNeXt](https://arxiv.org/abs/2201.03545) |
+| Record each change and its result as a row of a ladder table | §7.1 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193) |
+| Screen cheaply, then confirm at scale | §7.1 | [RegNet](https://arxiv.org/abs/2003.13678), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook) |
+| Adopt only gains larger than seed-to-seed variation, with the rule set before the result | §7.1, §9 | [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook) |
+| Find the cause of a failed step before dropping it | §9 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/) |
+| Keep core code fixed; add new parts as their own files switched on by config | §6.2 | [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) |
 
 ### 7.1 Development order
 | Step | What to do | Condition to move on |
@@ -273,6 +283,8 @@ The assembly-style development procedure of changing the model one thing at a ti
 | ⑤ Training | If smoke succeeds, train immediately without waiting for approval, and give the researcher a one-page sheet for hand drawing (7.2). Report the start only after seeing the runner's start record | On failure: analyze cause → fix → smoke again |
 - In the ladder table, record per row the one change, extra cost, metrics, difference from the previous row, and adoption decision.
 - Changes outside the design (new direction, value tuning, fixes) are decided by the researcher.
+- Screen candidates cheaply first. Make the first call with a short schedule, a small setup or a single seed, and confirm only the surviving rows at full scale with several seeds. Keep screened-out rows in the ladder table as they are.
+- Final adoption requires a gain larger than seed-to-seed variation. Measure that variation by running the same setup with several seeds, and write the adoption rule in the pre-registration document before the result.
 
 ### 7.2 Drawing the overview by hand
 While training runs, the researcher writes out the finalized design by hand and redraws the overview drawn in 1.6 with the new module added. The design has to be in the researcher's head to be able to say the next move on their own after a failure.
