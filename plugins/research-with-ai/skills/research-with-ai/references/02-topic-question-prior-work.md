@@ -49,6 +49,7 @@ A 7-step procedure for deriving a method (module) from a measured failure. Organ
 | ⑦ Explore the design space (optional) | After the intervention shows an effect, vary a few key values to see whether the design works over a wide range | Where is this method in the design space; does it work only at one point? | Control-variable sweep results | RegNet (looking at design spaces) |
 - ①–④ are used when proposing candidates in the design conversation (03 Ch. 1), ⑤⑥ in the design document and experiment preparation (03 1.7, Ch. 5, Ch. 8), and ⑦ when choosing the next row after judgment (03 Ch. 9).
 - Do ⑦ only after the intervention beats the baseline. Exploring the design space of an intervention without effect only costs.
+- When the conditions change or the direction is reset from scratch, settle ① problem choice (the research question sentence) again with the researcher first. Use ② failure measurement to test the premises of the chosen question; do not let measurement results choose the question instead. Even for a request like "let's re-measure the problem", first present question candidates and their grounds, get confirmation, then measure.
 
 ### 2.2 Common shape of good papers
 Decomposing several representative papers in the same field with a `observation shown first / cause and module / ablation` frame shows the following shape repeatedly.
@@ -85,6 +86,7 @@ How to widen the scope of prior work, how to check and record what was read, and
 ### 4.2 Checking and recording
 - Match every paper's title, first author, year and venue on the original page. Bibliographies made by AI can be plausibly wrong.
 - Mark the reading depth for each item (full text, abstract, search summary, title), and keep a list of items to re-check in full text before writing the manuscript. For items whose full text could not be accessed (e.g. bot blocking), note that fact and the reading depth in the table.
+- Judge the closest prior work used for pre-emption and novelty judgments only after reading the full text (method section and experimental setup). Put "for the closest prior work, open the full text, read the method section and record which sections you read" into research-agent instructions; mark judgments made at abstract level as provisional and re-judge after reading the full text. Record what was read in the full text (sections read, mechanism, relevant numbers, what it means for our candidate) per paper in the prior-work document, and have agents write that document too.
 - Before using a prior method's mechanism as grounds, check in the public code that it actually works that way. A schedule or device described in a paper sometimes does not actually work because of how the code processes it, and judgments that trusted only the description must be corrected.
 - When comparing code or equations, use the original repository and the paper's equations, not a copy modified by someone else. Judging "matches" against a modified copy can make the ported technique fail entirely in training.
 - Do the broad first-pass survey with a low-cost model, and re-check key references by DOI and original text.

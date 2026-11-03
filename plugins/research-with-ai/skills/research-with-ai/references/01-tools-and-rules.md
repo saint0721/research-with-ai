@@ -108,9 +108,11 @@ A way to keep the research state in one place with a topic wiki the agent writes
 | Query | When the researcher asks about the state | Answer from the wiki, and check numbers in the source documents |
 | Ingest | In the turn where a result, decision, correction or understanding-changing explanation appears | Within the same turn: one log line, overwrite the topic page, update the index |
 | Lint | When the researcher asks | Look for unreflected sources, unsupported claims and stale states |
+| Tidy | When the conditions (base, protocol, split) change, or when the log has grown long | Move results, designs and task specs of the old conditions and used-up handoffs into a dated archive folder under the same sub-path, and repoint links in current documents to the archive path. Keep only the current conditions on topic pages and the index, and archive a pre-tidy copy. Prior-work and rule documents are independent of conditions and stay |
 - Wiki updates are run by instructions, not by an automatic script. Before finishing work, check the repository's change list for new documents and reflect them in the wiki. Automatic updates change pages without review.
 - So that reflection is not missed, a check hook at the end of each response checks "was there a result but the log was not updated?" (4.1 Hook).
 - The wiki is an internal document; external documents are written from the source documents.
+- If documents from old conditions stay mixed in the current folders, both the agent and the researcher misread old numbers and closures as current evidence. Move them at the first tidy after the turn in which the conditions changed.
 
 ### 5.4 Connecting a note vault and the wiki
 How to divide roles and connect the code repository's wiki with the researcher's note vault (e.g. an Obsidian vault) when both are used. If both record the research state, numbers and decisions change separately in two places, so one is fixed as the canonical record and the other points to it.
@@ -146,7 +148,9 @@ Where to record what, when something happens, and the format of documents.
 | Researcher decision or correction | O | — | Relevant page | If state changes |
 | Job start | O | — | Mark as in progress | O |
 | Explanation that changed understanding | O | — | Plain-language section | — |
+| Decision on experiment conditions (base method, protocol, split, budget, whether earlier modules carry over) | O | Plan document (what to check and the pass criteria, before results) | Rules page | O |
 - Simple status checks are not recorded.
+- When the experiment conditions change, do not carry numbers from the earlier conditions into the new ones. If old numbers mix in, judgments on the new ladder wobble against the old conditions.
 - Read the time from the clock; do not guess. Guessed times are wrong all at once and make the whole record suspect later.
 
 ### 6.2 Document format

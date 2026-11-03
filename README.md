@@ -115,7 +115,7 @@ Core principles (from `references/00-overview-and-principles.md`):
 7. **Diagnose before dropping** -- implementation, missing standard techniques, then logs and checkpoints
 8. **Pre-measurement without training only stops** -- it may close a direction, never justify one
 9. **Fix reproducibility and fairness first** -- code, environment, data, config and seeds; match resources, not mechanisms
-10. **Measure everything during training** -- to explain why a result came out as it did
+10. **Measure everything during training, but never obtain the same result twice** -- to explain why a result came out as it did; before any check or rerun, state the decision it changes and look for an existing result
 11. **Close a direction only on trained results**
 12. **Keep the order of work** -- multi-seed runs and extra datasets after the model is fixed
 13. **Record in the same turn** -- log, topic page and status index

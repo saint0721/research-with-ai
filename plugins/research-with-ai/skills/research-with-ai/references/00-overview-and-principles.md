@@ -34,7 +34,7 @@ Principles that apply to every stage. When they conflict with a detailed procedu
 7. **When something fails, diagnose first.** Look for the cause in the order implementation check → missing standard techniques → checkpoint analysis; the researcher chooses the fix. Tune values only after the structure has shown an effect.
 8. **Use pre-measurement without training only to stop.** Check whether the facts the design relies on (premise, information, upper bound) exist; if "absent", close the direction. "Present" is not a reason to proceed. Do not use it to pick candidates, set values or predict gains.
 9. **Fix reproducibility and fairness before the experiment.** Fix code, environment, data, configuration and random state, and record them for every run. Match resources with the comparison methods but not their method-specific devices, and train the comparison methods on the same data and splits.
-10. **During training, measure and keep everything measurable.** Record the actual contribution of each loss term, training state, performance, prediction distribution, mechanism, error locations, cost and checkpoints with the same items in every experiment. Use these records only to explain why a result came out as it did.
+10. **During training, measure and keep everything measurable.** Record the actual contribution of each loss term, training state, performance, prediction distribution, mechanism, error locations, cost and checkpoints with the same items in every experiment. Use these records only to explain why a result came out as it did. **Do not obtain the same result twice:** before proposing a check run, a retraining or an extra measurement, write in one line which decision its result would change, and check down to the path whether a result with the same setting and the same data already exists. If it changes no decision or the result already exists, do not do it. Size checks to the risk (03 6.3, 06 chapter 2).
 11. **Close a direction only on training results.** Do not change direction because of measurements without training or one or two failures. Do not move to another direction before at least 3 trained rows exist in the current one, and when closing, record under which conditions the closing result was measured.
 12. **Keep the order of work.** Build the model configuration with one seed; multi-seed repeats, other datasets and additional comparisons come after the model is fixed. Large measures that change the character of the study are postponed to the next study or decided by the researcher.
 
@@ -158,6 +158,7 @@ Stop and check when you see these signals during work. Full list in 06.
 | "Started" or "finished" reports | Whether they match the runner records |
 | An experiment proposed because resources are idle | Whether it has a gain and a role |
 | Work rebuilding something that exists | Whether saved checkpoints or tools already exist |
+| Proposal of a check run, retraining or extra measurement | Whether its result changes a decision, and whether a result with the same setting and data already exists (without mistaking a run on a different data split for the same one) |
 | Numbers and citations in manuscripts and tables | Whether they match the result files and originals |
 - When the same mistake happens twice, move it into memory, instructions or a mechanism.
 
@@ -175,4 +176,5 @@ Items to check before handing results or documents to the researcher.
 | Is the prior work a formal publication? | Check the venue or arXiv entry; do not cite blogs or products as related work |
 | Do start and end reports match the records? | Check the runner's start and end records |
 | Were records kept? | Check that the log, topic pages and status index were updated in the same turn |
+| Was repeated measurement proposed? | Check that each proposed check or rerun states, in one line each, the decision it changes and the check for an existing result |
 | Can the researcher read it? | Check that it uses plain words and examples, without code or formulas |

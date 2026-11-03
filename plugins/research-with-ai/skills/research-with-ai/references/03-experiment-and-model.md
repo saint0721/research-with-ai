@@ -200,6 +200,15 @@ How to fix comparison conditions before the experiment so that comparison result
 - If the benchmark's definition (included items, etc.) changes, keep models and thresholds as they are and recompute every reported number under the new definition.
 - For paid runs, document the decision to run and the cost basis before results, then run.
 
+### 5.5 Checking the remaining gap before fixing the base
+A method for measuring, before fixing the base (baseline method and training conditions) on which a method will be built, whether there is room for the method's effect to show under those conditions. If the base conditions are strong and already close to the upper bound, any method's difference gets buried in run-to-run variation, and this is discovered only after much development.
+1. Measure three scores under the same conditions: training on the labelled data only (lower bound), the base method, and training with all labels (upper bound).
+2. Compute the remaining gap (upper bound − base) and the filled ratio ((base − lower bound) ÷ (upper bound − lower bound)).
+3. Write them next to the same three scores from prior papers of the same family. If both the lower and upper bounds are higher than the prior work's, the training conditions themselves differ, so first reproduce the prior conditions with the original code to separate the cause of the difference.
+4. If the remaining gap is not sufficiently larger than the variation between base runs, reset the conditions (data ratio, training conditions, comparison protocol) before fixing the base.
+- When reproducing prior numbers, use the original code and original schedule as they are, and change nothing except execution links such as paths and file names. Record in the result document how defects of the original code were worked around.
+- When the conditions change, do not carry over numbers and adoption judgments from the earlier conditions (01 6.1).
+
 ## 6. Writing and managing code
 Rules for writing, testing, moving, cleaning up, and pushing research code.
 
@@ -237,6 +246,7 @@ Scientific code serves truth, not users, and the worst outcome is a plausible-lo
 - Pass the full test suite in the environment where it will actually run (the server). Record the cause of tests that fail due to environment differences.
 - Block data leakage in code. E.g., stop immediately if test data appears in training or validation paths.
 - Record whether the test or the code was wrong. If the test was at fault, say so and fix it.
+- Size checks to the risk. Do not re-measure facts already shown by a measurement. If the official code is used as is and the only changes are a few lines guarded by switches, confirm equivalence by reviewing the changed lines and a short smoke, without a separate training run. Before launching a new check run, write in one line "what does this result change?", and if it changes nothing, do not launch it.
 
 ### 6.4 Moving and running code
 - Write code in one place (the working repository) and send it to the run server only through a fixed sync path (bundle transfer, etc.). Do not move code by pasting it into a terminal.
@@ -328,7 +338,7 @@ How to measure and keep, without omission, everything measurable inside an actua
 - Keep every value in the run folder in a machine-readable format (one record per line), without overwriting. Keep it separate from the human-readable log.
 - Do not delete records of failed or interrupted runs; record why they stopped.
 - A script builds the draft result document from these records (run information, judgment, per-class differences, per-bin changes, loss shares, diagnostic trends); humans only write the interpretation.
-- If a value missing from a finished experiment is needed, measure it from the saved checkpoints instead of retraining. When rerunning training steps from a checkpoint, compare the first-step loss magnitude with the original experiment to confirm the internal state is right.
+- If a value missing from a finished experiment is needed, measure it from the saved checkpoints instead of retraining. Also when a recording device such as diagnostics or seed fixing is newly added, do not rerun a setting that already has results; turn it on from the runs still to come. When rerunning training steps from a checkpoint, compare the first-step loss magnitude with the original experiment to confirm the internal state is right.
 
 ### 8.4 How to read the records
 After results come in, explain "why it came out that way" with the questions below.
