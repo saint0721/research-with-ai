@@ -84,6 +84,8 @@ Model design is a dialogue: the researcher raises a topic, the AI finds what to 
 | Researcher questions | Verbatim questions and answers, and what they changed |
 | Decision | What was decided and by whom; for delegated decisions, the evidence |
 
+- Even a draft has the whole template and the review sections (2 scientific review, 3.2 choosing the loss, 3.3 loss table, the new mechanism metrics in 8) from the start. For a small row (one base technique, say), do not delete sections that do not apply; write "not applicable" and why. A shortened draft misses the problems the missing sections would show (for example, the base and the intervention changing together relative to the previous row, so the variables are not separated).
+
 ## 2. Scientific validity review
 Once the design is finalized and before writing code, discuss separately "is this design scientifically sound?". Even with correct equations, if hypothesis and measurement are misaligned the result cannot be interpreted.
 
@@ -373,6 +375,7 @@ Pre-measurement without training (attaching a device to a trained model and runn
   - Information check: does the signal the new device will use contain information?
   - Upper-bound check: even working perfectly, is the share it can fix large enough?
 - **What to look at**: Not the size of the number but present or absent. If "absent", close that direction without training. "Present" only qualifies it for a training try; it is not a reason to proceed.
+- **Do not decide present or absent from one number**: one separability number (AUROC, say) misses how many cases the signal would fix and how many it would break when actually used, and differences between classes. Report at least three together: (1) the separability, (2) at the point where the signal is used (per threshold, or the replacement rule itself) the number fixed and the number broken and the resulting change in the metric, (3) values per stratum such as class or size. When several information sources are measured together, judge present or absent for each source separately, and do not use the measurement to choose between sources.
 - **Where not to use it**: Choosing among candidates, setting values, predicting gains.
 - **When to do it**: Only when the design is finalized, the premise is uncertain, and training is expensive. Otherwise go straight to smoke and training.
 

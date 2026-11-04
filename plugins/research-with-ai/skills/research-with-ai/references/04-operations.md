@@ -29,6 +29,8 @@ How to decide who does what when using several agents. Having the leader finish 
 - If the runner runs a smoke before training, workers do not run the same smoke separately.
 - Keep only one final watcher per agent so it wakes once, and stop the agent after it commits. Keeping agents running makes token cost grow quickly.
 - Workers only commit in a separate workspace (worktree); the leader merges and resolves conflicts. If the work line branched from an old main, port only the work line's values onto main's structure.
+- The leader analyses and reviews code written by a worker line by line against the design document, and runs the tests, smoke and training itself. Do not train on a worker's "tests pass" report alone (also check that the worker's tests actually discriminate the property they target; for example, a test comparing two models built from the same seed almost always passes).
+- The worker brief says not to touch networking, VPN, ssh configuration or desktop apps outside the assigned scope, and when a server or other outside resource cannot be reached, to stop and report instead of trying to fix it. A blocked worker can look for a way around on its own and change the researcher's working environment (connections, open apps).
 - The worker brief says not to open question prompts. When unsure, the worker uses a safe default and notes it in the handoff.
 - Verification/advisory workers and execution workers use different model families to keep verification independent. Model names are chosen by configuration, not hard-coded.
 - When a usage limit is hit, switch to a pre-defined low-cost or free route and reuse the policy copy as is.
@@ -88,7 +90,7 @@ Rules for personal data, secrets, external transfer and paid APIs.
 Rules for recording and publishing changes to code, documents and manuscripts.
 
 - Commit only the intended files. Do not add whole directories, and do not touch uncommitted files someone else was editing.
-- Push only when a person instructs it, and check for secrets before pushing. Push only to the designated remote branch; do not touch other branches or main of a shared repository. Never force-overwrite main.
+- Push only when a person instructs it, and check for secrets before pushing. Push only to the designated remote branch; do not touch other branches or main of a shared repository. In a repository only the researcher uses, also push to main when the work branch continues straight from main (fast-forward). Never force-overwrite main.
 - Document check before push: are the plan, result and design documents matching the change updated; is there a header; are failures and omissions recorded; do the paths the documents point to exist; is remaining work intended; is result data kept out of the commit; is there a one-line summary of what is pushed and why.
 - Keep result data out of git, in separate storage (e.g., NAS).
 - Track the manuscript in git too, excluding build outputs and old backups. Push the manuscript only when the repository is private.

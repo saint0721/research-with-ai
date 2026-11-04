@@ -5,20 +5,20 @@
   },
   "metadata": {
     "description": "Use AI agents (Claude Code, Codex) as research collaborators, in English and Korean editions.",
-    "version": "0.2.2"
+    "version": "0.2.3"
   },
   "plugins": [
     {
       "name": "research-with-ai",
       "source": "./plugins/research-with-ai",
       "description": "Use an AI agent as a research collaborator (English edition).",
-      "version": "0.2.2"
+      "version": "0.2.3"
     },
     {
       "name": "research-with-ai-ko",
       "source": "./plugins/research-with-ai-ko",
       "description": "AI 에이전트를 연구 동료로 쓰는 방법 (한국어판).",
-      "version": "0.2.2"
+      "version": "0.2.3"
     }
   ]
 }
