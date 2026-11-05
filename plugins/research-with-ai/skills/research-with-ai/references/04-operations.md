@@ -23,6 +23,9 @@ How to decide who does what when using several agents. Having the leader finish 
 
 - The leader writes and runs pre-measurement scripts and small code changes directly. The time a worker spends reading the brief and code and setting up the environment is often far longer than the actual computation, and workers sometimes stop after writing code without running it.
 - Launch workers only when the researcher asks. When used, give one worker one question and one file scope; the leader merges results from several workers into one document. Do not use workers for short document tasks.
+- A worker's job ends at "write → verify → run → confirm start → hand back". It builds code, tests and configuration, confirms passing from the test run's own exit status, launches the job, confirms it started from the first log line or the process, then records in its handoff the run location, PID, start time, expected end and the checkpoints to look at (smoke, early-stop check, end), and closes its pane. Do not keep workers that only watch.
+- Waiting and judgment belong to the leader. The researcher follows progress in an agent-free monitor pane (Ch. 4), and the leader wakes once at each checkpoint to judge.
+- Launch a worker when the work has a separable output (a module and its tests, a measurement tool). Small edits, records and judgments are done by the leader directly.
 - Split research into several narrow questions, launch research agents in parallel, and have them mark how deeply they checked the full text.
 - Run independent steps at the same time on separate GPUs. Do not chain them on one GPU. Splitting steps and overlapping them greatly shortens the time from decision to training start.
 - A pre-measurement without a pass bar does not block training. Launch training first, run the measurement alongside on another GPU, and stop training only if harm shows up.
@@ -63,6 +66,8 @@ How to use a remote compute server. Assumes the agent runs on a laptop and compu
 - Run pre-measurements on an idle GPU with a memory cap and low priority.
 - How to keep GPUs full: the CPU prepares the next input in advance, and small jobs that cannot fill a GPU go into a second slot on a GPU with spare memory. Training never goes into a second slot. For a job type run for the first time, run it alone to measure peak memory before packing it.
 - Do not change run settings such as batch size in an ongoing experiment. The numbers may change.
+- Do not leave GPUs idle: while one row runs, finish the next row's design, code and tests, and launch it as soon as the running row finishes or is stopped.
+- Early stopping: match past rows' learning curves against their final verdicts, register before results a line on a value that can be measured reliably mid-run ("rows this far behind have never passed by the end"), and stop a row that crosses it. Do not adopt on mid-run values (rows that led mid-run have failed the final verdict). Score a stopped row's saved checkpoint for the record as well.
 - Back up results against server outages, and do not stop at backups; also test restoring.
 
 ## 4. Watchers and monitors
@@ -74,6 +79,7 @@ How to notice that a long job has finished, and common mistakes.
 - Moving the laptop or letting it sleep cuts local watchers and the VPN and delays notifications. When the researcher comes back and asks, check the server's queue log first, not the watcher output. The agent does not touch network settings; a person reconnects.
 - When a run is stopped, stop the watchers waiting for it too. Do not leave watchers that will never end.
 - Keep the human-facing monitor as one pane below the chat pane and show only short output.
+- The researcher must be able to see when a long job has finished. Watch with **one agent-free monitor pane** (one line per run every 2 minutes: epochs, latest value, done/error), not with agent workers. Launch workers only when there is real work such as code or measurement, and close their panes when done. The leader judges.
 - Do not read long logs with tail; extract the needed lines with remote grep. With long-line logs, the tail window misses result lines.
 
 ## 5. Security and cost

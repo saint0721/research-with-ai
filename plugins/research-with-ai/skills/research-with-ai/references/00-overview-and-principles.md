@@ -11,7 +11,7 @@ When the researcher asks for any of the work below, follow the principles of thi
 
 | Situation | Document to read |
 | --- | --- |
-| Starting a new study or repository; creating instructions, memory, skills, hooks or a wiki | [01 Tools and rules](01-tools-and-rules.md) |
+| Starting a new study or repository; bringing an archived project and its materials back into active development; creating instructions, memory, skills, hooks or a wiki | [01 Tools and rules](01-tools-and-rules.md) |
 | Choosing a topic, deriving a method, setting questions and judgment criteria, checking prior work, gaps and novelty | [02 Topic, question, prior work, gap](02-topic-question-prior-work.md) |
 | Designing experiments, choosing losses, setting up environment and fairness, writing code and training, judging results | [03 Experiment and model development](03-experiment-and-model.md) |
 | Running servers, GPUs and workers; launching and monitoring long jobs; committing and pushing | [04 Operations](04-operations.md) |
@@ -26,10 +26,11 @@ Principles that apply to every stage. When they conflict with a detailed procedu
 1. **The researcher decides.** The AI gives explanations, candidates, a recommendation and the grounds; the researcher chooses. If the researcher delegates a decision, the AI investigates the grounds, decides, and records that the decision was delegated and why.
 2. **Explanation first, decision later.** Do not take a decision while the researcher has not understood it. Attach a recommendation and reason to each option, and do not ask for several decisions at once.
 3. **Speak to the researcher in plain words with numeric examples.** Do not use formulas, internal code names or decision numbers. The AI does the calculations and checks, and reports the results in words.
-4. **Check the records before proposing.** Before proposing, check the log, decision records and rejection list for directions already closed. State for each proposal the expected gain, the chance of adoption, and its role in the study.
+4. **Check the records before proposing.** Before proposing, check the log, decision records and rejection list for directions already closed. State for each proposal the expected gain, the chance of adoption, and its role in the study. Read a closed record together with the conditions it was measured under (base model, protocol, data split); if the conditions have changed, do not use it as evidence that the direction is "still closed" — say only that it was closed under those conditions, and let the researcher decide whether to reopen it.
 
 ### 2.2 Experiments and judgment
 5. **Fix judgment criteria before results.** Record splits, thresholds, evaluation targets and adoption rules in a document before results, and do not change them after seeing results.
+   - What this principle prevents is **cherry-picking**: reporting only the good values among independent seeds, scenes or runs, or changing scenes, seeds or thresholds after seeing results to manufacture a number. Which metrics the manuscript defines, how, in which table, and how the tables are laid out may be chosen after seeing results (provided every run's values are used as they are and the definitions are stated in the manuscript). Do not stop the researcher by reading a presentation choice as "post-hoc manipulation".
 6. **Change one thing at a time.** Fix the baseline, add only one change per row, and measure under the same conditions.
 7. **When something fails, diagnose first.** Look for the cause in the order implementation check → missing standard techniques → checkpoint analysis; the researcher chooses the fix. Tune values only after the structure has shown an effect.
 8. **Use pre-measurement without training only to stop.** Check whether the facts the design relies on (premise, information, upper bound) exist; if "absent", close the direction. "Present" is not a reason to proceed. Do not use it to pick candidates, set values or predict gains.

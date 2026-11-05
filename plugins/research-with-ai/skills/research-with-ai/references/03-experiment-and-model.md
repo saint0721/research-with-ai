@@ -296,6 +296,7 @@ The assembly-style development procedure of changing the model one thing at a ti
 - In the ladder table, record per row the one change, extra cost, metrics, difference from the previous row, and adoption decision.
 - Changes outside the design (new direction, value tuning, fixes) are decided by the researcher.
 - Screen candidates cheaply first. Make the first call with a short schedule, a small setup or a single seed, and confirm only the surviving rows at full scale with several seeds. Keep screened-out rows in the ladder table as they are.
+- Run multiple seeds after the model configuration is fixed, on the fixed configuration and its comparison row together, to measure the spread. During development, even when a row passes its registered criterion, do not run more seeds; move to the next row. Do not run them to rescue a row that failed just below the baseline, or to measure the spread in advance either.
 - Final adoption requires a gain larger than seed-to-seed variation. Measure that variation by running the same setup with several seeds, and write the adoption rule in the pre-registration document before the result.
 
 ### 7.2 Drawing the overview by hand
@@ -364,6 +365,7 @@ Rules for deciding adoption, holding, or adjustment after results come in, and c
 - When lifting an existing constraint, lift it only as a component of the method tied to a measured failure, keep a separate ablation row, and give the baseline the same resources.
 - Fix the adoption threshold in advance, and label results whose lower bound across several seeds does not exceed 0 as "1-seed result".
 - Choose the next move after a failed row on the overview the researcher drew (7.2).
+- If several rows added one at a time on the same base fail to improve in a row, stop adding and extract rules from those rows' results into a table (what raises the score, what lowers it). Write the next module with those rules as conditions, and design only candidates that follow directly from the problem statement. Each row is still one change, but candidates are chosen not as "things to try adding" but as "things that aim at the problem while keeping the rules".
 - Keep rows that were tried but not adopted in a table with their results as they are; they may go into the paper as an appendix table.
 - If the paired interval of a new result includes 0, lower the strength of the claim (e.g., "outperforms" → "comparable"). If a result contradicts a previous claim, withdraw the claim.
 
@@ -378,6 +380,7 @@ Pre-measurement without training (attaching a device to a trained model and runn
 - **Do not decide present or absent from one number**: one separability number (AUROC, say) misses how many cases the signal would fix and how many it would break when actually used, and differences between classes. Report at least three together: (1) the separability, (2) at the point where the signal is used (per threshold, or the replacement rule itself) the number fixed and the number broken and the resulting change in the metric, (3) values per stratum such as class or size. When several information sources are measured together, judge present or absent for each source separately, and do not use the measurement to choose between sources.
 - **Where not to use it**: Choosing among candidates, setting values, predicting gains.
 - **When to do it**: Only when the design is finalized, the premise is uncertain, and training is expensive. Otherwise go straight to smoke and training.
+- **When the measurement said "yes" but training stays low**: do not conclude it was a measurement error or a single code mistake. Both can be right while the link between them breaks (the signal fades during training, the source comes to resemble the teacher, changed answers harden through the teacher, side effects outside the measured region, the loss cannot use the information, noise). Check implementation → missing standard techniques → the broken link, and for this register in the design's mechanism measurements that quantities measured beforehand are also logged during training with the same definitions.
 
 ## 10. Evaluation data and labels
 How to handle evaluation data and human labels so that criteria or choices are not changed after seeing results.
