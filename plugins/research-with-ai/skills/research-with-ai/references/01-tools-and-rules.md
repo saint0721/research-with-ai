@@ -136,6 +136,7 @@ How to divide roles and connect the code repository's wiki with the researcher's
   4. The wiki working copy that is pushed to the note vault has uncommitted changes, or the last-push marker is not the latest commit.
   - When nothing is wrong it prints nothing. It reports a commit or state once, in one line that says only what is missing. The note vault may be on another machine, so it never connects to it and looks only at the working copy and the push marker.
   - The hook holds no paths. Each project writes its own values in `.claude/research-with-ai.conf` (paths that need a document, document paths, wiki repository location, source document and note paths, wiki log file, push marker, time window), and only the checks whose values are set run. A project without the file is left alone. If the wiki lives inside the code repository, set the wiki repository location to `.`.
+  - Each project folder holds its own file. The hook finds the file in the session folder and every file in project folders up to three levels below it, and checks each project separately, so a session started at the root of a note vault with several project wikis checks all of them. Paths in a file are relative to the project folder that holds it, and each reminder starts with `[project path]`.
 
 ## 6. Document system
 Where to record what, when something happens, and the format of documents.

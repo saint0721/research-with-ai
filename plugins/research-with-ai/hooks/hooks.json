@@ -1,5 +1,5 @@
 {
-  "description": "One-line reminder when the research record has a gap (code without a document, a document or note not ingested into the wiki, a note vault not synced). Reads <project>/.claude/research-with-ai.conf and does nothing without it.",
+  "description": "One-line reminder when the research record has a gap (code without a document, a document or note not ingested into the wiki, a note vault not synced). Reads .claude/research-with-ai.conf in the session folder and in each project folder up to three levels below it, checks each project separately, and does nothing without such a file.",
   "hooks": {
     "Stop": [
       {

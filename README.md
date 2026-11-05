@@ -84,7 +84,7 @@ Do not copy the skill into a project's `AGENTS.md` or `CLAUDE.md`. Write only th
 
 ### Turn on the record check hook
 
-The plugin ships a Stop hook (`hooks/research_check.sh`) that prints one line when the research record has a gap and nothing otherwise: a commit that changed code without a document, a document or note not ingested into the wiki log, or a wiki working copy not pushed to the note vault. The hook holds no paths. It reads `.claude/research-with-ai.conf` in your project and does nothing in projects without that file. Set only the keys you need; each check runs only when its keys are set.
+The plugin ships a Stop hook (`hooks/research_check.sh`) that prints one line when the research record has a gap and nothing otherwise: a commit that changed code without a document, a document or note not ingested into the wiki log, or a wiki working copy not pushed to the note vault. The hook holds no paths. Each project folder holds its own `.claude/research-with-ai.conf`, and a project without the file is left alone. The hook finds the file in the session folder and every file in project folders up to three levels below it and checks each project separately, so a note vault with several projects gets one file per project. Paths in a file are relative to its project folder. Set only the keys you need; each check runs only when its keys are set.
 
 ```bash
 # .claude/research-with-ai.conf
@@ -98,7 +98,15 @@ WIKI_LOG='wiki/log.md'                        # wiki log file inside WIKI_DIR
 # WINDOW='12 hours ago'                       # how far back to look
 ```
 
-A commit or state is reported once. The hook never connects to another machine.
+Example for a project inside a note vault (`<vault>/Projects/study-a/.claude/research-with-ai.conf`):
+
+```bash
+WIKI_DIR=.
+SOURCE_PATHS='^(Cards|Attachments)/'           # relative to study-a
+WIKI_LOG='Wiki/log.md'
+```
+
+Each reminder starts with the project path, such as `[Projects/study-a]`. A commit or state is reported once. The hook never connects to another machine.
 
 ## What It Does
 
