@@ -248,12 +248,15 @@ Scientific code serves truth, not users, and the worst outcome is a plausible-lo
 - Pass the full test suite in the environment where it will actually run (the server). Record the cause of tests that fail due to environment differences.
 - Block data leakage in code. E.g., stop immediately if test data appears in training or validation paths.
 - Record whether the test or the code was wrong. If the test was at fault, say so and fix it.
+- When passing verification is the condition for the next step (commit, training, report), check it from the verification's own exit status and pass/fail counts, not from shortened output or a summary. A command that trims the output changes the exit status to that of the last command and lets a failure read as a pass.
 - Size checks to the risk. Do not re-measure facts already shown by a measurement. If the official code is used as is and the only changes are a few lines guarded by switches, confirm equivalence by reviewing the changed lines and a short smoke, without a separate training run. Before launching a new check run, write in one line "what does this result change?", and if it changes nothing, do not launch it.
 
 ### 6.4 Moving and running code
 - Write code in one place (the working repository) and send it to the run server only through a fixed sync path (bundle transfer, etc.). Do not move code by pasting it into a terminal.
 - Run from a fixed copy per commit, and do not touch code that a running run reads.
 - The leader agent makes short code changes directly. Handing them to a worker costs more in reading code and specs than the work itself.
+- When launching several runs at once, bundle only those that do not depend on each other's verdict (independent conditions, folds, seeds). Launch a run whose content is set by an earlier run's verdict after that verdict. Launched together, a change that will be rejected leaks into the later run.
+- Before moving from a small scale to a large one, estimate per processing unit how time and memory grow with scale, and check the estimate once against progress during the run (amount processed, memory). If it deviates widely, stop, fix, confirm the small scale gives the same result, and run again. An estimate scaled only by data size misses the per-unit cost and can be off several-fold.
 
 ### 6.5 Cleanup
 - Do not keep code for finished directions; delete it. If the deleting commit is recorded, git history can restore it any time.

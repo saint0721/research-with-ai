@@ -157,6 +157,20 @@ Core principles (from `references/00-overview-and-principles.md`):
 
 The documents contain no case studies. Numbers and names from one project would bias the agent's judgement, so every lesson is written as a general rule with its reason.
 
+### Progressive self-improvement
+
+The skill improves itself while you use it. The researcher does not have to say "add this rule" each time.
+
+```
+signal during work ─▶ improvement candidate (one general lesson) ─▶ approved together at a milestone ─▶ method document ─▶ public release ─▶ next session's skill
+(a correction, "why did you…", the same mistake twice, a new procedure, a tool failure, frustration)
+```
+
+- **The researcher's corrections** go into the method documents in the same turn (principle 17).
+- **Lessons the AI finds** pile up as one-line candidates without being asked. Only the signal column names the case; the lesson is written in general form as "when → what → why". The same lesson is merged into its existing line instead of a new one. Accumulated candidates are asked about together at a work milestone (principle 18).
+- **The improvement hook** (below) keeps the loop from being forgotten: a reminder on correction-like messages, and at the end of a response a reminder about pending candidates and unpublished changes.
+- Every change leaves one line in the improvement log, so what changed, when and why can be traced (`01-tools-and-rules.md` Ch. 8).
+
 ## Request patterns that work
 
 Phrasings that improve results when a researcher talks to an AI. They work without the skill as well.

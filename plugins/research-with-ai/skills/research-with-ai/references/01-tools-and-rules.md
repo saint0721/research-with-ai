@@ -173,7 +173,7 @@ Run the watch that announces the end of a long job separately from the monitor t
 - If there is no end marker, report "unverified"; do not treat it as success.
 
 ## 8. Incremental improvement of method documents
-A way to make lessons from work accumulate in the method documents (instructions, skills) without the researcher having to say "fix it". Run only with documents and instructions, without code. Follows the log and periodic lint of the [LLM wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) and the approach of editing instructions item by item instead of rewriting them wholesale ([ACE, Agentic Context Engineering](https://arxiv.org/abs/2510.04618)).
+A way to make lessons from work accumulate in the method documents (instructions, skills) without the researcher having to say "fix it" (progressive self-improvement). The researcher's corrections are applied in the same turn, lessons the AI finds pile up as candidates and are approved at a milestone, and approved changes go into the public release and become the next session's skill. Hooks keep this loop from being forgotten. Run only with documents and instructions, without code. Follows the log and periodic lint of the [LLM wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) and the approach of editing instructions item by item instead of rewriting them wholesale ([ACE, Agentic Context Engineering](https://arxiv.org/abs/2510.04618)).
 
 ### 8.1 Structure with documents only
 | Document | Role |
