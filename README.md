@@ -108,6 +108,18 @@ WIKI_LOG='Wiki/log.md'
 
 Each reminder starts with the project path, such as `[Projects/study-a]`. A commit or state is reported once. The hook never connects to another machine.
 
+### Turn on the improvement hook
+
+A second hook (`hooks/improve_check.sh`, principle 18) keeps the method notes improving without the researcher asking each time. When the researcher's message looks like a correction or a gap-revealing question ("that's not what I asked", "why did you…"), it adds one line of context reminding the agent to log a general lesson in the candidate note in that turn. At the end of a response it reminds once (per state) to ask about pending candidates at a work milestone, and to ask about publishing when accepted changes have piled up since the last public release. It is silent otherwise and does nothing without its keys. Because the method notes are usually shared by all projects, the keys can sit in `~/.claude/research-with-ai.conf` (a project's own file takes precedence):
+
+```bash
+# ~/.claude/research-with-ai.conf
+IMPROVE_CANDIDATES="$HOME/notes/research-method/improvement-candidates.md"   # pending lines carry "awaiting decision"
+IMPROVE_LOG="$HOME/notes/research-method/improvement-log.md"                 # a line with "public release" marks the last release
+# SIGNAL_PATTERNS='not what i|wrong|why did you'   # extended regex for signal messages (optional)
+# PUBLISH_MIN=3                                   # unpublished log lines before the publish reminder
+```
+
 ## What It Does
 
 The skill activates automatically when the agent does research work: choosing a topic, checking prior work, designing experiments or losses, running and diagnosing training, operating servers and workers, or reviewing a manuscript. It always reads the overview first, then only the reference document the task needs.
@@ -131,7 +143,7 @@ Core principles (from `references/00-overview-and-principles.md`):
 15. **Check AI output against originals** -- papers, citations, numbers, figures
 16. **Record all failures; publish only adopted components and their ablations**
 17. **Apply the researcher's corrections to the method documents at once**
-18. **Ask before adopting lessons the AI inferred by itself**
+18. **Collect lessons the AI found by itself without being asked** -- general wording, merged duplicates, asked together at a milestone; backed by the improvement hook
 
 | Reference document | Covers |
 | --- | --- |

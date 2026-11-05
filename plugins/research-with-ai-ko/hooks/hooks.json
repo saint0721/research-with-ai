@@ -1,10 +1,30 @@
 {
-  "description": "One-line reminder when the research record has a gap (code without a document, a document or note not ingested into the wiki, a note vault not synced). Reads .claude/research-with-ai.conf in the session folder and in each project folder up to three levels below it, checks each project separately, and does nothing without such a file.",
+  "description": "One-line reminder when the research record has a gap (code without a document, a document or note not ingested into the wiki, a note vault not synced). Reads .claude/research-with-ai.conf in the session folder and in each project folder up to three levels below it, checks each project separately, and does nothing without such a file. Also an improvement hook (principle 18): on a correction-like message it adds one line of context reminding to log a general lesson; at the end of a response it reminds once to ask about pending candidates and about publishing piled-up changes. Reads IMPROVE_CANDIDATES / IMPROVE_LOG from the same config or ~/.claude/research-with-ai.conf; does nothing without them.",
   "hooks": {
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/research_check.sh", "timeout": 20 }
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/research_check.sh",
+            "timeout": 20
+          },
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/improve_check.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/improve_check.sh",
+            "timeout": 10
+          }
         ]
       }
     ]
