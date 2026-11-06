@@ -106,7 +106,7 @@ SOURCE_PATHS='^(Cards|Attachments)/'           # relative to study-a
 WIKI_LOG='Wiki/log.md'
 ```
 
-Each reminder starts with the project path, such as `[Projects/study-a]`. A commit or state is reported once. The hook never connects to another machine.
+Each reminder starts with the project path, such as `[Projects/study-a]`. A commit or state is reported once. Two more behaviours keep the alerts trustworthy: a code commit whose neighbouring commit inside the window carries a document is not reported (one work often goes up as several commits), and a `WIKI_DIR` that is not a git repository on this machine is reported once, since an old path left after moving machines would otherwise switch the wiki checks off without a word. The hook never connects to another machine.
 
 ### Turn on the improvement hook
 
