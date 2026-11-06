@@ -2,7 +2,7 @@
   "name": "research-with-ai-ko",
   "displayName": "Research with AI (Korean)",
   "description": "AI 에이전트를 연구 동료로 쓰는 방법(분야 무관). 연구 주제·선행연구부터 실험·모델 개발, 학습 진단, 원고 검증까지. 한국어판.",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "author": {
     "name": "saint0721"
   },
