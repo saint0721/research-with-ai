@@ -9,14 +9,16 @@
 #   WIKI_LOG    wiki log file inside WIKI_DIR      SYNC_TAG  tag marking the last push to a note vault (optional)
 #   WINDOW      how far back to look (git --since), default "12 hours ago"
 # Each key is optional: a check runs only when its keys are set. A commit or state is reported once (.git/research_check_seen).
-MSG_HEAD="Research record gap:"; MSG_CODE="%s changed code without a document"; MSG_DOC="document %s has no wiki log entry after it"; MSG_NOTE="note %s has no wiki log entry after it"; MSG_SYNC="note vault not synced"; MSG_TAIL="update it or state why in one line"
+# A code commit is not a gap when the commit next to it inside WINDOW carries a document: one work is often split
+# over several commits. A WIKI_DIR that is not a git repository is reported once per project, not skipped silently.
+MSG_HEAD="Research record gap:"; MSG_CODE="%s changed code without a document"; MSG_DOC="document %s has no wiki log entry after it"; MSG_NOTE="note %s has no wiki log entry after it"; MSG_SYNC="note vault not synced"; MSG_WIKI="configured wiki path is missing: %s — if you moved machines, change .claude/research-with-ai.conf to this machine's value"; MSG_TAIL="update it or state why in one line"
 in=$(cat); [[ "$in" == *'"stop_hook_active":true'* ]] && exit 0
 S="${CLAUDE_PROJECT_DIR:-$PWD}"
 g() { git -c core.quotepath=false -C "$@"; }
-m=()
+m=(); gap=0
 # check <project dir> <conf file> <label>: adds messages for one project to m
 check() {
-  local P="$1" C="$2" tag="$3" seen W ll s t f d h
+  local P="$1" C="$2" tag="$3" seen W ll s t f d h cs i j doc
   CODE_PATHS=; DOC_PATHS=; WIKI_DIR=; SOURCE_PATHS=; NOTE_PATHS=; WIKI_LOG=; SYNC_TAG=; WINDOW='12 hours ago'
   . "$C"
   g "$P" rev-parse --git-dir >/dev/null 2>&1 || return 0
@@ -25,23 +27,39 @@ check() {
   new() { grep -qxF "$1" "$seen" && return 1; echo "$1" >> "$seen"; }
   # --relative: file names relative to the project folder, and only files inside it
   if [ -n "$CODE_PATHS" ] && [ -n "$DOC_PATHS" ]; then
-    while read -r s; do [ -z "$s" ] && continue
-      f=$(g "$P" show --relative --name-only --format= "$s")
-      grep -qE "$CODE_PATHS" <<<"$f" && ! grep -qE "$DOC_PATHS" <<<"$f" && new "${key}code:$s" && m+=("$pre$(printf "$MSG_CODE" "${s:0:7}")")
-    done < <(g "$P" log --since="$WINDOW" --format=%H -- .)
+    cs=(); while read -r s; do [ -n "$s" ] && cs+=("$s"); done < <(g "$P" log --since="$WINDOW" --format=%H -- .)
+    i=0
+    while [ "$i" -lt "${#cs[@]}" ]; do
+      s="${cs[$i]}"; f=$(g "$P" show --relative --name-only --format= "$s")
+      if grep -qE "$CODE_PATHS" <<<"$f" && ! grep -qE "$DOC_PATHS" <<<"$f"; then
+        # a neighbour inside the window that carries the document covers this commit
+        doc=0
+        for j in $((i-1)) $((i+1)); do
+          [ "$j" -lt 0 ] && continue; [ "$j" -ge "${#cs[@]}" ] && continue
+          g "$P" show --relative --name-only --format= "${cs[$j]}" | grep -qE "$DOC_PATHS" && doc=1
+        done
+        [ "$doc" -eq 0 ] && new "${key}code:$s" && { m+=("$pre$(printf "$MSG_CODE" "${s:0:7}")"); gap=1; }
+      fi
+      i=$((i+1))
+    done
   fi
-  if [ -n "$WIKI_DIR" ] && [ -n "$WIKI_LOG" ]; then
+  if [ -n "$WIKI_DIR" ]; then
     case "$WIKI_DIR" in /*) W="$WIKI_DIR" ;; *) W="$P/$WIKI_DIR" ;; esac
     if g "$W" rev-parse --git-dir >/dev/null 2>&1; then
-      ll=$(g "$W" log -1 --format=%ct -- "$WIKI_LOG"); ll=${ll:-0}
-      [ -n "$SOURCE_PATHS" ] && while read -r s t; do [ -n "$s" ] && [ "$t" -gt "$ll" ] && g "$P" show --relative --name-only --format= "$s" | grep -qE "$SOURCE_PATHS" && new "${key}doc:$s" && m+=("$pre$(printf "$MSG_DOC" "${s:0:7}")"); done < <(g "$P" log --since="$WINDOW" --format='%H %ct' -- .)
-      if [ -n "$NOTE_PATHS" ] && [ "$(g "$W" rev-parse --absolute-git-dir)" != "$(g "$P" rev-parse --absolute-git-dir)" ]; then
-        while read -r s t; do [ -n "$s" ] && [ "$t" -gt "$ll" ] && g "$W" show --relative --name-only --format= "$s" | grep -qE "$NOTE_PATHS" && new "${key}note:$s" && m+=("$pre$(printf "$MSG_NOTE" "${s:0:7}")"); done < <(g "$W" log --since="$WINDOW" --format='%H %ct' -- .)
+      if [ -n "$WIKI_LOG" ]; then
+        ll=$(g "$W" log -1 --format=%ct -- "$WIKI_LOG"); ll=${ll:-0}
+        [ -n "$SOURCE_PATHS" ] && while read -r s t; do [ -n "$s" ] && [ "$t" -gt "$ll" ] && g "$P" show --relative --name-only --format= "$s" | grep -qE "$SOURCE_PATHS" && new "${key}doc:$s" && { m+=("$pre$(printf "$MSG_DOC" "${s:0:7}")"); gap=1; }; done < <(g "$P" log --since="$WINDOW" --format='%H %ct' -- .)
+        if [ -n "$NOTE_PATHS" ] && [ "$(g "$W" rev-parse --absolute-git-dir)" != "$(g "$P" rev-parse --absolute-git-dir)" ]; then
+          while read -r s t; do [ -n "$s" ] && [ "$t" -gt "$ll" ] && g "$W" show --relative --name-only --format= "$s" | grep -qE "$NOTE_PATHS" && new "${key}note:$s" && { m+=("$pre$(printf "$MSG_NOTE" "${s:0:7}")"); gap=1; }; done < <(g "$W" log --since="$WINDOW" --format='%H %ct' -- .)
+        fi
+        if [ -n "$SYNC_TAG" ]; then
+          d=$(g "$W" status --porcelain -- .); h=$(g "$W" rev-parse HEAD); t=$(g "$W" rev-parse -q --verify "$SYNC_TAG" || echo -)
+          { [ -n "$d" ] || [ "$h" != "$t" ]; } && new "${key}sync:$h:$(echo "$d" | sha1sum | cut -c1-8)" && { m+=("$pre$MSG_SYNC"); gap=1; }
+        fi
       fi
-      if [ -n "$SYNC_TAG" ]; then
-        d=$(g "$W" status --porcelain -- .); h=$(g "$W" rev-parse HEAD); t=$(g "$W" rev-parse -q --verify "$SYNC_TAG" || echo -)
-        { [ -n "$d" ] || [ "$h" != "$t" ]; } && new "${key}sync:$h:$(echo "$d" | sha1sum | cut -c1-8)" && m+=("$pre$MSG_SYNC")
-      fi
+    else
+      # a stale path after moving machines would switch the wiki checks off without a word
+      new "${key}wiki:$WIKI_DIR" && m+=("$pre$(printf "$MSG_WIKI" "$WIKI_DIR")")
     fi
   fi
 }
@@ -56,4 +74,5 @@ else
              -path '*/.claude/research-with-ai.conf' -type f -print0 2>/dev/null | sort -z)
 fi
 [ ${#m[@]} -eq 0 ] && exit 0
-python3 -c 'import json,sys;print(json.dumps({"decision":"block","reason":sys.argv[1]},ensure_ascii=False))' "$MSG_HEAD $(printf '%s, ' "${m[@]}" | sed 's/, $//') — $MSG_TAIL"
+t=; [ "$gap" -eq 1 ] && t=" — $MSG_TAIL"
+python3 -c 'import json,sys;print(json.dumps({"decision":"block","reason":sys.argv[1]},ensure_ascii=False))' "$MSG_HEAD $(printf '%s, ' "${m[@]}" | sed 's/, $//')$t"
