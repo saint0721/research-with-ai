@@ -151,7 +151,7 @@ Run proofreading in the order "get comments → judge → fix → recheck". The 
 Rules for producing documents for external readers separately from internal records.
 
 - Remove all internal traces (project phase numbers, mentions of other internal documents, internal code names).
-- In a report read by people seeing the work for the first time (for a meeting, demo or hand-over, including participants of the same project), do not use execution terms such as code variables, column names, file and folder paths, endpoints, run names, commits, seeds or folds. Write the same content in plain words (e.g. `p_fut` → risk probability, sealed test → an evaluation test kept apart and not used in development), and keep the reproduction details in the internal run records.
+- In a report or design/structure document read by people seeing the work for the first time (for a meeting, demo or hand-over, including participants of the same project; write a model-structure document in report form too), do not use execution terms such as code variables, column names, file and folder paths, endpoints, run names, commits, seeds or folds. Write the same content in plain words (e.g. `p_fut` → risk probability, sealed test → an evaluation test kept apart and not used in development), and keep the reproduction details in the internal run records.
 - Do not leave estimate markers or change history in external documents.
 - Write like a report, matched to what the reader wants to know. If the reader wants results, do not use a requesting tone, state the scope of observation, and do not add a section that repeats a summary.
 - Do not present results that have not yet been obtained as results. Base schedules and outcomes on the original plan.
