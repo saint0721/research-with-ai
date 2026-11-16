@@ -61,7 +61,7 @@ https://github.com/saint0721/research-with-ai 의 research-with-ai 스킬을 설
 
 ```markdown
 ## Research method
-- For any research work (topic, prior work, experiment or model design, training runs, result diagnosis, paper writing, research documentation), load the `research-with-ai` skill first and read only the reference file its table points to. The user does not need to name it.
+- For any research work (topic, prior work, experiment or model design, training runs, result diagnosis, paper writing, research documentation), load the `research-with-ai` skill first and read only the section its table points to for the task at hand. The user does not need to name it.
 - A project's own AGENTS.md / CLAUDE.md and the user's direct request take precedence over the skill.
 - When the user corrects you or sets a new way of working, edit the matching method document in [method folder] in the same turn and add one line to [improvement log]. Lessons you inferred yourself go to [improvement candidates] and you ask the user once.
 ```
@@ -122,7 +122,7 @@ IMPROVE_LOG="$HOME/notes/research-method/개선 일지.md"          # "공개 �
 
 ## 하는 일
 
-에이전트가 연구 작업(주제 정하기, 선행 확인, 실험·손실 설계, 학습과 진단, 서버·워커 운영, 원고 검증)을 하면 스킬이 자동으로 불림. 항상 개요 문서를 먼저 읽고, 그 일에 필요한 참고 문서만 읽음.
+에이전트가 연구 작업(주제 정하기, 선행 확인, 실험·손실 설계, 학습과 진단, 서버·워커 운영, 원고 검증)을 하면 스킬이 자동으로 불림. 개요 문서의 읽는 법(1장)과 원칙(2장)만 먼저 읽고, 나머지는 한꺼번에 읽지 않고 지금 하는 일에 필요한 절만 그때 읽음(필요할 때 읽기).
 
 핵심 원칙(`references/00-overview-and-principles.md`):
 
@@ -147,13 +147,14 @@ IMPROVE_LOG="$HOME/notes/research-method/개선 일지.md"          # "공개 �
 
 | 참고 문서 | 내용 |
 | --- | --- |
-| `00-overview-and-principles.md` | 원칙, 승인 범위, 연구 흐름과 방향 전환, 운영, 오류 신호, 보고 전 점검표 |
-| `01-tools-and-rules.md` | 도구, 지침 계층, 메모리, 스킬, 훅, LLM 위키와 노트 저장소, 문서화, 감시, 점진 개선 |
-| `02-topic-question-prior-work.md` | 주제, 방법 도출 7단계, 질문과 판정 규칙, 선행연구, 공백과 신규성 |
+| `00-overview-and-principles.md` | 읽는 법(일별로 읽을 절 표), 원칙, 승인 범위, 연구 흐름과 방향 전환, 운영, 멈추고 확인할 신호 |
+| `01-tools-and-rules.md` | 도구, 지침 계층, 메모리, 스킬, 훅, LLM 위키와 노트 저장소, 문서화, 점진 개선 |
+| `02-topic-question-prior-work.md` | 주제, 방법 도출 7단계, 질문·판정 규칙·과제 정의, 선행연구, 공백과 신규성 |
 | `03-experiment-and-model.md` | 설계 대화, 과학적·손실 검토, 재현성, 공정 비교, 코드, 개발 순서, 학습 중 측정, 판정 |
-| `04-operations.md` | 리더와 워커, 긴 작업, 서버와 GPU, 감시, 보안과 비용, 커밋 |
-| `05-critique-and-writing.md` | 모의 심사, 평가 split, 논문에 싣는 것, 원고 구조와 검증 |
-| `06-ai-errors.md` | 오류 유형별 신호와 대응 |
+| `04-writing.md` | 심사 기준으로 원고 쓰기, 평가 split, 논문에 싣는 것, 원고 구조, 문장·표·인용 |
+| `05-operations.md` | 리더와 워커, 긴 작업, 서버와 GPU, 감시, 보안과 비용, 커밋 |
+| `06-critique-and-review.md` | 모의 심사, 피드백 처리, 원고 검증·교정, 투고 요건, 외부 문서 |
+| `07-ai-errors.md` | 오류 유형별 신호와 대응 |
 
 문서에는 사례가 없음. 특정 연구의 숫자와 이름이 섞이면 에이전트의 판단이 한쪽으로 끌리므로, 모든 교훈을 일반 규칙과 이유로 씀.
 
@@ -169,7 +170,7 @@ IMPROVE_LOG="$HOME/notes/research-method/개선 일지.md"          # "공개 �
 - **연구자의 정정**은 그 턴에 바로 방법 문서에 들어감(원칙 17).
 - **AI가 알아낸 교훈**은 시키지 않아도 개선 후보에 한 줄로 쌓임. 사례는 신호 칸에만 적고 교훈은 "언제 → 무엇을 → 왜"로 범용으로 씀. 같은 교훈은 새 줄 대신 그 줄에 합침. 쌓인 후보는 일의 매듭에서 모아 한 번에 물음(원칙 18).
 - **개선 훅**(아래)이 이 고리를 잊지 않게 받침: 정정처럼 보이는 말에 후보 알림, 응답 끝에 대기 후보와 미공개 반영 알림.
-- 반영할 때마다 개선 일지에 한 줄을 남겨, 언제 무엇이 왜 바뀌었는지 되짚을 수 있음(`01-tools-and-rules.md` 8장).
+- 반영할 때마다 개선 일지에 한 줄을 남겨, 언제 무엇이 왜 바뀌었는지 되짚을 수 있음(`01-tools-and-rules.md` 7장).
 
 ## 효과가 있는 요청 패턴
 
@@ -197,6 +198,17 @@ IMPROVE_LOG="$HOME/notes/research-method/개선 일지.md"          # "공개 �
 
 공개된 스킬을 설치해 쓰면서 기여할 때는 자기 노트에서 먼저 다듬고, 다듬어졌다고 판단한 판만 교정 몇 개씩 묶어 올린 뒤 설치본을 갱신함(`01-tools-and-rules.md` 8.4).
 
+## 행동 시험
+
+한국어판에는 스킬이 실제로 행동을 바꾸는지 보는 시험이 있음(`plugins/research-with-ai-ko/evals/`). 연구자가 실제로 바로잡은 일 10가지(오른 줄에 seed를 더 돌리자고 함, 검증 split 절제 표를 지적함, 저장된 시험 실행의 재집계를 막음, 진단 순서를 건너뜀 등)를 상황으로 만들고, 응답을 기준으로 채점함. 각 상황은 스킬이 불렸는지와, 그 일에 필요 없는 참고 문서를 읽지 않았는지(필요할 때 읽기)도 함께 봄.
+
+```bash
+claude plugin eval plugins/research-with-ai-ko --judge-model sonnet --no-publish   # 전체
+claude plugin eval plugins/research-with-ai-ko --case 'no-extra-seeds' --judge-model sonnet   # 하나
+```
+
+실행마다 실제 에이전트 세션이 돌고 스킬 없는 대조군도 함께 돌므로 비용이 듦. 판을 올리기 전에 돌려 고친 규칙이 실제로 듣는지 확인함.
+
 ## 구조
 
 ```
@@ -208,7 +220,8 @@ research-with-ai/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/research-with-ai/
 │   │       ├── SKILL.md                  # 입구
-│   │       └── references/               # 00~06 문서
+│   │       └── references/               # 00~07 문서
+│   │   └── (한국어판) evals/             # 행동 시험(claude plugin eval)
 │   └── research-with-ai-ko/              # 한국어판 (같은 구조)
 ├── CITATION.cff
 ├── LICENSE
@@ -234,7 +247,7 @@ research-with-ai/
 | 자료 | 쓴 곳 | 쓴 방식 | 라이선스 |
 | --- | --- | --- | --- |
 | [Scientific Coding Skill](https://github.com/cemde/Scientific-Coding-Skill) (Cornelius Emde) | 03 6.1 과학 코드 원칙 | 원칙을 한국어로 옮겨 요약함. 실제 코딩에는 원본 스킬을 설치해 씀 | MIT |
-| [awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading) (임형태, Hyungtae Lim) | 05 6.1 교정 운영 | 프롬프트 이름과 검사 범위를 소개함. 프롬프트 본문은 옮기지 않고 원본에서 받아 씀 | MIT |
+| [awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading) (임형태, Hyungtae Lim) | 06 2.1 교정 운영 | 프롬프트 이름과 검사 범위를 소개함. 프롬프트 본문은 옮기지 않고 원본에서 받아 씀 | MIT |
 | [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (Andrej Karpathy) | 01 5장, 8장 | 원천·위키·스키마 세 층과 일지·점검 구조를 따름 | 원문 참조 |
 | [Agentic Context Engineering (ACE)](https://arxiv.org/abs/2510.04618) (Zhang 외, 2025) | 01 8장 | 지침을 통째로 다시 쓰지 않고 항목 단위로 고치는 원칙을 따름 | 논문 |
 | [Hamming](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton·Steinhardt](https://arxiv.org/abs/1807.03341), [J.-B. Huang](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208) | 02 2장 방법 도출 7단계 | 각 단계의 근거로 삼아 절차로 정리함 | 원문 참조 |

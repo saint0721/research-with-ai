@@ -6,16 +6,17 @@ AI agents are trained to produce a plausible answer quickly. Research needs the 
 
 ## How it works
 
-The skill activates when you do research work, for example "let's design the experiment", "check the results" or "why didn't it improve". It first reads `references/00-overview-and-principles.md` (principles, approval scope, research flow, operations, error signals, pre-report checklist), then only the reference document the task needs:
+The skill activates when you do research work, for example "let's design the experiment", "check the results" or "why didn't it improve". It first reads only chapters 1–2 of `references/00-overview-and-principles.md` (how to read, principles), then, when a task starts, only the section the chapter 1 table lists for that task (lazy loading):
 
 | Reference | Covers |
 | --- | --- |
-| `01-tools-and-rules.md` | Instruction layers, memory, skills, hooks, LLM wiki, documentation, monitoring |
-| `02-topic-question-prior-work.md` | Topic, seven-step method derivation, decision rules, prior work, novelty |
-| `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, in-training measurement, judgement |
-| `04-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
-| `05-critique-and-writing.md` | Mock review, evaluation splits, manuscript structure and checks |
-| `06-ai-errors.md` | Error types with their signals and countermeasures |
+| `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki and note vault, documentation, incremental improvement |
+| `02-topic-question-prior-work.md` | Topic, seven-step method derivation, questions, decision rules and task definition, prior work, gaps and novelty |
+| `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, development order, in-training measurement, judgement |
+| `04-writing.md` | Writing to the venue's review criteria, evaluation splits, what goes in the paper, manuscript structure, sentences, tables and citations |
+| `05-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
+| `06-critique-and-review.md` | Mock review, feedback handling, manuscript checks and proofreading, submission requirements, external documents |
+| `07-ai-errors.md` | Error types with their signals and countermeasures |
 
 ## What it runs and sends
 

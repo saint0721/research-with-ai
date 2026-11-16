@@ -2,22 +2,48 @@
 
 | Item | Content |
 | --- | --- |
-| Purpose | Collects the principles common to every stage of using an AI agent as a research collaborator, the research flow, and which reference document to read in each situation |
+| Purpose | Collects the principles common to every stage of using an AI agent as a research collaborator, the research flow, and which reference section to read in each situation |
 | When used | Choosing a research topic, checking prior work, designing experiments, adding modules and training, judging results, running servers, writing and verifying manuscripts, documenting research |
-| Structure | The body (entry point) of the skill; always read first. Ch. 1 documents to read, Ch. 2 common principles and approval scope, Ch. 3 research flow (stages, movement criteria, pivots), Ch. 4 operating principles, Ch. 5 error signals, Ch. 6 pre-report checklist. Stage details are in reference documents 01–06; installation, connection and request patterns are in the "Installation and usage guide" |
+| Structure | The entry point of the skill. Always read only §1 (how to read) and §2 (principles) first, and read the rest when needed. §1 how to read, §2 common principles and approval scope, §3 research flow (stages, movement criteria, pivots), §4 operating principles, §5 signals to stop and check. Details within each stage are in reference documents 01–07; installation, connection and request patterns are in the "Installation and usage guide" |
 
-## 1. Situations and documents to read
-When the researcher asks for any of the work below, follow the principles of this document and read the listed document before working.
+## 1. How to read
+Do not read the whole document every time; read only the sections the current work needs, when it needs them (read on demand). For every piece of research work, read this §1 and §2 (principles) first, then find the row in the table below that matches the current work and read its sections. Find a section by its heading (`## n.`, `### n.m`) and read up to the next heading of the same level. When the work changes or a judgment not in the table is needed, read the relevant section then.
+- Documents: [01](01-tools-and-rules.md) Tools and rules · [02](02-topic-question-prior-work.md) Topic, question, prior work, gap · [03](03-experiment-and-model.md) Experiment and model development · [04](04-writing.md) Paper writing · [05](05-operations.md) Operations · [06](06-critique-and-review.md) Critique, manuscript verification, external documents · [07](07-ai-errors.md) AI error types and responses
 
-| Situation | Document to read |
+| Current work | Sections to read |
 | --- | --- |
-| Starting a new study or repository; bringing an archived project and its materials back into active development; creating instructions, memory, skills, hooks or a wiki | [01 Tools and rules](01-tools-and-rules.md) |
-| Choosing a topic, deriving a method, setting questions and judgment criteria, checking prior work, gaps and novelty | [02 Topic, question, prior work, gap](02-topic-question-prior-work.md) |
-| Designing experiments, choosing losses, setting up environment and fairness, writing code and training, judging results | [03 Experiment and model development](03-experiment-and-model.md) |
-| Running servers, GPUs and workers; launching and monitoring long jobs; committing and pushing | [04 Operations](04-operations.md) |
-| Mock review, evaluation splits, manuscript structure, sentences, tables and citations, manuscript verification, external documents | [05 Critique, writing, external documents](05-critique-and-writing.md) |
-| AI output looks wrong; the same mistake repeats | [06 AI error types and responses](06-ai-errors.md) |
-| Judging the overall order of the study, stage transitions, and direction changes | Chapter 3 of this document |
+| Starting a session or resuming interrupted work | 00 §4.1, 01 §5.3 |
+| Starting a new study or repository, bringing an archived project back | 00 §3, 01 §1–5 |
+| Creating or editing instructions, memory, skills or hooks | 01 §3–4 |
+| Creating a wiki, or recording results, decisions or corrections | 01 §5–6 |
+| Editing method documents or leaving improvement candidates | 01 §7 |
+| Choosing a topic | 02 §1 |
+| Deriving a method from measured failures | 02 §2 |
+| Setting questions, judgment rules and the task definition | 02 §3 |
+| Surveying prior work | 02 §4 |
+| Judging novelty, targets and alternatives | 02 §5 |
+| Designing modules and losses | 03 §1–3 |
+| Fixing the execution environment and reproducibility | 03 §4 |
+| Setting comparison conditions and fairness, or choosing a base | 03 §5 |
+| Writing and testing research code | 03 §6 |
+| Launching a smoke or training, or adding a new row | 03 §7, 05 §1–2 |
+| Setting measurements during training, or reading the records | 03 §8 |
+| Judging results and choosing the next row | 03 §9.1–9.3 |
+| Doing pre-measurement without training | 03 §9.4 |
+| Measuring the mechanism of a row that improved | 03 §9.5 |
+| Handling test data, labels and freezing | 03 §10 |
+| Using workers or writing task briefs | 05 §1 |
+| Handling long jobs, servers, GPUs and monitoring | 05 §2–4 |
+| Handling secrets, paid APIs, commits and pushes | 05 §5–6 |
+| Starting a manuscript, choosing the title and contribution sentences | 04 §1 |
+| Deciding evaluation splits, results to report and manuscript structure | 04 §2–4 |
+| Writing or editing the manuscript's sentences, tables and citations | 04 §5 |
+| Running a mock review, or handling feedback and reviews | 06 §1 |
+| Proofreading and verifying a manuscript, or checking submission requirements | 06 §2 |
+| Writing an external report or an AI-use disclosure | 06 §3 |
+| Judging the research flow, stage transitions and direction changes | 00 §3 |
+| Reporting or explaining to the researcher | 00 §4.3 |
+| AI output looks wrong, or the same mistake repeats | 00 §5, the relevant chapter of 07 |
 
 ## 2. Basic principles
 Principles that apply to every stage. When they conflict with a detailed procedure, these principles take precedence.
@@ -25,27 +51,28 @@ Principles that apply to every stage. When they conflict with a detailed procedu
 ### 2.1 Judgment and decisions
 1. **The researcher decides.** The AI gives explanations, candidates, a recommendation and the grounds; the researcher chooses. If the researcher delegates a decision, the AI investigates the grounds, decides, and records that the decision was delegated and why.
 2. **Explanation first, decision later.** Do not take a decision while the researcher has not understood it. Attach a recommendation and reason to each option, and do not ask for several decisions at once.
-3. **Speak to the researcher in plain words with numeric examples.** Do not use formulas, internal code names or decision numbers. The AI does the calculations and checks, and reports the results in words.
+3. **Speak to the researcher in plain words with numeric examples.** Do not use formulas or internal code names, and state decisions by their content, not their numbers (the number goes only in parentheses as a tag for looking it up, 01 §6.2). The AI does the formula calculations and checks, and reports the results in words.
 4. **Check the records before proposing.** Before proposing, check the log, decision records and rejection list for directions already closed. State for each proposal the expected gain, the chance of adoption, and its role in the study. Read a closed record together with the conditions it was measured under (base model, protocol, data split); if the conditions have changed, do not use it as evidence that the direction is "still closed" — say only that it was closed under those conditions, and let the researcher decide whether to reopen it.
 
 ### 2.2 Experiments and judgment
 5. **Fix judgment criteria before results.** Record splits, thresholds, evaluation targets and adoption rules in a document before results, and do not change them after seeing results.
    - What this principle prevents is **cherry-picking**: reporting only the good values among independent seeds, scenes or runs, or changing scenes, seeds or thresholds after seeing results to manufacture a number. Which metrics the manuscript defines, how, in which table, and how the tables are laid out may be chosen after seeing results (provided every run's values are used as they are and the definitions are stated in the manuscript). Do not stop the researcher by reading a presentation choice as "post-hoc manipulation".
+   - "Report results as they are, good or bad" means reporting **to the researcher**: when a result comes out, tell the researcher everything, unfavourable values included, and keep it in the result document. Whether it goes into the manuscript and in what sentence is decided by the researcher after seeing the result. Do not fix manuscript sentences in advance in a design document; if you write any, write them only as a proposal for the report to the researcher.
 6. **Change one thing at a time.** Fix the baseline, add only one change per row, and measure under the same conditions.
 7. **When something fails, diagnose first.** Look for the cause in the order implementation check → missing standard techniques → checkpoint analysis; the researcher chooses the fix. Tune values only after the structure has shown an effect.
 8. **Use pre-measurement without training only to stop.** Check whether the facts the design relies on (premise, information, upper bound) exist; if "absent", close the direction. "Present" is not a reason to proceed. Do not use it to pick candidates, set values or predict gains.
 9. **Fix reproducibility and fairness before the experiment.** Fix code, environment, data, configuration and random state, and record them for every run. Match resources with the comparison methods but not their method-specific devices, and train the comparison methods on the same data and splits.
-10. **During training, measure and keep everything measurable.** Record the actual contribution of each loss term, training state, performance, prediction distribution, mechanism, error locations, cost and checkpoints with the same items in every experiment. Use these records only to explain why a result came out as it did. **Do not obtain the same result twice:** before proposing a check run, a retraining or an extra measurement, write in one line which decision its result would change, and check down to the path whether a result with the same setting and the same data already exists. If it changes no decision or the result already exists, do not do it. Size checks to the risk (03 6.3, 06 chapter 2).
+10. **During training, measure and keep everything measurable.** Record the actual contribution of each loss term, training state, performance, prediction distribution, mechanism, error locations, cost and checkpoints with the same items in every experiment. Use these records only to explain why a result came out as it did. **Do not obtain the same result twice:** before proposing a check run, a retraining or an extra measurement, write in one line which decision its result would change, and check down to the path whether a result with the same setting and the same data already exists. If it changes no decision or the result already exists, do not do it. Size checks to the risk (03 §6.3, 07 §2).
 11. **Close a direction only on training results.** Do not change direction because of measurements without training or one or two failures. Do not move to another direction before at least 3 trained rows exist in the current one, and when closing, record under which conditions the closing result was measured.
 12. **Keep the order of work.** Build the model configuration with one seed; multi-seed repeats, other datasets and additional comparisons come after the model is fixed. Large measures that change the character of the study are postponed to the next study or decided by the researcher.
 
 ### 2.3 Recording and improvement
-13. **Record in the turn where a result, decision or explanation appears.** Update one log line, the topic page and the status index in the same turn. Simple status checks are not recorded.
+13. **Record in the turn where a result, decision or explanation appears.** Update one log line, the topic page and the status index of the project wiki (01 §5) in the same turn. Number each decision and keep it together with the researcher's words. Simple status checks are not recorded.
 14. **Turn repeated instructions into mechanisms.** An instruction repeated twice or more becomes an instruction file, memory, skill or hook.
 15. **Check AI output against the originals.** Papers, citations, numbers and visual readings are used only after checking the original text, result files or source data.
 16. **Record all failures, but put only adopted components and their ablations in the paper.**
-17. **Apply methods the researcher sets to the documents in the same turn.** When the researcher corrects you or sets a new way of working, edit the relevant chapter of the source method document within that turn and add one line to the improvement log. The researcher's words are the decision, so no separate approval is needed. Domain-agnostic methods go into the method documents; rules that apply only to that study go into that study's repository instructions. Write them as general rules with reasons, without project names, numbers or quotes.
-18. **Collect lessons the AI found by itself as candidates without being asked, and ask about them together.** When a signal appears, add one line to the improvement-candidate note in that turn (`date / signal / generalized lesson / target document·chapter / kind of change`). Signals: a gap exposed by the researcher's correction or a question such as "why did you do that?", the same mistake a second time, a procedure invented during the work, a tool or route that failed and was worked around, the researcher's frustration. Always write the lesson in general form: name the case only in the signal column, and write the lesson as "when → what → why" without project names, tool names or numbers. Before writing, ask "would this change behaviour in another field or another study?"; if not, put it in that study's repository instructions instead. Ask at a work milestone (when a block of work ends), about all accumulated candidates at once; if there is no answer, ask again at the start of the next session. If the researcher accepts, apply it at once as in 17. If the same lesson already exists, do not add a new line; add the signal to that line. When accepted changes pile up for the public release, ask once whether to publish.
+17. **Apply methods the researcher sets to the documents in the same turn.** When the researcher corrects you or sets a new way of working, edit the relevant chapter of the method document within that turn, without asking for separate approval, and add one line to the improvement log. If it applies only to that study, put it in that study's repository instructions; lessons from work that is not research do not go into the method documents. Procedure in 01 §7.2.
+18. **Collect lessons the AI found by itself as candidates without being asked, and ask about them together at a work milestone.** In the turn where a signal appears (a correction or a question that exposed a gap, the same mistake a second time, a newly invented procedure, a tool failure and its workaround, the researcher's frustration), add one line with the general lesson to the improvement-candidate note; if there is no answer, ask again at the start of the next session. Format and handling in 01 §7.2. Publish to the public release only when the researcher says to.
 - The locations of the method documents, the improvement log and the candidate note follow the global instructions; if none is given, only inform the researcher.
 
 ### 2.4 Approval scope
@@ -65,18 +92,18 @@ How a study proceeds from topic to manuscript, and when to go forward, go back o
 ### 3.1 Stages
 | Stage | What the AI does | What the researcher decides | Output | Reference |
 | --- | --- | --- | --- | --- |
-| ① Preparation | Drafts of instructions, wiki, documentation timing and check hooks; building a reproducible environment | Scope of rules, prohibitions | Instruction files, wiki skeleton, fixed execution environment | 01, 03 Ch. 4 |
-| ② Topic | Reverse-analysis of good papers, checking resource limits and overlap with existing work, proposing candidates and falsifying experiments | Topic and scope, boundaries between studies | One-sentence problem definition, instructions stating the boundary | 02 Ch. 1 |
-| ③ Method derivation | Measuring failures of the strongest baseline, cause hypothesis, minimal intervention candidates | Choice of cause and intervention | One cause and 2–3 intervention candidates | 02 Ch. 2 |
-| ④ Question and judgment | Questions per axis and falsification conditions, draft judgment rules | Fixing judgment rules and metrics | Pre-registration document | 02 Ch. 3 |
-| ⑤ Prior work and gap | Coverage table, saturation/gap map, practice survey, novelty judgment per module | Contributions to claim and not to claim | Prior-work document, claim sentence | 02 Ch. 4–5 |
-| ⑥ Fixing the baseline | Reproducing the baseline under fair comparison conditions, fixing environment and data | Choice of baseline | First row of the ladder table | 03 Ch. 4–5 |
-| ⑦ Design | Slot list, design document, scientific review, loss candidates with plain explanations | Design confirmation | Design document | 03 Ch. 1–3 |
-| ⑧ Development and training | Borrowing → code and tests → smoke → training, a one-page sheet for hand drawing, full measurement during training | Drawing the overview by hand | Training run and records | 03 Ch. 6–8, 04 |
-| ⑨ Judgment | Automatic result document, explanation of causes, fix candidates | Adopt, revert, next row | Result document, one ladder-table row | 03 Ch. 9–10 |
+| ① Preparation | Drafts of instructions, wiki, documentation timing and check hooks; building a reproducible environment | Scope of rules, prohibitions | Instruction files, wiki skeleton, fixed execution environment | 01, 03 §4 |
+| ② Topic | Reverse-analysis of good papers, checking resource limits and overlap with existing work, proposing candidates and falsifying experiments | Topic and scope, boundaries between studies | One-sentence problem definition, instructions stating the boundary | 02 §1 |
+| ③ Method derivation | Measuring failures of the strongest baseline, cause hypothesis, minimal intervention candidates | Choice of cause and intervention | One cause and 2–3 intervention candidates | 02 §2 |
+| ④ Question and judgment | Questions per axis and falsification conditions, draft judgment rules | Fixing judgment rules and metrics | Pre-registration document | 02 §3 |
+| ⑤ Prior work and gap | Coverage table, saturation/gap map, practice survey, novelty judgment per module | Contributions to claim and not to claim | Prior-work document, claim sentence | 02 §4–5 |
+| ⑥ Fixing the baseline | Reproducing the baseline under fair comparison conditions, fixing environment and data | Choice of baseline | First row of the ladder table | 03 §4–5 |
+| ⑦ Design | Slot list, design document, scientific review, loss candidates with plain explanations | Design confirmation | Design document | 03 §1–3 |
+| ⑧ Development and training | Borrowing → code and tests → smoke → training, a one-page sheet for hand drawing, full measurement during training | Drawing the overview by hand | Training run and records | 03 §6–8, 05 |
+| ⑨ Judgment | Automatic result document, explanation of causes, fix candidates, measuring the mechanism of a row that improved (targeted errors, causes, remaining share) | Adopt, revert, next row | Result document, one ladder-table row, starting value for the next component | 03 §9–10 |
 | ⑩ Direction review | Failure diagnosis, grounds for closing, next candidates | Closing and changing direction | Rejection list, decision record | 3.3 |
-| ⑪ Freeze and test | Freezing the main system, one evaluation on sealed test data | Freeze timing | Freeze record, test results | 03 Ch. 10 |
-| ⑫ Manuscript and verification | Mock review, separating limitations from missing preparation, manuscript verification | Content to include and claim strength | Verified manuscript | 05 |
+| ⑪ Freeze and test | Freezing the main system, one evaluation on sealed test data | Freeze timing | Freeze record, test results | 03 §10 |
+| ⑫ Manuscript and verification | Mock review, separating limitations from missing preparation, manuscript verification | Content to include and claim strength | Verified manuscript | 04, 06 |
 - The AI does not take over what the researcher decides. The AI gives options, a recommendation and grounds, and records the researcher's decision verbatim.
 - Operational cleanup, moving repeated instructions into instructions, memory and automatic mechanisms, happens continuously regardless of stage and speeds up later stages.
 
@@ -97,19 +124,15 @@ How a study proceeds from topic to manuscript, and when to go forward, go back o
 | Close a direction | The problem is confirmed by measurement but there is no signal to fix it, or several trained rows all fail to improve | Close the direction and add it to the rejection list with the grounds (measurements, conditions) |
 | Narrow the claim | Rejected in mock review, or a simple alternative beats the proposed structure | Withdraw the structural claim and reduce to a simple method and an honest benchmark; in exchange, secure reproducibility of the results |
 | Change the question | A pre-fixed judgment comes out FAIL | Do not change the judgment; change the question toward what the result actually shows. A re-measurement with a larger sample is split into a new plan |
-| Branch the study | Field conditions (false positives, equipment failures) make it hard to prove an effect, or a topic of a different character appears | Split a topic feasible with available resources into a separate study and write the boundary into the instructions |
-| Requirement change | Security or delivery conditions of a contract or project are set | Move the conditions directly into design requirements and preserve the original data |
+| Branch the study | Available resources and conditions make it hard to prove an effect, or a topic of a different character appears | Split a topic feasible with available resources alone into a separate study and write the boundary into the instructions |
 | Tool reuse | A tool or harness is built during research | Reuse it as a working tool for other studies; evaluate the tool itself separately, under the condition that the comparison setup is not changed after seeing results |
 
 ### 3.4 Flow record
-
-- Keep a `time / work / numbers·decision` table per project and add a row whenever the stage changes or a pivot happens.
-- Write numbers as the judgment metric at that time and the difference from the baseline.
-- When closing or changing direction, write the grounds (measurements, conditions) in the same row.
-- Keep details in the wiki topic pages and the log, and keep the flow table small enough to see in one screen.
+- Keep the research flow in the project wiki (01 §5). The status index holds only the current row, the next steps and a few recent decisions; stage transitions and pivots are written in the log with their decision numbers.
+- Write a closed or changed direction on the closed-directions page with its grounds (measurements, conditions). Write numbers as the judgment metric and the difference from the baseline, and cite the result document as the source.
 
 ## 4. Operating principles
-Principles for starting sessions, waiting for training, reporting to the researcher, and handling the execution environment. Details in 01 and 04.
+Principles for starting sessions, waiting for training, reporting to the researcher, and handling the execution environment. Details in 01 and 05.
 
 ### 4.1 Starting and resuming a session
 After a new session, a context summary, a usage limit or a disconnection, restore the state in the same order.
@@ -118,7 +141,7 @@ After a new session, a context summary, a usage limit or a disconnection, restor
 3. Check the actual state of running jobs (training, queues, watch commands) from the runner records. Do not trust memory or summaries.
 4. If there are finished results not yet recorded, record and report them first.
 5. If the improvement candidate note has candidates the researcher has not answered, ask again in one line.
-6. Then handle the researcher's new request. Do not proceed on work that needs approval while disconnected.
+6. Then handle the researcher's new request. Do not proceed on work that needs the researcher's approval while disconnected.
 
 ### 4.2 While training runs
 - Do: support the researcher's hand-drawn overview and check it against the design, discuss the next row's design, prepare the result document template, measure on already saved checkpoints, tidy documents and the wiki.
@@ -127,14 +150,18 @@ After a new session, a context summary, a usage limit or a disconnection, restor
 
 ### 4.3 Report format
 - Put the conclusion first, grounds and numbers after.
-- Write in the researcher's language, using plain words instead of internal code names or decision numbers.
+- Write in the researcher's language, using plain words instead of internal code names. State decisions by their content and put the number only in parentheses (e.g. "the base is set to row 3 (D12)").
 - Compare in tables, and attach a verdict (adopted, on hold, unverified) to numbers.
 - Say that work in progress is in progress, and state start and end only after seeing the runner records.
+- When explaining a formula (expected value, decision rule, metric), do not start with the formula: where possible, first show in a table the outcome and cost for each possible case (true state), derive the formula by weighting with probabilities, then compute it once with a small numeric example. State the assumptions the formula simplifies as well. Given only the formula, the researcher asks again where it came from and has trouble answering review questions alone.
+- For a threshold or metric set as a ratio, state the denominator in words ("what percent of all what"), together with the good direction (lower or higher is better) and the cost the value means. A ratio without its denominator is read as a share of the whole, and its meaning is understood backwards.
+- For metrics or terms with similar names or symbols, contrast them at the first explanation with their similar counterpart: what each measures differently (the information used, the good direction, one example where the values diverge). If the same word is used in two senses in the manuscript, attach a definition.
+- If the same concept is not understood after two explanations, do not add a new analogy; find the one intermediate step the explanation assumes (such as the rule that turns a number into an answer), show only that step concretely, and move on. Changing the analogy while skipping the same step gets stuck in the same place.
 - End with what the researcher must decide and what comes next.
 - Keep it short and do not say the same thing twice.
 
 ### 4.4 Execution environment
-- The main agent does short tasks itself; workers and multi-agent tools are used only when the researcher asks.
+- The main agent does short tasks itself; workers and multi-agent tools are used only when the researcher asks or it has been decided to work that way. The criteria for launching workers within that are in 05 §1.
 - Launch long jobs detached from the session, judge completion by an end marker, and report "unverified" if there is no end marker.
 - Do not touch other people's resources (GPUs etc.) or network settings. Stop processes only by process ID.
 - Do not put personal information or secrets in request arguments, output or commits.
@@ -142,40 +169,22 @@ After a new session, a context summary, a usage limit or a disconnection, restor
 
 ### 4.5 Unpublished research and AI-use disclosure
 - Before putting unpublished manuscripts or data into an external AI service, check the AI-use policies of the institution and the venue.
-- In presentations and shared materials, describe only the procedure, not the research content, and hide names that reveal the content.
 - Record which work (research, code, proofreading etc.) used AI, and disclose it from that record when the venue requires.
 
-## 5. Where AI often goes wrong
-Stop and check when you see these signals during work. Full list in 06.
+## 5. Signals to stop and check
+Stop and check when you see these signals during work or before handing over results or documents. Responses by type are in 07.
 
 | Signal | Check |
 | --- | --- |
-| A proposal that seems already tried | Whether it is a closed direction in the log or rejection list |
-| A confident explanation without grounds | Whether it is a measured fact or an estimate |
-| A conclusion from early-training numbers | Whether the judgment point was fixed in advance |
-| Criteria changed after seeing results | Whether they match the pre-registration document |
+| A proposal that seems already tried | Whether it is a closed direction in the log or rejection list, and whether the closing conditions are the same as now |
+| A confident explanation without grounds, a conclusion from early-training numbers | Whether it is a measured fact or an estimate, and whether the judgment point was fixed in advance |
+| Criteria changed after seeing results | Whether the pre-registration document and the rules used are the same |
 | Suspiciously good or bad results | Scoring and evaluation path, weight loading, simpler explanations (bias, leakage) |
 | A proposal after a long conversation | Whether earlier decisions and constraints were forgotten (re-read the decision document first) |
-| "Started" or "finished" reports | Whether they match the runner records |
-| An experiment proposed because resources are idle | Whether it has a gain and a role |
-| Work rebuilding something that exists | Whether saved checkpoints or tools already exist |
-| Proposal of a check run, retraining or extra measurement | Whether its result changes a decision, and whether a result with the same setting and data already exists (without mistaking a run on a different data split for the same one) |
-| Numbers and citations in manuscripts and tables | Whether they match the result files and originals |
+| "Started" or "finished" reports | Whether they match the runner's start and end records |
+| Proposal of an experiment, check run, retraining or extra measurement | Whether it changes a decision and has a gain, and whether results, checkpoints or tools with the same setting and data already exist (without mistaking a run on a different split for the same one) |
+| Comparison results | Whether the comparison methods got the same resources, data and input conditions |
+| Papers, citations and numbers in manuscripts and reports | The original page (title, first author, year, venue) and whether it is a formal publication, the reading depth for each judgment, the original passage for quotations, the numbers in the result files |
+| Records | Whether the log, topic pages and status index were updated in the same turn |
+| Text the researcher will read | Whether it is written in plain words and examples, without code or formulas |
 - When the same mistake happens twice, move it into memory, instructions or a mechanism.
-
-## 6. Pre-report checklist
-Items to check before handing results or documents to the researcher.
-
-| Check | Method |
-| --- | --- |
-| Does the paper actually exist? | Match title, first author, year and venue on the original page |
-| Is the judgment based on the full text? | Mark the reading depth for each judgment |
-| Is the quotation verbatim? | Match quoted text against the original passage |
-| Do the numbers come from the source? | Check in the result files, not in summaries |
-| Were rules changed after seeing results? | Compare the pre-registration document with the rules used |
-| Is the comparison fair? | Check that the other side got the same resources and data |
-| Is the prior work a formal publication? | Check the venue or arXiv entry; do not cite blogs or products as related work |
-| Do start and end reports match the records? | Check the runner's start and end records |
-| Were records kept? | Check that the log, topic pages and status index were updated in the same turn |
-| Was repeated measurement proposed? | Check that each proposed check or rerun states, in one line each, the decision it changes and the check for an existing result |
-| Can the researcher read it? | Check that it uses plain words and examples, without code or formulas |

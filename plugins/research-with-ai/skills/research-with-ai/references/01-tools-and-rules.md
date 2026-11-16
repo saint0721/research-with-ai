@@ -4,8 +4,8 @@
 | --- | --- |
 | Purpose | Using only this document, set up the tools for research with AI agents and create and run instructions, memory, skills, hooks and a wiki |
 | When to read | When starting a new study or repository, when the same instruction keeps being repeated, when creating or changing instructions, memory, skills, hooks or the wiki, when research is interrupted because the session changed |
-| Output | Tool setup, instruction files matching the rule layers, memory, skills and hooks, wiki skeleton (status index, topic pages, log), documentation timing table, monitoring setup |
-| Structure | Ch. 0 work order, Ch. 1–8 methods |
+| Output | Tool setup, instruction files matching the rule layers, memory, skills and hooks, wiki skeleton (status index, topic pages, log), documentation timing table |
+| Structure | Ch. 0 work order, Ch. 1–7 methods |
 
 ## 0. Work order
 The steps and outputs when first setting up a research environment.
@@ -15,19 +15,19 @@ The steps and outputs when first setting up a research environment.
 | Set up tools | 1 Always-used tools, 2 On-request tools | Agent, screen, server and document repository setup |
 | Set rules | 3 Rule layers, 4 Writing rule tools | Instruction files, memory, skills, hooks |
 | Record system | 5 LLM wiki, 6 Document system | Wiki skeleton, documentation timing table, document format |
-| Prepare for long jobs | 7 Watching and monitoring | Watch commands, monitor pane |
-| Keep improving | 8 Incremental improvement of method documents | Improvement candidate note, improvement log |
+| Keep improving | 7 Incremental improvement of method documents | Improvement candidate note, improvement log |
 
 ## 1. Always-used tools
 The role and operating principles of tools used in everyday research work.
 
 | Category | Tool | Role and operating principles |
 | --- | --- | --- |
-| Agent | Main working agent | Does design, analysis, code, verification, commits and documentation itself. Does not hand short tasks to other agents. Workers spend longer reading instructions and code than doing the work, and sometimes stop after writing code without running it |
+| Agent | Main working agent | Does design, analysis, code, verification, commits and documentation itself. The criteria for work to hand to workers are in 05 §1.1 |
 | Screen | Terminal pane manager | Splits agents and monitors into visible panes. The monitor pane sits below the conversation pane, not beside it |
 | Compute | Remote GPU server | Runs training and measurement. The agent runs on the laptop and computation runs on the server; training is launched through a queue runner |
-| Documents | Code repository documents | The source of truth for research decisions and numbers. Holds the status index, topic pages and log |
-| Documents | Note repository | Human-readable summaries. Not a place to pile up conversation logs. Each project has a hub document and an index of all its material |
+| Documents | Code repository documents | Plan, design and result documents. The source of truth for numbers |
+| Documents | Project wiki | Status index, topic pages and log. Kept in either the code repository or the note repository (5.1) |
+| Documents | Note repository | Human-readable write-ups. Not a place to pile up conversation logs. Each project has a hub document and an index of all its material |
 | Rules | Instruction files | Rules the agent reads when starting work |
 | Rules | Memory | Keeps lessons from incidents and the researcher's decision principles together with their reasons |
 | Rules | Skills | Bundle repeated procedures and load them automatically when the situation matches |
@@ -61,6 +61,7 @@ Rules are layered by scope, and each rule goes in the narrowest layer.
 | Skills | Repeated procedures |
 - Precedence is researcher instruction > nearest instructions > higher-level instructions > global instructions.
 - Keep the same rule in both the human-facing document and the agent instructions, and change them together.
+- A research repository's instructions do not copy the method; they hold only that study's values (metrics, thresholds, paths, protected keys, seed list) and point to the method by the skill's section number (e.g. 03 §7). The agent reads that section only when needed. A copied rule stays behind and diverges when the original changes.
 
 ## 4. Writing rule tools
 The basic direction: when the same instruction keeps being repeated, do not say it again; move it into instructions, memory, a skill or a hook.
@@ -77,69 +78,49 @@ The basic direction: when the same instruction keeps being repeated, do not say 
 | --- | --- |
 | Memory | One rule per file. The header holds a name, a one-line description and a type; the body is written as rule → reason (triggering incident) → how to apply. The index file holds only the title and a one-line summary. If the same content exists, edit it instead of creating a new file, and delete wrong memories |
 | Skill | The header's `description` is the trigger condition, so it should say when to read the skill and the actual phrases used (including in the user's language), rather than describing the function. If the body grows long, split it into reference files and keep only a table of which file to read in which situation |
-| Hook | Its output takes up conversation context, so it outputs nothing in normal operation. Example: a hook that, at the end of a response, checks "did this turn launch a job or show a new result without updating the log?" and blocks once. Results already seen are remembered separately so the same result does not block again (without this, old results cause repeated false blocks) |
+| Hook | Its output takes up conversation context, so it outputs nothing in normal operation. Example: a hook that, at the end of a response, checks "did this turn launch a job or show a new result without updating the log?" and reports it in one line. Results already seen are remembered separately so the same result does not trigger the reminder again (without this, old results cause the same reminder to repeat) |
 
 ## 5. Using an LLM wiki
-A way to keep the research state in one place with a topic wiki the agent writes and edits itself. When judgments are scattered over dated cards, the numbers differ from card to card and decisions waver, so the goal is to keep writing one up-to-date state even as sessions change. A wiki structure used in one project is carried over unchanged to other projects. The structure follows Karpathy's [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) pattern.
+A way to keep the research state in one place with a topic wiki the agent writes and edits itself. When judgments are scattered over dated cards, the numbers differ from card to card and decisions waver, so one up-to-date state keeps being written even as sessions change. A new session reads only the index and topic pages and knows the current state, decisions and next steps; re-proposals of closed directions become rarer; and changed judgments remain as history. The structure follows Karpathy's [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) pattern, and a structure used in one project is carried over unchanged to other projects.
 
-### 5.1 Structure
+### 5.1 Structure and location
 | Layer | Content | Author |
 | --- | --- | --- |
-| Sources | Dated cards and result documents. Read-only during wiki work | Humans and agents (adding new documents only) |
-| Wiki | Undated topic pages. Overwritten to stay current | Agent |
-| Schema | Wiki rules in the project instructions | Revised together with the researcher |
-- The wiki has one status index (about 40 lines), several topic pages and one log. Only the log accumulates; the index and topic pages are overwritten.
-- Topic pages follow current state → configuration → measurements → decisions → open questions and disagreements → superseded judgments; when a page exceeds 150 lines, move old content to an archive document.
-- Mark items `[confirmed]`, `[estimated]` or `[unverified]`; do not use confidence scores.
-- The log has one entry per event, with the researcher's words quoted and what was changed.
+| Sources | Dated cards and plan, design and result documents. Read-only during wiki work. The source of truth for numbers is always the result document | Humans and agents (adding new documents only) |
+| Wiki | One status index, undated topic pages, one log | Agent |
+| Schema | The wiki section of the project instructions (location, page skeleton, ingest and lint rules) | Revised together with the researcher |
+- There is one wiki per project, in one of two locations: inside the code repository (`docs/wiki/`, with the index at the top of `docs/`) or in the project folder of the note repository (`Wiki/`). Choose the former when research records are handled together with the code, the latter when the researcher often reads and edits in the notes. Either way, numbers are cited from the result documents as sources, not copied.
+- The status index stays within 40 lines and holds only a one-line current state, next steps, a table of topic pages (one-line summary, as-of date) and a few recent decisions. If next steps grow long as a chain of finished stages strung together, move the finished stages to the log. Only the log accumulates; the index and topic pages are overwritten.
+- The first topic pages to create are the research question, term definitions (core units and terms are defined only in this one place, and other documents point to it), judgment rules and standing constraints, the ladder table (module development), closed directions and their conditions, baseline methods and data, operations (server, runner, document rules), and the manuscript. Propose any other topic to the researcher when it recurs in two or more sources, and create it after approval.
 
-### 5.2 Why use a wiki
-| Effect | Content |
-| --- | --- |
-| No break when sessions change | After a new session or a context summary, the agent reads the index and topic pages and immediately knows the current state, decisions and next steps. Past conversations need not be explained again |
-| Understands short requests | Project terms, row names and the meaning of decisions are defined on the pages, so the agent understands even short requests the same way |
-| Fewer things missed | Decisions, constraints and closed directions are in one place, so re-proposing closed directions or breaking constraints becomes rarer |
-| Numbers agree | The problem of writing the same fact differently on several cards disappears, and when a judgment changes it remains as a "superseded judgment", so the history is visible |
+### 5.2 Page and log format
+- Topic pages follow current state → configuration → measurements → decisions → open questions and disagreements → superseded judgments → ingested sources; sections with no content are omitted. When a page exceeds 150 lines, move old content to an archive document.
+- The header holds the as-of date, a one- or two-sentence summary (the same sentence as the summary in the index), the number of ingested sources and the count of markers. Current-state items carry a `[confirmed]`, `[estimated]` or `[unverified]` marker and a source reference; do not use confidence scores.
+- Measurements are a cumulative table with columns date, item, value, condition and source; rows are added, never deleted.
+- The log has one entry per event. Decisions get a number (e.g. D12), quote the researcher's words and record what was changed. Interpretations added by the leader are marked separately (07 §1).
 
 ### 5.3 Operation
 | Action | When | What is done |
 | --- | --- | --- |
 | Read | Session start, before a new proposal | Read index → relevant topic pages → recent log entries |
-| Query | When the researcher asks about the state | Answer from the wiki, and check numbers in the source documents |
-| Ingest | In the turn where a result, decision, correction or understanding-changing explanation appears | Within the same turn: one log line, overwrite the topic page, update the index |
-| Lint | When the researcher asks | Look for unreflected sources, unsupported claims and stale states |
+| Query | When the researcher asks about the state | Answer from the wiki, and check numbers in the sources. For answers worth reusing (comparisons, calculations, cause analyses), ask whether to save them to a page, and save only those approved |
+| Ingest | In the turn where a result, decision, correction or understanding-changing explanation appears | Within the same turn: read the source → update the current state, measurements, decisions and open questions of the relevant topic pages → move changed judgments to superseded judgments → update the header summary, marker counts and the index row → record it in the source list and the log. Tell the researcher briefly only which pages changed and any new open questions |
+| Lint | When the researcher asks | Look for sources missing from the source list or edited later than recorded, claims without a source reference, pages with new sources after their as-of date, `[unverified]` items that can now be confirmed, and broken links or orphan pages. Fix mechanical problems right away and report those that change a judgment as a list |
 | Tidy | When the conditions (base, protocol, split) change, or when the log has grown long | Move results, designs and task specs of the old conditions and used-up handoffs into a dated archive folder under the same sub-path, and repoint links in current documents to the archive path. Keep only the current conditions on topic pages and the index, and archive a pre-tidy copy. Prior-work and rule documents are independent of conditions and stay |
-- Wiki updates are run by instructions, not by an automatic script. Before finishing work, check the repository's change list for new documents and reflect them in the wiki. Automatic updates change pages without review.
-- So that reflection is not missed, a check hook at the end of each response checks "was there a result but the log was not updated?" (4.1 Hook).
-- The wiki is an internal document; external documents are written from the source documents.
-- If documents from old conditions stay mixed in the current folders, both the agent and the researcher misread old numbers and closures as current evidence. Move them at the first tidy after the turn in which the conditions changed.
+- If a source list (e.g. `.manifest.json`) records each source's path, modification time, ingest date and updated pages, lint can find unreflected sources mechanically.
+- When a new source conflicts with an existing judgment, move it to superseded judgments only when a later measurement clearly replaces it; otherwise put both sides' evidence under open questions and disagreements.
+- A result, decision or path change written only in the log and left there is treated as unfinished. Update the one topic page the fact belongs to and one line of the status index in the same turn, and when a large stage ends, check how many days the topic pages' as-of dates lag behind the last day of the log.
+- Wiki updates are run by instructions, not by an automatic script, because automatic updates change pages without review. Before finishing work, check the repository's change list for new documents and reflect them.
+- If documents from old conditions stay mixed in the current folders, old numbers and closures are misread as current evidence, so move them at the first tidy after the turn in which the conditions changed. The wiki is an internal document; external documents are written from the source documents.
 
-### 5.4 Connecting a note vault and the wiki
-How to divide roles and connect the code repository's wiki with the researcher's note vault (e.g. an Obsidian vault) when both are used. If both record the research state, numbers and decisions change separately in two places, so one is fixed as the canonical record and the other points to it.
-
-| Item | Code repository wiki | Note vault |
-| --- | --- | --- |
-| Role | Canonical record of research state, decisions and numbers | Write-ups people reread, explanations, report and presentation drafts, method document drafts |
-| Written by | The agent overwrites it in the same turn | The agent writes up when the researcher asks or when a stage ends |
-| Unit | Status index, topic pages, log | One hub document plus dated notes per project folder |
-| Rules | Wiki rules in the project instructions | Instruction file at the vault root (style, file names, hub rules) and per-folder instruction files |
-- Notes do not copy wiki numbers; they point to result documents and topic pages as sources. When a note must state a number, it gives the source and the time it was taken.
-- When the researcher changes or corrects a decision in a note, reflect it in the wiki log and the matching topic page in the same turn. If only the note changes, the agent in the next session does not know about the new decision.
-- Before writing a note, the agent reads the vault's instruction file and the folder's instruction file. The rules live in the vault; the project instructions only state where they are.
-- Put an index of all material in the folder at the end of each hub document so that new notes are listed automatically. Then the hub does not need a manual edit for every new note.
-- The note vault is not a place to pile up conversation logs. What was decided in conversation goes to the wiki log; only write-ups worth rereading go to notes.
-- After editing notes with a script, check the frontmatter (6.2).
-- A code change without a document, and gaps between source documents, source notes, the wiki and the note vault, are caught by the end-of-response hook that ships with this skill's plugin (4.1 Hook format). Instructions alone still let an agent add a section to a source note and skip the wiki update, and such a gap makes the next session read a wrong state. The hook checks four things mechanically.
-  1. A commit changed a path that needs a document (code, manuscript, and so on) but no document.
-  2. A commit changed a source document the wiki must ingest, and no later commit updated the wiki log.
-  3. A commit changed a source note, and no later commit updated the wiki log (when the notes live in the wiki working copy, separate from the code repository).
-  4. The wiki working copy that is pushed to the note vault has uncommitted changes, or the last-push marker is not the latest commit.
-  - When nothing is wrong it prints nothing. It reports a commit or state once, in one line that says only what is missing. The note vault may be on another machine, so it never connects to it and looks only at the working copy and the push marker.
-  - The hook holds no paths. Each project writes its own values in `.claude/research-with-ai.conf` (paths that need a document, document paths, wiki repository location, source document and note paths, wiki log file, push marker, time window), and only the checks whose values are set run. A project without the file is left alone. If the wiki lives inside the code repository, set the wiki repository location to `.`.
-  - Each project keeps its own wiki, and its location is written only in that project's config file. Lessons about the method (improvements to this skill) go to this skill's notes and improvement log, not to a project wiki. Neither the skill nor the hook carries any user's path.
-  - When a path written in the config (the wiki repository and so on) is not on this machine, the hook does not skip that check in silence; once per state it reports `the configured path is missing — if you moved machines, change the config file to this machine's values`. An old path left after moving machines would otherwise switch the wiki checks off without a word.
-  - When one work goes up as several commits, such as design document → code → result document, a code commit whose neighbouring commit inside the time window carries a document is not treated as a missing document. A false alarm on every middle commit of a split push buries the real gap reports.
-  - Each project folder holds its own file. The hook finds the file in the session folder and every file in project folders up to three levels below it, and checks each project separately, so a session started at the root of a note vault with several project wikis checks all of them. Paths in a file are relative to the project folder that holds it, and each reminder starts with `[project path]`.
+### 5.4 Connecting a note repository and the wiki
+How roles are divided when the wiki and the researcher's note repository (e.g. an Obsidian vault) are used together. One canonical record is fixed so that the same fact does not change separately in two places.
+- If the wiki is in the code repository, the note repository's project folder holds only the hub document and write-ups the researcher will reread. Notes do not copy numbers; they point to result documents and topic pages, and when a number must be stated, they give the source and the time it was taken.
+- If the wiki is in the note repository, the same work that writes a result or design document in the code repository also writes the matching note (source card) and ingests it into the wiki. Code repository documents are outside the notes, so they are listed separately in the source list by absolute path and cited like `repository docs/…`.
+- When the researcher changes or corrects a decision in a note, reflect it in the wiki log and topic page in the same turn. If only the note changes, the agent in the next session does not know about the changed decision.
+- Before writing a note, the agent first reads the instruction files of the note repository and of the folder. Put an index of all material in the folder at the end of the hub document so that new notes are listed automatically. The note repository is not a place to pile up conversation logs, and after editing notes with a script, check the frontmatter (6.2).
+- A code change without a document, and gaps in reflection between sources, the wiki and the notes, are caught by the end-of-response hook that ships with this skill's plugin (4.1 hook format). With instructions alone, an agent still adds a section to a source and skips the wiki update.
+- The hook holds no paths. Every research repository that uses a wiki keeps its own values (paths that need a document, wiki location, source paths, log file, and so on) in `.claude/research-with-ai.conf`. In a repository without this file the hook checks nothing, so create it together with the wiki. Lessons about the method go to this skill's notes and improvement log, not to a project wiki. The check items, reminder rules and config keys are in the hook description in the public repository.
 
 ## 6. Document system
 Where to record what, when something happens, and the format of documents.
@@ -158,58 +139,46 @@ Where to record what, when something happens, and the format of documents.
 - Read the time from the clock; do not guess. Guessed times are wrong all at once and make the whole record suspect later.
 
 ### 6.2 Document format
-- The style is terse explanatory note style, not conversational. The standard is that it reads like a report.
-- Note file names are `YYYY-MM-DD topic.md`; only hubs use a fixed prefix, and each hub ends with an index of all material in the folder.
-- Verdict tables go judgment rule → verification table → observation-only metrics → final verdict, and separate agent faults (FAIL) from external conditions (BLOCKED).
-- Documents the researcher reads do not use codes that must be looked up (decision numbers, measurement codes) or version marks (first edition, supplement). The researcher cannot tell what the codes mean.
+- Writing style, file names, hubs and the verdict table format follow the note repository instructions.
+- Research documents in the code repository go into folders by role (plans, design contracts, results, prior-work surveys, usage guides, record schemas, session handoffs, archive). File names are `date-topic-kind`, and the header holds the document number, role, status and update date. When moving or renaming, move with the version control's move command, fix the references that point to the document in the same commit, then search for broken links.
+- Decision numbers are used only as tags for finding decisions in the log and the wiki. In reports to the researcher and write-ups the researcher reads, spell out the content of the decision or measurement and put the number only in parentheses (e.g. "the base was set to row 3 (D12)"). With the number alone, the researcher has to look it up to know what it means. Do not use version marks (first edition, supplement).
 - After editing many files with a script, always check the headers (frontmatter). One replacement can delete a single space in a header and break the tags of many documents at once.
 
-## 7. Watching and monitoring
-Run the watch that announces the end of a long job separately from the monitor that shows progress to a human.
-
-| Category | Method | Criterion |
-| --- | --- | --- |
-| Watch | A background command checks for the end-marker line at a fixed interval (e.g. 10 minutes) and wakes the agent when it appears | No polling at short intervals |
-| Monitor | Shows only short progress in one pane below the conversation pane | Reuse one pane per job |
-- Searching by process name finds the watch command itself, so the watch never ends and the next job starts that much later. Judge completion by process ID or an end marker in the log.
-- A long job launched as an ordinary background process dies when the shell closes, so run it detached from the session.
-- If there is no end marker, report "unverified"; do not treat it as success.
-
-## 8. Incremental improvement of method documents
+## 7. Incremental improvement of method documents
 A way to make lessons from work accumulate in the method documents (instructions, skills) without the researcher having to say "fix it" (progressive self-improvement). The researcher's corrections are applied in the same turn, lessons the AI finds pile up as candidates and are approved at a milestone, and approved changes go into the public release and become the next session's skill. Hooks keep this loop from being forgotten. Run only with documents and instructions, without code. Follows the log and periodic lint of the [LLM wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) and the approach of editing instructions item by item instead of rewriting them wholesale ([ACE, Agentic Context Engineering](https://arxiv.org/abs/2510.04618)).
 
-### 8.1 Structure with documents only
+### 7.1 Structure with documents only
 | Document | Role |
 | --- | --- |
-| Improvement candidate note | Where lesson candidates from work accumulate one line at a time. It only grows; applied lines get an applied mark |
-| Method documents (00–06) | Targets of changes. The source of the skill and the installed skill itself |
+| Improvement candidate note | Where lesson candidates from work accumulate one line at a time. Lines that have been applied or rejected are recorded in the improvement log and then deleted, so the only lines left are candidates awaiting an answer |
+| Method documents (00–07) | Targets of changes. The source of the skill, installed after being moved into the public edition |
 | Folder instructions and template | Rules for how candidates are recorded and applied |
-| Improvement log | One line each for when which candidate was applied to which document |
-- When working alone, the method document folder can be linked directly as the skill folder (body = skill body, chapter documents = reference files). Editing a document changes the skill immediately, so no conversion or installation step is needed. For this, links between documents are written as standard markdown links.
-- When you install a published skill and contribute to it, follow the steps in 8.4.
+| Improvement log | One line each for when researcher decisions and candidate applications or rejections were made, and in which document. It only grows, and it is the starting point for choosing the changes to publish (7.4) |
+- Links between documents are written as standard markdown links so that the documents become skill reference files as they are.
+- When you install a published skill and contribute to it, follow the steps in 7.4.
 
-### 8.2 Operation
+### 7.2 Operation
 1. **Apply what the researcher sets immediately**: in a turn where the researcher corrects you or sets a new way of working, edit the relevant document and chapter within that turn and add one line to the improvement log. The researcher's words are the decision, so do not wait. If you fix it later, sessions in between work by the old rule.
-2. **Choose where to apply**: if it is common to every stage, the body (00); if it is a method within one stage, the relevant chapter document; if it applies to one study only, that study's repository instructions.
+2. **Choose where to apply**: if it is common to every stage, the body (00); if it is a method within one stage, the relevant chapter document; if it applies to one study only, that study's repository instructions. Lessons from work that is not research (contract deliverables, presentation material, surveys and so on) do not go into the method documents; if needed, they go into that project's instructions.
 3. **How to apply**: add one rule line to the relevant chapter or edit an existing sentence. If the same rule exists, edit that sentence instead of adding a new one. Do not rewrite wholesale.
-4. **What the AI found goes to candidates, without being asked**: for a lesson the researcher did not set, add one line to the candidate note in the turn the signal appears, as `date / signal / generalized lesson / target document·chapter / kind of change`. Signals are a correction or a gap-revealing question, the same mistake a second time, a procedure invented during the work, a tool or route failure and its workaround, and the researcher's frustration. Write the lesson in general form (the case only in the signal column; the lesson column as "when → what → why" without project or tool names or numbers; if it would not change behaviour in another study, send it to that study's repository instructions). If the same lesson exists, add the signal to that line. Ask about accumulated candidates together, once, at a work milestone; if accepted, apply at once as in 1; if rejected, mark the candidate rejected.
+4. **What the AI found goes to candidates, without being asked**: for a lesson the researcher did not set, add one line to the candidate note in the turn the signal appears, as `date / signal / generalized lesson / target document·chapter / kind of change`. Signals are a correction or a gap-revealing question, the same mistake a second time, a procedure invented during the work, a tool or route failure and its workaround, and the researcher's frustration. Write the lesson in general form (the case only in the signal column; the lesson column as "when → what → why" without project or tool names or numbers; if it would not change behaviour in another study, send it to that study's repository instructions). If the same lesson exists, add the signal to that line. Ask about accumulated candidates together, once, at a work milestone; if accepted, apply at once as in 1; if rejected, reject it; either way, record it in the log and then delete the candidate line.
 5. **Record**: each time something is applied, add `date / what changed / document·chapter changed / trigger (researcher decision, candidate approval)` to the improvement log, and if the document repository is git, commit so it can be reverted.
 6. **Lint**: periodically (e.g. once a week) look for contradictions, duplicates and chapters that have grown too long and report them; clean up only after approval.
-7. **Back it with hooks**: instructions alone forget step 4, so put hooks at two points. When the researcher's message looks like a correction or a gap-revealing question, add one line to that turn's context asking whether to log a candidate; at the end of a response, remind once per state about pending candidates and about changes accumulated since the public release (4.1 hook form: no output normally, never re-alert on the same state). Make the signal phrases configurable, and test with fake inputs that non-corrections such as question-form sentence endings do not trigger it.
+7. **Back it with hooks**: instructions alone forget step 4, so put hooks at two points. When the researcher's message looks like a correction or a gap-revealing question, add one line to that turn's context asking whether to log a candidate; at the end of a response, remind once per state about pending candidates (4.1 hook format: no output normally, never re-alert on the same state). Reminders about changes accumulated since the public release are switched off in the config, because under 7.4 the agent does not ask about them. Make the signal phrases configurable, and test with fake inputs that non-corrections such as question-form sentence endings ("isn't it ~?") do not trigger it.
 
-### 8.3 What to keep
+### 7.3 What to keep
 - Do not rewrite wholesale. Shortening tends to drop detailed rules.
 - Do not make a principle out of a single event. Promote to a common principle only lessons that appeared twice or more or whose effect has been confirmed.
 - These documents are shared, so before applying, check that no names, numbers or paths slipped in.
 - If there are no candidates, do no cleanup.
 
-### 8.4 Refining in notes and publishing to the shared skill
-How a contributor to a published skill refines the method documents in their own note vault and publishes only versions that are well refined. Corrections during research are applied to the notes at once, but the installed skill and other users receive only reviewed versions.
+### 7.4 Refining in notes and publishing to the public skill
+How a contributor to a published skill refines the method documents in their own note repository and publishes to the public skill only what is well refined. Corrections during research are applied to the notes at once, but the installed skill and other users receive only reviewed versions.
 
 | Step | What to do | Criterion |
 | --- | --- | --- |
-| Refine in notes | Apply corrections and accepted candidates to the method documents in the notes at once, as in 8.2 | Until published, the edited note takes precedence over the installed copy |
-| Choose what to publish | Collect the changes since the last publication from the improvement log and check that the wording is settled and agrees with the other chapters | Publish only what the researcher judges refined. The agent may ask once in one line when changes pile up |
+| Refine in notes | Apply corrections and accepted candidates to the method documents in the notes at once, as in 7.2 | Until published, the edited note takes precedence over the installed copy |
+| Choose what to publish | Collect the changes since the last publication from the improvement log and check that the wording is settled and agrees with the other chapters | Publish only what the researcher judges refined and asks to publish. The agent does not ask first whether to publish because changes have piled up |
 | Move to the public repository | Remove note-only frontmatter and note links and save under the repository file names. If there are other language editions, re-translate only the changed documents | Search for names, numbers, paths, accounts and secret values |
 | Check | Check the format with the skill validator and the plugin validator, and bump the version | Checks pass |
 | Publish | Commit, then push with the researcher's permission | Never push without permission |

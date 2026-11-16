@@ -61,7 +61,7 @@ Automatic triggering alone can miss cases. Add this block to the instructions th
 
 ```markdown
 ## Research method
-- For any research work (topic, prior work, experiment or model design, training runs, result diagnosis, paper writing, research documentation), load the `research-with-ai` skill first and read only the reference file its table points to. The user does not need to name it.
+- For any research work (topic, prior work, experiment or model design, training runs, result diagnosis, paper writing, research documentation), load the `research-with-ai` skill first and read only the section its table points to for the task at hand. The user does not need to name it.
 - A project's own AGENTS.md / CLAUDE.md and the user's direct request take precedence over the skill.
 - When the user corrects you or sets a new way of working, edit the matching method document in [method folder] in the same turn and add one line to [improvement log]. Lessons you inferred yourself go to [improvement candidates] and you ask the user once.
 ```
@@ -122,7 +122,7 @@ IMPROVE_LOG="$HOME/notes/research-method/improvement-log.md"                 # a
 
 ## What It Does
 
-The skill activates automatically when the agent does research work: choosing a topic, checking prior work, designing experiments or losses, running and diagnosing training, operating servers and workers, or reviewing a manuscript. It always reads the overview first, then only the reference document the task needs.
+The skill activates automatically when the agent does research work: choosing a topic, checking prior work, designing experiments or losses, running and diagnosing training, operating servers and workers, or reviewing a manuscript. It first reads only the overview's chapters 1–2 (how to read, principles) and then, when a task starts, only the section that task needs (lazy loading).
 
 Core principles (from `references/00-overview-and-principles.md`):
 
@@ -147,13 +147,14 @@ Core principles (from `references/00-overview-and-principles.md`):
 
 | Reference document | Covers |
 | --- | --- |
-| `00-overview-and-principles.md` | Principles, approval scope, research flow and direction changes, operations, error signals, pre-report checklist |
-| `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki and note vault, documentation, monitoring, incremental improvement |
-| `02-topic-question-prior-work.md` | Topic, seven-step method derivation, questions and decision rules, prior work, gaps and novelty |
+| `00-overview-and-principles.md` | How to read (section table per task), principles, approval scope, research flow and direction changes, operations, stop-and-check signals |
+| `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki and note vault, documentation, incremental improvement |
+| `02-topic-question-prior-work.md` | Topic, seven-step method derivation, questions, decision rules and task definition, prior work, gaps and novelty |
 | `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, development order, in-training measurement, judgement |
-| `04-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
-| `05-critique-and-writing.md` | Mock review, evaluation splits, what goes in the paper, manuscript structure and checks |
-| `06-ai-errors.md` | Error types with their signals and countermeasures |
+| `04-writing.md` | Writing to the venue's review criteria, evaluation splits, what goes in the paper, manuscript structure, sentences, tables and citations |
+| `05-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
+| `06-critique-and-review.md` | Mock review, feedback handling, manuscript checks and proofreading, submission requirements, external documents |
+| `07-ai-errors.md` | Error types with their signals and countermeasures |
 
 The documents contain no case studies. Numbers and names from one project would bias the agent's judgement, so every lesson is written as a general rule with its reason.
 
@@ -169,7 +170,7 @@ signal during work ─▶ improvement candidate (one general lesson) ─▶ appr
 - **The researcher's corrections** go into the method documents in the same turn (principle 17).
 - **Lessons the AI finds** pile up as one-line candidates without being asked. Only the signal column names the case; the lesson is written in general form as "when → what → why". The same lesson is merged into its existing line instead of a new one. Accumulated candidates are asked about together at a work milestone (principle 18).
 - **The improvement hook** (below) keeps the loop from being forgotten: a reminder on correction-like messages, and at the end of a response a reminder about pending candidates and unpublished changes.
-- Every change leaves one line in the improvement log, so what changed, when and why can be traced (`01-tools-and-rules.md` Ch. 8).
+- Every change leaves one line in the improvement log, so what changed, when and why can be traced (`01-tools-and-rules.md` Ch. 7).
 
 ## Request patterns that work
 
@@ -197,6 +198,17 @@ The skill is meant to grow with your research. Keep the method documents in your
 
 If you install the published skill and also contribute to it, refine the documents in your own notes first and publish only versions you judge refined, bundling several corrections per version; then update your installed copy (`01-tools-and-rules.md` §8.4).
 
+## Behaviour tests
+
+The Korean edition ships behaviour tests that check whether the skill actually changes what the agent does (`plugins/research-with-ai-ko/evals/`). Ten cases come from real corrections by the researcher (proposing extra seeds for a row that rose, flagging validation-split ablation tables, blocking re-aggregation of stored test runs, skipping the diagnosis order, and so on), and each reply is graded against the rule. Every case also checks that the skill fired and that the agent did not read reference files the task does not need (lazy loading).
+
+```bash
+claude plugin eval plugins/research-with-ai-ko --judge-model sonnet --no-publish   # all cases
+claude plugin eval plugins/research-with-ai-ko --case 'no-extra-seeds' --judge-model sonnet   # one case
+```
+
+Each run is a real agent session plus a no-skill baseline, so it costs tokens. Run it before publishing a version to check that edited rules actually take effect.
+
 ## Structure
 
 ```
@@ -213,9 +225,10 @@ research-with-ai/
 │   │           ├── 01-tools-and-rules.md
 │   │           ├── 02-topic-question-prior-work.md
 │   │           ├── 03-experiment-and-model.md
-│   │           ├── 04-operations.md
-│   │           ├── 05-critique-and-writing.md
-│   │           └── 06-ai-errors.md
+│   │           ├── 04-writing.md
+│   │           ├── 05-operations.md
+│   │           ├── 06-critique-and-review.md
+│   │           └── 07-ai-errors.md
 │   └── research-with-ai-ko/              # Korean edition (same layout)
 ├── CITATION.cff
 ├── LICENSE
@@ -241,7 +254,7 @@ This skill grew out of daily research work between a researcher and AI agents. I
 | Work | Used in | How it is used | License |
 | --- | --- | --- | --- |
 | [Scientific Coding Skill](https://github.com/cemde/Scientific-Coding-Skill) (Cornelius Emde) | 03 §6.1 Scientific coding principles | Principles translated and summarized. The original skill is installed for actual coding | MIT |
-| [awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading) (Hyungtae Lim) | 05 §6.1 Proofreading workflow | Prompt names and scope are introduced. The prompts are not copied; they are taken from the original repository | MIT |
+| [awesome-claudecode-paper-proofreading](https://github.com/LimHyungTae/awesome-claudecode-paper-proofreading) (Hyungtae Lim) | 06 §2.1 Proofreading workflow | Prompt names and scope are introduced. The prompts are not copied; they are taken from the original repository | MIT |
 | [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (Andrej Karpathy) | 01 §5, §8 | Follows the three layers (sources, wiki, schema) and the log and lint structure | See original |
 | [Agentic Context Engineering (ACE)](https://arxiv.org/abs/2510.04618) (Zhang et al., 2025) | 01 §8 | Follows the principle of editing instructions item by item instead of rewriting them whole | Paper |
 | [Hamming](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton & Steinhardt](https://arxiv.org/abs/1807.03341), [J.-B. Huang](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208) | 02 §2 Seven-step method derivation | Used as the basis of each step and arranged into a procedure | See originals |
