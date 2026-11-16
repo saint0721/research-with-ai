@@ -8,7 +8,7 @@
 | Structure | §0 work order, §1–§5 signals and responses by error type, §6 common responses. When the response rule lives in another chapter, the response points to that chapter |
 
 ## 0. Work order
-The order to follow when something odd is found in AI output, and the output of each step.
+The order to follow when something odd is found in AI output, and the output of each step. Once a signal is noticed, check against the source and the execution path before correcting, and after correcting, finish by moving the fix into one mechanism so the same error does not recur.
 
 | Step | Section | Output |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ The order to follow when something odd is found in AI output, and the output of 
 | Prevent recurrence | §6 | One memory entry, instruction or automatic mechanism |
 
 ## 1. Judgment and interpretation errors
-Errors that arise when the AI reads results or proposes directions. They come out as plausible sentences, so they are easy to miss unless the evidence is checked separately.
+Errors that arise when the AI reads results or proposes directions. They come out as plausible sentences, so they are easy to miss unless the evidence is checked separately. Most come from mixing measured facts with estimates, or the researcher's decisions with the AI's interpretation, so the responses converge on rechecking records, sources and code and writing the two apart. Before judging results or proposing a direction, hold the signals in this table against it.
 
 | Error type | Signal | Response |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ Errors that arise when the AI reads results or proposes directions. They come ou
 | Numeric unit errors | Mixes percentage points with relative ratios | Recompute numbers from the source and state the unit alongside |
 
 ## 2. Experiment and code errors
-Errors that arise when designing and running experiments or changing code. Numbers come out even when results are wrong, so when results look odd, suspect the execution path first.
+Errors that arise when designing and running experiments or changing code. Numbers come out even when results are wrong, so when results look odd, suspect the execution path first. The other axis is experiments and checks without a reason. Before proposing an experiment, retraining or check, weigh the decision its result would change and the results that already exist; most response details are in the matching sections of 03.
 
 | Error type | Signal | Response |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ Errors that arise when designing and running experiments or changing code. Numbe
 | Queueing without prerequisites | Queues a comparison experiment without the porting or fixes that must come first | Before queueing, check the prerequisites in the plan document |
 
 ## 3. Manuscript and table errors
-Errors that arise when handling manuscripts and tables. They mostly occur where automatic number checks do not reach.
+Errors that arise when handling manuscripts and tables. They mostly occur where automatic number checks do not reach. Cells outside the numbers, such as checkmarks, summary numbers, claim words and figure versions, are checked by a person directly against the result report and the build output. Check the signals in this table before handing over a manuscript or table.
 
 | Error type | Signal | Response |
 | --- | --- | --- |
@@ -74,7 +74,7 @@ Errors that arise when handling manuscripts and tables. They mostly occur where 
 | Misattributing credit | The AI-use disclosure is written as if the AI did the ideas or design, or our own parts are written as "following" or "adopting" prior work, giving the credit to prior work | 04 §4.1, 06 §3 |
 
 ## 4. Data and visual-reading errors
-Errors that arise when the AI reads or produces images and data. Human checks are the reference.
+Errors that arise when the AI reads or produces images and data. Human checks are the reference. The AI's readings and generated outputs are not used as is but pass through a human check or a sample inspection, and output that touched test data is deleted and disclosed.
 
 | Error type | Signal | Response |
 | --- | --- | --- |
@@ -84,7 +84,7 @@ Errors that arise when the AI reads or produces images and data. Human checks ar
 | Test information exposure | There is output that saw test data information | Delete the output, and disclose in the paper that it was seen once |
 
 ## 5. Communication and operations errors
-Errors that arise in conversation and run operations. Most reappear after the context grows long or is summarized.
+Errors that arise in conversation and run operations. Most reappear after the context grows long or is summarized. In communication with the researcher the common responses are plain words and confirming the referent; in run operations it is checking the runner's records. The operations details are in the matching chapters of 05.
 
 | Error type | Signal | Response |
 | --- | --- | --- |
@@ -101,10 +101,9 @@ Errors that arise in conversation and run operations. Most reappear after the co
 | Excessive agent cost | Several agents wake for every job and reread the context | 05 §1 |
 
 ## 6. Common responses
-Response principles shared across several types.
-
+Response principles shared across several types. The core is that corrections go through a source check and are kept as records, and when the same error repeats, it is blocked by a mechanism and a purpose sentence, not by words.
 - Do not use AI output for visual readings, numbers, units or citations as is; pass it through a human check column or a source comparison, then keep a correction history.
 - If results differ greatly from expectations, check the execution path (scoring, state, settings) before doubting the method.
 - When the AI admits and corrects an error, record the correction in the log so the next session does not repeat the same judgment.
-- When the same mistake appears twice, do not point it out verbally again; move it into memory, instructions or an automatic mechanism. Choose an automatic mechanism if it can be judged mechanically, instructions if judgment is needed.
-- When the same kind of correction comes up several times, do not add one more case rule ("this is fine too"); write down in one sentence the purpose of what that rule is meant to prevent. If only cases pile up, the same correction repeats at the next case.
+
+When the same mistake appears twice, do not point it out verbally again; move it into memory, instructions or an automatic mechanism. Choose an automatic mechanism if it can be judged mechanically, instructions if judgment is needed. Also, when the same kind of correction comes up several times, do not add one more case rule ("this is fine too"); write down in one sentence the purpose of what that rule is meant to prevent. If only cases pile up, the same correction repeats at the next case.

@@ -47,15 +47,19 @@ Do not read the whole document every time; read only the sections the current wo
 | AI output looks wrong, or the same mistake repeats | 00 §5, the relevant chapter of 07 |
 
 ## 2. Basic principles
-Principles that apply to every stage. When they conflict with a detailed procedure, these principles take precedence.
+Principles that apply to every stage. When they conflict with a detailed procedure, these principles take precedence. The principles fall into three groups — judgment and decisions (1–4), experiments and judgment (5–12), recording and improvement (13–18) — followed by the boundary of what the AI may do alone (approval scope).
 
 ### 2.1 Judgment and decisions
+The researcher decides; the AI prepares the explanations, candidates and grounds that decision needs. A decision taken without understanding, or a re-proposal of a direction already closed, wastes research time, so explanation and checking the records come before the decision.
+
 1. **The researcher decides.** The AI gives explanations, candidates, a recommendation and the grounds; the researcher chooses. If the researcher delegates a decision, the AI investigates the grounds, decides, and records that the decision was delegated and why.
 2. **Explanation first, decision later.** Do not take a decision while the researcher has not understood it. Attach a recommendation and reason to each option, and do not ask for several decisions at once.
 3. **Speak to the researcher in plain words with numeric examples.** Do not use formulas or internal code names, and state decisions by their content, not their numbers (the number goes only in parentheses as a tag for looking it up, 01 §6.2). The AI does the formula calculations and checks, and reports the results in words.
 4. **Check the records before proposing.** Before proposing, check the log, decision records and rejection list for directions already closed. State for each proposal the expected gain, the chance of adoption, and its role in the study. Read a closed record together with the conditions it was measured under (base model, protocol, data split); if the conditions have changed, do not use it as evidence that the direction is "still closed" — say only that it was closed under those conditions, and let the researcher decide whether to reopen it.
 
 ### 2.2 Experiments and judgment
+Principles that fix judgment criteria, comparison conditions and the order of work before results, so that results are not pulled toward expectations. If criteria change after results or several changes go in at once, no result can serve as evidence and the cause of a failure cannot be isolated.
+
 5. **Fix judgment criteria before results.** Record splits, thresholds, evaluation targets and adoption rules in a document before results, and do not change them after seeing results.
    - What this principle prevents is **cherry-picking**: reporting only the good values among independent seeds, scenes or runs, or changing scenes, seeds or thresholds after seeing results to manufacture a number. Which metrics the manuscript defines, how, in which table, and how the tables are laid out may be chosen after seeing results (provided every run's values are used as they are and the definitions are stated in the manuscript). Do not stop the researcher by reading a presentation choice as "post-hoc manipulation".
    - "Report results as they are, good or bad" means reporting **to the researcher**: when a result comes out, tell the researcher everything, unfavourable values included, and keep it in the result document. Whether it goes into the manuscript and in what sentence is decided by the researcher after seeing the result. Do not fix manuscript sentences in advance in a design document; if you write any, write them only as a proposal for the report to the researcher.
@@ -68,6 +72,8 @@ Principles that apply to every stage. When they conflict with a detailed procedu
 12. **Keep the order of work.** Build the model configuration with one seed; multi-seed repeats, other datasets and additional comparisons come after the model is fixed. Large measures that change the character of the study are postponed to the next study or decided by the researcher.
 
 ### 2.3 Recording and improvement
+Principles for recording results, decisions and lessons in the turn they appear, and for moving repeated instructions and mistakes into documents or mechanisms. If a record is late or missing, the next session repeats the same judgments and mistakes.
+
 13. **Record in the turn where a result, decision or explanation appears.** Update one log line, the topic page and the status index of the project wiki (01 §5) in the same turn. Number each decision and keep it together with the researcher's words. Simple status checks are not recorded.
 14. **Turn repeated instructions into mechanisms.** An instruction repeated twice or more becomes an instruction file, memory, skill or hook.
 15. **Check AI output against the originals.** Papers, citations, numbers and visual readings are used only after checking the original text, result files or source data.
@@ -88,9 +94,11 @@ The boundary between what the AI may do alone, what needs the researcher's appro
 - A scope the researcher has pre-approved (e.g. train if the smoke succeeds) is used only within that scope.
 
 ## 3. Research flow
-How a study proceeds from topic to manuscript, and when to go forward, go back or change direction. Methods within each stage are in the reference documents in the table.
+How a study proceeds from topic to manuscript, and when to go forward, go back or change direction. Methods within each stage are in the reference documents in the table. A stage is passed only when its outputs are documented and the researcher confirms them; when failures on the same axis accumulate, go back or change direction in one of the defined forms.
 
 ### 3.1 Stages
+A study divides into 12 stages, from preparation to manuscript and verification. In each stage the AI produces drafts, measurements and candidates, the researcher handles scope, choice and confirmation, and the end of a stage is checked by its outputs.
+
 | Stage | What the AI does | What the researcher decides | Output | Reference |
 | --- | --- | --- | --- | --- |
 | ① Preparation | Drafts of instructions, wiki, documentation timing and check hooks; building a reproducible environment | Scope of rules, prohibitions | Instruction files, wiki skeleton, fixed execution environment | 01, 03 §4 |
@@ -109,7 +117,7 @@ How a study proceeds from topic to manuscript, and when to go forward, go back o
 - Operational cleanup, moving repeated instructions into instructions, memory and automatic mechanisms, happens continuously regardless of stage and speeds up later stages.
 
 ### 3.2 Stage movement criteria
-
+Movement between stages is judged by outputs and the researcher's confirmation. The conditions for going forward, staying, going back, and moving to the test and manuscript stages are set out below.
 - **Move to the next stage**: only when the stage's outputs are documented and confirmed by the researcher. Do not start module development without judgment criteria.
 - **Stay in the same stage**: do not change direction before at least 3 trained rows exist in one direction. Moving after one or two failures leaves no direction checked to the end.
 - **Go back to an earlier stage**: if failures on the same axis continue, return to the question and prior-work stages and revisit the problem definition and fit criteria before changing the method further.
@@ -117,6 +125,7 @@ How a study proceeds from topic to manuscript, and when to go forward, go back o
 - **Condition for the manuscript stage**: finalize the manuscript after the model configuration is fixed and the multi-seed repeats and needed additional dataset experiments are done. Until then the manuscript stays a draft.
 
 ### 3.3 Forms of direction change
+A direction change is made, when a trigger appears, in one of the forms below. Each form pairs a trigger with an action, so that the method is not changed arbitrarily when failures accumulate.
 
 | Change | Trigger | Action |
 | --- | --- | --- |
@@ -133,7 +142,7 @@ How a study proceeds from topic to manuscript, and when to go forward, go back o
 - Write a closed or changed direction on the closed-directions page with its grounds (measurements, conditions). Write numbers as the judgment metric and the difference from the baseline, and cite the result document as the source.
 
 ## 4. Operating principles
-Principles for starting sessions, waiting for training, reporting to the researcher, and handling the execution environment. Details in 01 and 05.
+Principles for starting sessions, waiting for training, reporting to the researcher, and handling the execution environment. Details in 01 and 05. All four principles go by the records and the runner's state, not by memory or summaries.
 
 ### 4.1 Starting and resuming a session
 After a new session, a context summary, a usage limit or a disconnection, restore the state in the same order.
@@ -145,23 +154,31 @@ After a new session, a context summary, a usage limit or a disconnection, restor
 6. Then handle the researcher's new request. Do not proceed on work that needs the researcher's approval while disconnected.
 
 ### 4.2 While training runs
+Use the time while training runs to prepare the next row; do not fill it with new experiments or early conclusions.
 - Do: support the researcher's hand-drawn overview and check it against the design, discuss the next row's design, prepare the result document template, measure on already saved checkpoints, tidy documents and the wiki.
 - Do not: run experiments only because resources are idle, retrain finished experiments, draw conclusions before results, poll at short intervals.
 - When asked for interim results, answer from the training records, and state that numbers before the judgment point are "interim".
 
 ### 4.3 Report format
-- Put the conclusion first, grounds and numbers after.
+Write reports so the researcher can read them and judge at once. Put the conclusion and what to decide at the start and end, write in the researcher's language, and follow the dedicated rules for explanations that are often misread, such as formulas, ratios and similar terms.
+
+Write a report in this order.
+1. Put the conclusion first, grounds and numbers after.
+2. Compare in tables, and attach a verdict (adopted, on hold, unverified) to numbers.
+3. End with what the researcher must decide and what comes next.
+
 - Write in the researcher's language, using plain words instead of internal code names. State decisions by their content and put the number only in parentheses (e.g. "the base is set to row 3 (D12)").
-- Compare in tables, and attach a verdict (adopted, on hold, unverified) to numbers.
 - Say that work in progress is in progress, and state start and end only after seeing the runner records.
-- When explaining a formula (expected value, decision rule, metric), do not start with the formula: where possible, first show in a table the outcome and cost for each possible case (true state), derive the formula by weighting with probabilities, then compute it once with a small numeric example. State the assumptions the formula simplifies as well. Given only the formula, the researcher asks again where it came from and has trouble answering review questions alone.
-- For a threshold or metric set as a ratio, state the denominator in words ("what percent of all what"), together with the good direction (lower or higher is better) and the cost the value means. A ratio without its denominator is read as a share of the whole, and its meaning is understood backwards.
-- For metrics or terms with similar names or symbols, contrast them at the first explanation with their similar counterpart: what each measures differently (the information used, the good direction, one example where the values diverge). If the same word is used in two senses in the manuscript, attach a definition.
-- If the same concept is not understood after two explanations, do not add a new analogy; find the one intermediate step the explanation assumes (such as the rule that turns a number into an answer), show only that step concretely, and move on. Changing the analogy while skipping the same step gets stuck in the same place.
-- End with what the researcher must decide and what comes next.
 - Keep it short and do not say the same thing twice.
 
+When explaining a formula (expected value, decision rule, metric), do not start with the formula: where possible, first show in a table the outcome and cost for each possible case (true state), derive the formula by weighting with probabilities, then compute it once with a small numeric example. State the assumptions the formula simplifies as well. Given only the formula, the researcher asks again where it came from and has trouble answering review questions alone.
+
+For a threshold or metric set as a ratio, state the denominator in words ("what percent of all what"), together with the good direction (lower or higher is better) and the cost the value means. A ratio without its denominator is read as a share of the whole, and its meaning is understood backwards. Also, for metrics or terms with similar names or symbols, contrast them at the first explanation with their similar counterpart: what each measures differently (the information used, the good direction, one example where the values diverge). If the same word is used in two senses in the manuscript, attach a definition.
+
+If the same concept is not understood after two explanations, do not add a new analogy; find the one intermediate step the explanation assumes (such as the rule that turns a number into an answer), show only that step concretely, and move on. Changing the analogy while skipping the same step gets stuck in the same place.
+
 ### 4.4 Execution environment
+Below are only the operating rules from 05 that apply to every session, in short form; the detailed procedures are in 05.
 - The main agent does short tasks itself; workers and multi-agent tools are used only when the researcher asks or it has been decided to work that way. The criteria for launching workers within that are in 05 §1.
 - Launch long jobs detached from the session, judge completion by an end marker, and report "unverified" if there is no end marker.
 - Do not touch other people's resources (GPUs etc.) or network settings. Stop processes only by process ID.
@@ -169,11 +186,12 @@ After a new session, a context summary, a usage limit or a disconnection, restor
 - Commit only the files changed, and push only after approval and only to the designated branch.
 
 ### 4.5 Unpublished research and AI-use disclosure
+Putting unpublished manuscripts or data into external AI services, and disclosing AI use, follow the policies of the institution and the venue.
 - Before putting unpublished manuscripts or data into an external AI service, check the AI-use policies of the institution and the venue.
 - Record which work (research, code, proofreading etc.) used AI, and disclose it from that record when the venue requires.
 
 ## 5. Signals to stop and check
-Stop and check when you see these signals during work or before handing over results or documents. Responses by type are in 07.
+Stop and check when you see these signals during work or before handing over results or documents. Responses by type are in 07. Most signals point to AI output that may disagree with the records or originals, so check by comparing against those records and originals.
 
 | Signal | Check |
 | --- | --- |
