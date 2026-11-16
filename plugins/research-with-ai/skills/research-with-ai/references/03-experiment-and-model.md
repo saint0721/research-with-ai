@@ -72,8 +72,7 @@ Once the design is finalized and before writing code, discuss separately "is thi
 - **Confirmation bias**: For designs that use the model's own predictions as targets, check for paths by which wrong predictions harden. If there are any, add safeguards (a slowly following answer model, excluding uncertain cases, supervision with human-made answers).
 - **Falsifiability**: Write down which result would mean the hypothesis is wrong. If the hypothesis survives any result, it is not an experiment.
 - **Sufficiency of controls**: Check that there is a control matched in compute and training time, and a diagnostic that measures the mechanism directly.
-- **Blocking shortcuts**: Check whether the task can be solved without the key input. Design the task so that a model without the key input performs at chance, and use that result as evidence that the task really needs the key input.
-- **Discriminability**: Include only cases where the simple method actually fails. If cases solvable by the simple method are mixed in, the difference between methods is buried.
+- **Blocking shortcuts**: Check whether the task can be solved without the key input. Design the task so that a model without the key input performs at chance, and use that result as evidence that the task really needs the key input. **Discriminability**: Include only cases where the simple method actually fails. If cases solvable by the simple method are mixed in, the difference between methods is buried.
 - **Variable isolation**: Make compared pairs differ only in the one factor of interest. If other factors change too, what had the effect cannot be separated.
 - **Human-level check**: Measure accuracy and agreement of two or more humans, to decide whether the task is solvable by humans and where to place the model's results when reading them.
 
@@ -120,20 +119,29 @@ How to fix code, environment, data, configuration, and randomness before startin
 - For an op with no deterministic kernel, use warning mode and write down what that op changes (only a logged value, or the gradients too). After turning it on, confirm reproduction by checking that the parameters of two runs trained a few steps from the same seed are bitwise equal, and by comparing two full trainings of the same configuration.
 - After changing a global setting that applies to every row, such as deterministic mode, first measure speed and memory with a short run of the baseline configuration, and only then launch the new module row. If both change together, whether the slowdown came from the module or the setting cannot be separated.
 - Even when deterministic, spread between rows remains (one module changes the order of operations and the consumption of random numbers). Run the baseline configuration several times early in development (e.g., three times) to measure its mean and spread, and call a row different only when it falls outside "baseline mean ± spread". Record a difference inside the band as "cannot be told apart" (when to run several seeds is in 7.1), and write the measured spread in the result document as the reference for interpretation.
+- The sources of spread are not just one seed but initialization, data order, augmentation, data split, and hyperparameter search. Compare rows during development with the same seed; in the final comparison, randomize these sources together and use several splits where possible (Bouthillier et al. 2021). Varying only one source makes the spread look smaller.
 - For parts that vary between runs, such as bf16 and GPU, write that fact and its size in the result document.
 
 ### 4.3 Run records and runner checks
 - Keep in the run folder the resolved configuration, provenance record (commit, environment hash, data hash, configuration hash, GPU, start and end times), training log, metric records, cost records, checkpoints, and result files.
 - Before starting, the runner checks that tests pass (at that commit), the working tree is clean, environment and data checks pass, configuration validates, and the GPU is free.
 - Record failures, omissions, and non-evaluations as they are in a ledger (failure record file) and the corresponding document. Record a cell whose external API run failed as a failure; do not fill it with another model. Check artifacts' integrity by hash.
-- Write re-scored or re-run results to a new folder; do not overwrite old results.
-- Do not write the ladder table by hand; build it by collecting result files from a list of configuration paths and runs per row.
+- Write re-scored or re-run results to a new folder; do not overwrite old results. Do not write the ladder table by hand; build it by collecting result files from a list of configuration paths and runs per row.
 - For paid runs, document the decision to run and the cost basis before results, then run (cost calculation in 05 §5).
-- When adding seeds or rows on another machine, check the transferred material against the original by file count, bytes, and hash, and re-measure one existing value with the same code to confirm it matches (reproduction gate) before writing new values. Write in the result document that the machine differed.
-- If the samples drawn differ per seed, check before training that the auxiliary inputs attached to those samples (precomputed boxes, feature caches, etc.) cover the new samples. Fill what is missing with the same code and the same configuration, do not regenerate existing values, and add that handling to the design document before results.
+- When adding seeds or rows on another machine, check the transferred material against the original by file count, bytes, and hash, and re-measure one existing value with the same code to confirm it matches (reproduction gate) before writing new values. Write in the result document that the machine differed. If the samples drawn differ per seed, check before training that the auxiliary inputs attached to those samples (precomputed boxes, feature caches, etc.) cover the new samples. Fill what is missing with the same code and the same configuration, do not regenerate existing values, and add that handling to the design document before results.
 
 ## 5. Fairness setup
 How to fix comparison conditions before the experiment so that comparison results reflect only the difference between methods.
+
+| Practice | Where in this document | Source |
+| --- | --- | --- |
+| Run comparison methods with the same implementation, base, and tuning budget | 5.4 | Melis et al., ICLR 2018 · Oliver et al., NeurIPS 2018 · Musgrave et al., ECCV 2020 · Henderson et al., AAAI 2018 |
+| Keep the validation set at a realistically usable size | 5.2 | Oliver et al., NeurIPS 2018 |
+| Look at sources of spread beyond the seed | 4.2 | Bouthillier et al., MLSys 2021 |
+| Use intervals and robust aggregates with few runs | 5.6, 9.2 | Agarwal et al., NeurIPS 2021 · Henderson et al., AAAI 2018 |
+| Report the tuning budget together with validation performance | 5.7 | Dodge et al., EMNLP-IJCNLP 2019 |
+| Check leakage by type | Ch. 10 | Kapoor & Narayanan, Patterns 2023 |
+| Register before results, and state deviations from the plan and exploratory results separately | Ch. 10, 00 principle 5 | Nosek et al., PNAS 2018 |
 
 ### 5.1 Protected keys
 - Keep split, ground truth, number of updates, batch, learning-rate schedule, evaluation method, and seed only in the protocol configuration. If a method configuration changes these values, the validator refuses.
@@ -151,6 +159,7 @@ How to fix comparison conditions before the experiment so that comparison result
 | Seed | Method-specific modules |
 - Forcing devices to match can remove the method itself, so state in the result document what was not matched.
 - Different costs per method (number of forwards, step time, peak memory) are allowed, but are recorded automatically and reported together.
+- Keep the validation set used to choose values at a realistically usable size. For example, in a low-label setting, do not choose values with a validation set larger than the training labels. Values chosen on a large validation set do not reproduce under real conditions.
 
 ### 5.3 Matching the training budget
 - Set the target number of updates T = steps per epoch measured in the new method's original configuration × number of epochs. Do not use the baseline's documented number of epochs as the reference.
@@ -163,6 +172,7 @@ Rules for making sure comparison methods are trained and evaluated under the sam
 - Training our method on any data is not the problem; what must hold is that trainable comparison methods are also trained and evaluated with the same data, split, and selection rules.
 - Before calling a comparison method "the same recipe" or putting it in a table, check its input conditions (cropping, marks, prompts, data counts, seeds) cell by cell against our method in the run ledger. Fix and rerun cells that differ, or state the difference in the manuscript. If the comparison methods were frozen when our method's recipe changed, record the resulting condition difference right away. Found late, the fixes spread across the whole manuscript.
 - Include cells where comparison methods are also given our method's device, to separate whether the gain comes from the device or the model.
+- Run comparison methods with the same implementation, base, augmentation, and optimizer as our method, and do hyperparameter search the same way with the same number of trials. Do not carry over values tuned on another dataset as they are. An under-tuned baseline inflates the gain.
 - Do not change run settings such as batch within an experiment. Changes are made only in a new experiment, after writing an equivalence check criterion before results.
 
 ### 5.5 Checking the remaining gap before fixing the base
@@ -176,17 +186,17 @@ A method for measuring, before fixing the base (baseline method and training con
 
 ### 5.6 Samples, seeds, and aggregation
 Rules for fixing what to count and how to combine it before results, so that only favorable values cannot be picked.
-- Fix sample groups, seeds, and splits before results, and do not pick only favorable ones. Do not rewrite non-evaluated items as "excluded".
-- Do not loosen frozen thresholds or caps to increase samples. If they must change, change them uniformly across everything and only before results.
+- Fix sample groups, seeds, and splits before results, and do not pick only favorable ones. Do not rewrite non-evaluated items as "excluded". Do not loosen frozen thresholds or caps to increase samples. If they must change, change them uniformly across everything and only before results.
 - Fix one rule for combining results across seeds (e.g., average per-sample probabilities, then compute the metric) and apply it identically to comparison methods.
 - Match the number of seeds of comparison methods to our method's. Comparison methods having fewer seeds is a lack of preparation, so fill it with experiments; until then, state in the text that the comparison paired seeds with each other.
+- When several runs were made (timing in 7.1), do not show only the mean: give stratified bootstrap intervals and robust aggregates (IQM, etc.) together, and keep the per-run raw data. Improvement can also be judged by the paired win rate P(A>B) and its interval, and with many comparisons, correct for multiple comparisons. With few runs, a single point estimate easily reverses the conclusion.
 - Compute paired intervals by bootstrap paired on the evaluation unit (scene, photo, etc.), and state the unit and the number of resamples.
 - Compute paired intervals used for claims with the same aggregation as the values in the table (pooled, group mean). If the two aggregations reach different conclusions, record both and call it a borderline result; the researcher decides whether to use the stronger wording.
 
 ### 5.7 Reporting results
 What to state alongside when reporting comparison results as numbers.
-- Report sample counts (per group, case, and split, with definitions) side by side with prior work's counts.
-- State the denominator of success rates, and report both the per-group equally weighted value and the pooled total.
+- Report sample counts (per group, case, and split, with definitions) side by side with prior work's counts. State the denominator of success rates, and report both the per-group equally weighted value and the pooled total.
+- For each result, write the tuning budget (search range, number of trials, selection criterion) and the corresponding validation performance. Do not use comparisons with different budgets as grounds for "outperforms".
 - If the benchmark's definition (included items, etc.) changes, keep models and thresholds as they are and recompute every reported number under the new definition.
 
 ## 6. Writing and managing code
@@ -224,8 +234,7 @@ Scientific code serves truth, not users, and the worst outcome is a plausible-lo
 ### 6.5 Cleanup
 - When closing a row that was not adopted, move its module file to an archive folder, remove its hooks from the training loop, and confirm with the baseline configuration that the first-step loss for the same seed equals the loss before cleanup. Tag the commit just before cleanup, and reproduce old runs from the commit in their run records. If rows are not cleared away when closed, unused modules and hooks pile up in the main code.
 - Do not delete, move, or commit files the researcher is in the middle of editing.
-- When moving or renaming, fix references in documents and code together, and check there are no broken links.
-- Do not put result data (output folders) in git. Track the manuscript in git but exclude build artifacts.
+- When moving or renaming, fix references in documents and code together, and check there are no broken links. Do not put result data (output folders) in git. Track the manuscript in git but exclude build artifacts.
 
 ### 6.6 Understanding code
 - Keep a walkthrough document that follows one data item from input to result by file and line number, so the researcher can follow the code.
@@ -262,8 +271,7 @@ How to measure and keep, without omission, everything measurable inside an actua
 ### 8.1 Measurement principles
 - Measure everything measurable, and turn on the same items for every experiment. Record now the values that might be needed later so finished experiments are not retrained, and separate causes by comparing rows.
 - Fix the measurement items before the experiment, and when building a new module, build that module's mechanism metrics with it.
-- Keep measurement as a record-only module, and test that turning it on and off gives the same training results. Save and restore state so the randomness used by measurement does not change training randomness.
-- If measurement is costly, increase the interval but do not drop items.
+- Keep measurement as a record-only module, and test that turning it on and off gives the same training results. Save and restore state so the randomness used by measurement does not change training randomness. If measurement is costly, increase the interval but do not drop items.
 
 ### 8.2 Measurement items
 | Category | Recorded items | When |
@@ -281,8 +289,7 @@ How to measure and keep, without omission, everything measurable inside an actua
 | State preservation | Checkpoints (model, optimizer, method's internal state, random state included) | At fixed intervals (e.g., 10 epochs) and at the end |
 
 ### 8.3 How to record
-- Keep every value in the run folder in a machine-readable format (one record per line), without overwriting. Keep it separate from the human-readable log. Fix the record format (fields and meanings) in a schema document with a version; when the format changes, issue a new version, and reading code checks the version.
-- Do not delete records of failed or interrupted runs; record why they stopped.
+- Keep every value in the run folder in a machine-readable format (one record per line), without overwriting. Keep it separate from the human-readable log. Fix the record format (fields and meanings) in a schema document with a version; when the format changes, issue a new version, and reading code checks the version. Do not delete records of failed or interrupted runs; record why they stopped.
 - A script builds the draft result document from these records (run information, judgment, per-class differences, per-bin changes, loss shares, diagnostic trends); humans only write the interpretation.
 - If a value missing from a finished experiment is needed, measure it from the saved checkpoints instead of retraining. Also when a recording device such as diagnostics or seed fixing is newly added, do not rerun a setting that already has results; turn it on from the runs still to come. When rerunning training steps from a checkpoint, compare the first-step loss magnitude with the original experiment to confirm the internal state is right.
 
@@ -319,7 +326,7 @@ Rules for deciding adoption, holding, or adjustment after results come in, and c
 - Choose the next move after a failed row on the overview the researcher drew (7.2).
 - When lifting an existing constraint, lift it only as a component of the method tied to a measured failure, keep a separate ablation row, and give the baseline the same resources.
 - If several rows added one at a time on the same base fail to improve in a row, stop adding and extract rules from those rows' results into a table (what raises the score, what lowers it). Write the next module with those rules as conditions, and design only candidates that follow directly from the problem statement. Each row is still one change, but candidates are chosen not as "things to try adding" but as "things that aim at the problem while keeping the rules".
-- Keep rows that were tried but not adopted in the ladder table with their results as they are. Do not put them in the paper (00 principle 16, 04 §3).
+- Keep rows that were tried but not adopted in the ladder table with their results as they are. Do not put them in the paper (00 principle 16, 04 §5.2).
 
 ### 9.4 Pre-measurement without training is for stopping only
 Pre-measurement without training (attaching a device to a trained model and running it forward once) cannot see the effect of training, so it is not used as a reason to proceed, only as a reason to stop.
@@ -351,12 +358,11 @@ How to handle evaluation data and human labels so that criteria or choices are n
 - Split test data with a fixed seed and seal it; first verify the evaluation process on the rehearsal half, then look at the main test only once.
 - Run the final test by checking out the frozen commit into a separate workspace, and check the code hash before running.
 - Freezing and sealing are safeguards against looking at results and picking only good values (cherry-picking under 00 principle 5). They do not block analyses that re-aggregate already saved test runs and predictions with later code (new metrics, other groupings, reweighting). If the gate blocks even this, keep a separate entry point that "only reads what is saved", and do not do new runs, re-scoring, or threshold changes through that path.
-- If anything was chosen differently from the pre-set rules, state how, with numbers, in the appendix.
+- State deviations from the pre-results plan (including anything chosen differently from the pre-set rules): what was changed and why, with numbers; mark results that came from exploration separately from the confirmatory results registered before results.
+- Attach a leakage checklist to each report, writing for each item "none" and its basis in one line: incomplete separation of training and evaluation (no test set, preprocessing before splitting, feature selection on the test set, duplicate samples), features not available at prediction time, test distribution different from the distribution the claim is about (temporal leakage, non-independence, sampling bias).
 - Do human evaluation first with machine scores sealed; if a flaw is found, preserve that round as void without opening the scores.
-- Choose values on the validation split and write "validation-selected" in the result document. Values chosen on the test split create optimistic gains.
-- Keep external models trained on the target labels only as reference rows.
+- Choose values on the validation split and write "validation-selected" in the result document. Values chosen on the test split create optimistic gains. Keep external models trained on the target labels only as reference rows.
 - Measure labels' self-reproducibility (agreement rate, κ) by relabeling after a time gap with the order reshuffled. State in the paper any label procedure that changed from the plan.
 - Inspect benchmark items visually with model predictions hidden, remove whole categories as the unit, and if the decision was made after results, record how.
-- Automatic detection results are not ground truth before human approval, and uncertain cases are not confirmed as negative.
-- Set thresholds for automatic labels using training labels only, and confirm them by agreement with validation labels.
+- Automatic detection results are not ground truth before human approval, and uncertain cases are not confirmed as negative. Set thresholds for automatic labels using training labels only, and confirm them by agreement with validation labels.
 - Choosing qualitative examples to show in figures follows 06 §2.

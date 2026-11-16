@@ -35,9 +35,10 @@ Do not read the whole document every time; read only the sections the current wo
 | Using workers or writing task briefs | 05 §1 |
 | Handling long jobs, servers, GPUs and monitoring | 05 §2–4 |
 | Handling secrets, paid APIs, commits and pushes | 05 §5–6 |
-| Starting a manuscript, choosing the title and contribution sentences | 04 §1 |
-| Deciding evaluation splits, results to report and manuscript structure | 04 §2–4 |
-| Writing or editing the manuscript's sentences, tables and citations | 04 §5 |
+| Starting a manuscript, deciding the audience, claims and outline | 04 §1–2, 04 §6 |
+| Deciding evaluation splits and results to report | 04 §5 |
+| Writing or editing the manuscript's words, sentences, figures, tables and citations | 04 §3–4 |
+| Checking a finished manuscript against the venue, choosing the title and contribution sentences | 04 §7 |
 | Running a mock review, or handling feedback and reviews | 06 §1 |
 | Proofreading and verifying a manuscript, or checking submission requirements | 06 §2 |
 | Writing an external report or an AI-use disclosure | 06 §3 |

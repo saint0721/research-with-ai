@@ -18,11 +18,25 @@ The sections and outputs you pass through from assigning a job, launching it, co
 | Protect | 5 Security and cost | Cost estimate, secret filter |
 | Record | 6 Commits and push | Commits, push after approval |
 
+The practices below are based on the following sources on research computing and agent operations.
+
+| Practice | Where in this document | Source |
+| --- | --- | --- |
+| Do not add agents when a simple method works; count the cost of multiple agents | 1.1 | Anthropic, Building effective agents, 2024 · Anthropic, How we built our multi-agent research system, 2025 |
+| Write the goal, output format, tools and boundaries in the brief, and give arguments that are hard to get wrong | 1.2 | Anthropic 2025 · Anthropic 2024 |
+| Give workers only the permissions the assigned work needs; the leader or researcher does hard-to-undo actions | 1.2 | OWASP Top 10 for LLM Applications 2025, LLM06 |
+| Verify worker results separately | 1.3 | Cemri et al., Why Do Multi-Agent LLM Systems Fail?, NeurIPS 2025 |
+| Save intermediate results and resume; record run commands, environment versions and seeds | Ch. 2, 03 §4.1, §4.3 | Sandve et al., PLOS Comp Biol 2013 |
+| Do not change batch during an experiment; prepare inputs in advance | Ch. 3, 03 §5.4 | Godbole et al., Deep Learning Tuning Playbook, 2023 |
+| Keep raw data read-only with a copy in another place; commit in small units | Ch. 3, Ch. 6 | Wilson et al., PLOS Comp Biol 2017 |
+| Stop conditions; usage and cost caps | Ch. 4, Ch. 5 | Anthropic 2024 · Sculley et al., NeurIPS 2015 · OWASP 2025, LLM10 |
+
 ## 1. Roles of leader and workers
 How to decide who does what when using several agents. Having the leader finish the work directly is often faster and cheaper than adding workers.
 
 ### 1.1 Who does it
 - The leader does pre-measurement scripts, few-line fixes, records, judgments and short document tasks directly. The time a worker spends reading the brief and code and setting up the environment is often longer than the actual work, and workers sometimes stop after writing code without running it.
+- Before adding agents, first check whether a simpler method (the leader alone, one script run) works. One agent uses about 4 times the tokens of a chat, and multiple agents about 15 times (Anthropic 2025).
 - Use workers only when the researcher asks or has decided to work through workers (including when actual work is handed off because of usage limits, Ch. 5). Within that, the criterion for launching a worker is work with a separable output (a module and its tests, a measurement tool). If instructions conflict on who handles small changes, ask the researcher once and record the answer in the operations document.
 - Give one worker one question and one file scope; the leader merges several results into one. Split research into several narrow questions, launch research agents in parallel, and have them mark how deeply they checked the full text.
 - A worker's job ends at "write → verify → run → confirm start → hand back". It confirms passing from the test run's own exit status, launches the job, and once the start is confirmed records in its handoff the run location, PID, start time, expected end and the checkpoints to look at (smoke, early-stop check, end), and closes its pane. Do not keep workers that only watch.
@@ -32,9 +46,11 @@ How to decide who does what when using several agents. Having the leader finish 
 
 ### 1.2 Worker brief
 - Do not refer to other briefs (no "same as the other brief"); write all paths, hardware and models into it. Write hardware values (memory limit, GPU count) as actually checked. A guessed value leads the worker to wrong decisions such as shrinking the batch or stopping. The model used for measurement and comparison is by default the adopted base row; if another row is used, state why.
+- Write in the brief the goal, output format, tools and sources to use, and the boundaries not to cross. A vague brief makes workers overlap or leave gaps. Give arguments that make mistakes hard for the worker, such as giving paths as absolute paths.
 - Write "write the handoff and mark the task completed" as the last step. Without the completion mark the leader's wait never wakes, and finished work looks stalled.
 - For long runs, have the worker hand off right after confirming the start; do not make it wait for the first epoch or the end. If scoring and measurement follow training, have them bundled with training into one script on the server (train → score → measure → end marker) and launched at once. Before launching, the leader checks that the brief has no "wait until it finishes" step. If the runner runs a smoke before training, the worker does not run the same smoke separately.
 - Write that the worker must not change the working environment outside the assigned scope (connection and authentication settings, system installs, other experiments' files, open apps), and that when a server or outside resource cannot be reached, it stops and reports instead of trying to fix it. A blocked worker can look for a way around on its own and change the researcher's working environment. Have it not open question prompts; when unsure, use a safe default and note it in the handoff.
+- Give a worker only the tools and permissions the assigned work needs. Hard-to-undo actions such as sending messages, deleting and pushing are done by the leader or the researcher, not the worker.
 
 ### 1.3 After launch
 - The leader does not just wait for the completion mark; from right after launch it looks directly at what the worker is actually doing (running processes, logs, GPUs and files on the remote machine). If it sees work that departs from the brief or design document (e.g. an unplanned recomputation), it judges on the spot whether it is right and records it in the design document as a supplement or correction.
@@ -75,7 +91,7 @@ How to use a remote compute server. Assumes the agent runs on a laptop and compu
 - How to keep GPUs full: the CPU prepares the next input in advance, and small jobs that cannot fill a GPU go into a second slot on a GPU with spare memory. Training never goes into a second slot. For a job type run for the first time, run it alone to measure peak memory before packing it. After packing, measure GPU utilization a few times, and for GPUs running two jobs together check the run ledger for out-of-memory failures. If there are failures, take that job type out of the second slot.
 - Do not leave GPUs idle: while one row runs, finish the next row's design, code and tests, and launch it as soon as the running row finishes or is stopped. If a confirmation training run fits on one GPU and there is an idle GPU, register the judgment criteria and launch it right away instead of waiting for unrelated jobs to finish.
 - Early stopping: match past rows' learning curves against their final verdicts, register before results a line on a value that can be measured reliably mid-run ("rows this far behind have never passed by the end"), and stop a row that crosses it. Do not adopt on mid-run values (rows that led mid-run have failed the final verdict). Score a stopped row's saved checkpoint for the record as well.
-- Back up results against server outages, and do not stop at backups; also test restoring. Write the restore steps in the backup folder, and do not copy again results or checkpoints already in other storage. Secrets (API keys, credentials, SSH keys) do not go into backups; enter them again on the new machine.
+- Keep raw data read-only and keep one copy in another place. Back up results against server outages, and do not stop at backups; also test restoring. Write the restore steps in the backup folder, and do not copy again results or checkpoints already in other storage. Secrets (API keys, credentials, SSH keys) do not go into backups; enter them again on the new machine.
 - When returning equipment or moving work to another machine, first move results, figures and documents to the machine you will work on, write in the operations document what will and will not be done on that machine (e.g. no training, only manuscript edits), and change paths in configuration files (hook settings, etc.) to the new machine's values.
 
 ## 4. Watchers and monitors
@@ -101,12 +117,14 @@ Rules for personal data, secrets, external transfer and paid APIs.
 - Do not touch VPN or network settings. Run only the designated stop script when told to turn it off.
 - Split API keys into per-person profiles, and record only amounts, never key values. Use only one key per run. Splitting one run across several keys splits the records and retries.
 - For paid APIs, pick which key to use first by credit expiry date, and before running, compute cost with the measured unit price and confirm it is within the balance. If already measured with the same model and prompt, record the reason for skipping the pilot in the pre-registration document.
+- Put caps on iterations, time and cost for agent runs and paid APIs; when a cap is hit, stop and notify. If usage spikes well above normal, find the cause before continuing.
 - Only when the researcher has decided to work through workers because of usage limits, give the actual work (code, measurement, launches, fetching results) to a cheap model's worker as a single brief file, and let the leader do only instructing, judging and documentation. Keep answers and tool output short too, so the large model's allowance lasts the whole research period.
 
 ## 6. Commits and push
 Rules for recording and publishing changes to code, documents and manuscripts.
 
 - Commit only the intended files. Do not add whole directories, and do not touch uncommitted files someone else was editing.
+- Commit in units small enough to revert in one step, and do not commit unfinished work. Do not include intermediate files that can be regenerated, or large files.
 - Put code or manuscript changes and the documents that correspond to them (design, results) in the same commit, and when reporting to the researcher, include the path of the document where it was recorded.
 - Push only when a person instructs it, and check for secrets before pushing. Push only to the designated remote branch; do not touch other branches or main of a shared repository. In a repository only the researcher uses, also push to main when the work branch continues straight from main (fast-forward). Never force-overwrite main.
 - Document check before push: are the plan, result and design documents matching the change updated; is there a header; are failures and omissions recorded; do the paths the documents point to exist; is remaining work intended; is result data kept out of the commit; is there a one-line summary of what is pushed and why.

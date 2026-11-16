@@ -13,7 +13,7 @@ The skill activates when you do research work, for example "let's design the exp
 | `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki and note vault, documentation, incremental improvement |
 | `02-topic-question-prior-work.md` | Topic, seven-step method derivation, questions, decision rules and task definition, prior work, gaps and novelty |
 | `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, development order, in-training measurement, judgement |
-| `04-writing.md` | Writing to the venue's review criteria, evaluation splits, what goes in the paper, manuscript structure, sentences, tables and citations |
+| `04-writing.md` | Scientific writing principles (audience and claim strength, argument structure, words and quantities, sentences, figures, tables and citations), honest reporting of evidence, the writing process, checking against the venue |
 | `05-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
 | `06-critique-and-review.md` | Mock review, feedback handling, manuscript checks and proofreading, submission requirements, external documents |
 | `07-ai-errors.md` | Error types with their signals and countermeasures |
