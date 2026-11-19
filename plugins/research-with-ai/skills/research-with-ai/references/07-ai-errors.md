@@ -69,6 +69,7 @@ Errors that arise when handling manuscripts and tables. They mostly occur where 
 | Summary numbers without a source | Numbers in the abstract or body match no table or figure cell | Take numbers from actual cells and state the range |
 | Claims inconsistent with intervals | Writes "better" when the confidence interval includes 0 | Claim-word rules in 06 §2 |
 | Assertion without checking | Says "it comes out like this" without looking at the build or output | Check the actual build result before asserting |
+| Illusion from filtered output | Reports "missing", "empty" or "left over" after reading output whose lines were filtered (picking some lines, dropping lines, cutting columns) | The cause is reading lines that the viewing method removed as absent from the manuscript. Confirm such a comment once more on the unfiltered source or the rendered output for that range before raising it (06 2.1) |
 | Misleading figures or tables | A marker attached to only one item makes another item's condition read wrong | Mark conditions in group headers |
 | Figure and caption version mismatch | Only the figure remains an old version and disagrees with the caption | Pixel comparison in 05 §6 |
 | Misattributing credit | The AI-use disclosure is written as if the AI did the ideas or design, or our own parts are written as "following" or "adopting" prior work, giving the credit to prior work | 04 §4.1, 06 §3 |
