@@ -23,7 +23,7 @@ How to narrow an idea into a research topic. The point is not to get many ideas 
 
 Filter topic candidates by three criteria.
 - Can the experiment be done with the data and compute available?
-- Does it make a paper at the target venue? First set a few fit criteria for the research that venue accepts (e.g. is it a new problem, is there a controlled evaluation, are method and application present together), agree on them with the researcher, and filter by them. If it drifts into the language of the application field, the methodological contribution weakens.
+- Does it make a paper at the target venue? First set a few fit criteria for the research that venue accepts (e.g. is it a new problem, is there a controlled evaluation, are method and application present together), agree on them with the researcher, and filter by them. If it drifts into the language of the application field, the methodological contribution weakens. Before choosing venue candidates, first confirm the paper's research character (which field it contributes to) and the data that can actually be used; if unknown, do not guess but ask or state it as an assumption. Venue fit is determined by these two, so if the guess is wrong the candidate list is rebuilt from scratch.
 - Does it keep improving as data, compute and model size grow, rather than only with the label ratio?
 
 After filtering, apply the rules below to the remaining candidates.
@@ -32,8 +32,13 @@ After filtering, apply the rules below to the remaining candidates.
 - When two or more studies are entangled, postpone thinking about how they connect and write the boundary into the project instructions. Without a boundary, the agent mixes the two studies in its proposals.
 - Put task difficulty not at the two extremes (cases anyone gets right, cases nobody can get right for lack of information) but in the middle band where judgments diverge. At the extremes, differences between methods do not show.
 - Get the AI's explanation first and defer the decision. Align understanding with "I understood that ~. So does that mean ~?" before deciding.
+- Frame the topic of a grant proposal around challenges, not methods. Under the top-level question, place the sub-studies as challenges rather than as "what we will build", and for each challenge write the definition, why it is hard in principle, why scale (data, model size) does not solve it, the criterion for judging it solved, and the knowledge that remains even on failure; only then attach a method. Writing the method first makes reviewers read it as a development project and hides the urgency of the research.
+- Before drafting grant-proposal candidates, first confirm who the principal investigator is and which track record (representative papers) serves as grounds, and whether the document is a final version or discussion material. The track record that counts in review is the principal investigator's, so candidates built on someone else's research get rebuilt from scratch.
+- When the researcher says to leave out a particular field, remove that field's applications not only from the candidates but also from the grounds, the researcher introduction and the description of prior achievements, keeping only the methodology, and state only what must remain (e.g. representative paper titles) once. If the removed field remains scattered through the document, reviewers read it as research in that field.
 
 If what to measure is unclear, design the situation first before repeating measurements. The order is design the situation → generate it directly → check by eye → scale up. Repeating measurements without a situation piles up failures without revealing the cause.
+
+Formalize and test the remaining candidates after filtering, before entering experiments or long development. For theoretical research, write them within one page in the form of propositions, lemmas, theorems and corollaries; for experimental research, in the form of hypotheses, predictions and rejection conditions. Writing them formally reveals what must be proved or measured, hidden assumptions and mutually contradictory claims, and this formal version becomes the reference for comparison used in the prior-work survey of Ch. 4 and the novelty judgment of Ch. 5. When receiving candidates by overlaying several papers, too, do not expand the candidates right away; filter them by the three criteria above and start with formalization. Even if a proof written by AI reads smoothly, do not use it as a result; keep it as a conjecture (07 §1.1 "Plausible theorems and proofs").
 
 Reverse-analyze good papers for how the idea was obtained rather than for the results. Reconstruct it in the order weak link of the latest method → standard model from a neighboring field → prediction of where the gain is largest → ablation that rules out other explanations, keep it as a `step / what was done / trace left in the paper` table, and apply the same process to your own problem.
 
@@ -41,7 +46,7 @@ Reverse-analyze good papers for how the idea was obtained rather than for the re
 A 7-step procedure for deriving a method (module) from a measured failure. Organized from the research-methodology literature ([Hamming, "You and Your Research"](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black, "Novelty in Science"](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton·Steinhardt, "Troubling Trends in ML Scholarship"](https://arxiv.org/abs/1807.03341), [J.-B. Huang's research tips](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208)) and the common shape of major papers. §2.1 covers what to do and produce at each step; §2.2 covers the shape that recurs in representative papers.
 
 ### 2.1 Seven steps
-The table below gives, for each step, what the AI does, the check question, the output and the source. ①–④ are used when proposing candidates in the design conversation (03 §1), ⑤⑥ in the design document and experiment preparation (03 §1.6, Ch. 5, Ch. 8), and ⑦ when choosing the next row after judgment (03 §9).
+The table below gives, for each step, what the AI does, the check question, the output and the source. ①–④ are used when proposing candidates in the design conversation (03 §1), ⑤⑥ in the design document and experiment preparation (03 §1.6, Ch. 5, Ch. 8), and ⑦ when choosing the next row after judgment (08 §1).
 
 | Step | What the AI does | Check question | Output | Source |
 | --- | --- | --- | --- | --- |
@@ -82,9 +87,10 @@ The rules fixed before results and kept after results are as follows.
 - If the sample per condition is small (roughly under 30), lower the claim scope to "case report" before results.
 - Keep a judgment metric once fixed. Each change of metric definition breaks comparison with earlier results.
 - Classes or metrics that swing strongly with chance are removed from judgment and kept as guards that only check for drops.
+- When judging whether a signal adds information, register the criterion not against zero or random but as the difference from the same set with only that signal removed (other conditions equal), and confirm by an earlier measurement whether that reference set already crosses the judgment line. If the rule uses the signal to select cells or samples, also register precision, coverage and net gain against "use all", and the harm caused on runs that are already good. Where the base is already good, even an uninformative signal is judged a success.
 - When a hypothesis is rejected, do not change the analysis to defend the claim; change the question honestly.
 - Keep the sentence a human approved verbatim in the decision table. It becomes the reference when the grounds and scope of a decision are disputed later.
-- For the adoption criterion during development and when to run multiple seeds, follow 03 §7.1 and §9.2; for the use of pre-measurements without training, follow 03 §9.4.
+- For the adoption criterion during development and when to run multiple seeds, follow 03 §7.1 and 08 §1.2; for the use of pre-measurements without training, follow 08 §1.4.
 
 ## 4. Surveying prior work
 How to widen the scope of prior work, how to check and record what was read, and how to state the differences. §4.1 covers what to look for, §4.2 how deeply to check and record what was found, and §4.3 how to state the remaining differences.
@@ -106,6 +112,7 @@ Match every paper's title, first author, year and venue on the original page. Bi
 - Do the broad first-pass survey with a low-cost model, and re-check key references by DOI and original text.
 - In the survey document, record the search terms, where you searched and the search date. When searching again later, this separates what is new.
 - Put a sentence forbidding personal information into survey agent instructions (05 §5).
+- When receiving candidates from survey or consultation agents, put into the instructions the locations not only of current records but also of archived old ledgers and decision documents, so they find old measurements of the same premise, and search those records once before passing on the candidates received. Mark a candidate that hits as "premise needs re-checking", not "blocked", since an old measurement does not carry over as is when the base differs. This prevents re-measuring as new the same premise under a different name.
 
 Judge the closest prior work used for pre-emption and novelty judgments only after reading the full text (method section and experimental setup). Put "for the closest prior work, open the full text, read the method section and record which sections you read" into research-agent instructions; mark judgments made at abstract level as provisional and re-judge after reading the full text. Record what was read in the full text (sections read, mechanism, relevant numbers, what it means for our candidate) per paper in the prior-work document, and have agents write that document too.
 
@@ -129,6 +136,7 @@ Judge each module as "new mechanism / new combination of known parts / not claim
 - Build the contribution on a failure confirmed by measurement, not on a technique. Making a specific technique the topic turns it into a technique-comparison paper. When the AI drifts toward a specific technique, bring it back to the axis of the design.
 - Keep growing the methodological contribution regardless of venue level. Do not stop at narrow novelty plus experiments.
 - Include in the experiment design a measurement of whether the claimed mechanism actually occurs.
+- If prior work substantially overlapping the formalized claim (Ch. 1) appears, return to the formalization step of Ch. 1, restate it as a non-overlapping claim, and run the loop of surveying prior work again. Whether to abandon that direction or keep the lineage and claim only the difference is decided by the researcher; the AI stops at showing the overlap and the remaining difference in a table.
 - Re-judge each contribution after some time, against the full text, as keep, soften wording or withdraw. It is normal for claims to shrink and harden through review; reducing the claim to a simple method and an honest benchmark is rewarded with reproducible results.
 
 When the researcher chooses assembly-style novelty, build the method as linear research that stacks borrowed parts one row at a time. Each part may come from other studies or other fields (medical imaging, video, point clouds, etc.), and for each part write down which measured problem it was borrowed to target. Novelty rests not on any single part but on the problem → part mapping and the combination. Prior work on a part, or its earlier closure on a different base, is no reason to drop it from the assembly candidates. Record the closure with its conditions in the design document, though, and measure again on the current base.

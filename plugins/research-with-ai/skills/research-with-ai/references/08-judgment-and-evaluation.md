@@ -1,0 +1,95 @@
+# Research with AI — Result Judgment and Evaluation Data
+
+| Item | Content |
+| --- | --- |
+| Purpose | Judges the results of trained rows and chooses the next row, and handles evaluation data and labels without being pulled by results |
+| When to read | When results are in and adoption or holding is decided; when doing pre-measurement without training; when measuring the mechanism of a row that rose; when handling test data, labels, and freezing |
+| Outputs | A result document, one ladder-table row, mechanism measurement results, next-row candidates, a leakage checklist |
+| Structure | §0 workflow, §1–§2 methods. Design, environment, code, training, and measurement are in 03 |
+
+## 0. Workflow
+The chapters a trained row's results pass through after they come in, and each chapter's output.
+
+| Order | Chapter | Output |
+| --- | --- | --- |
+| Diagnosis | 1.1 Diagnosing a row that did not improve | Cause diagnosis, candidate fixes |
+| Judgment | 1.2 Adoption and the judging score | Result document, one ladder-table row |
+| Next row | 1.3 Choosing the next row, 1.4 Pre-measurement without training | Next-row candidates |
+| Mechanism | 1.5 Mechanism measurement of a row that rose | Mechanism measurement results |
+| Evaluation | 2 Evaluation data and labels | Sealing and freezing records, leakage checklist |
+
+## 1. Judgment and next row
+Rules for deciding adoption, holding, or adjustment after results come in, and choosing the next row. 1.1–1.3 judge trained rows, 1.4 covers measurement before training, and 1.5 covers measurement after a row rises.
+
+### 1.1 Diagnosing a row that did not improve
+Before discarding a row that did not improve, diagnose the cause. Look in the order implementation check → missing standard techniques (sharpening, normalization, weight schedules, a weight that matches a new loss's scale to the other losses, etc.) → in-training measurement (03 §8.4) and checkpoint analysis. A diagnostic report starts with one line each on the implementation check and on missing standard techniques, and only then moves to measurement analysis. When a measurement stands out it is easy to skip the first two steps, and then an implementation error or a plain scale imbalance is misread as a problem of mechanism.
+
+Choices after diagnosis follow the rules below.
+- The researcher chooses the fix. Do not automatically run pre-decided fix candidates.
+- When checking the structure, use prior-work standard values; tune values such as weights and temperatures only after the structure has shown an effect.
+
+### 1.2 Adoption and the judging score
+Adopt only by the threshold and judging score fixed before results. The threshold exists to pick good rows; the rule only guards against reading noise as gain. Changing the criterion or score to fit results after seeing them picks only the side that came out well, so change the criterion only before seeing that row's results (including seeds not yet run); after seeing them, change it from the next row on. If it was changed after seeing part of the same row's results (earlier seeds), record that fact and whether the row would also have passed the original criterion in the judgment record.
+- Fix the adoption threshold before results in a pre-registration document.
+- When asking to keep a rule, explain it with the measured noise size the rule guards against (re-running the same setup, seed spread), and, if results are not yet in, give the researcher the option to change the criterion as choices (keep, relax, adopt by the researcher's judgment). A rule that sounds like form detached from its purpose leaves the researcher without grounds to decide.
+- For a component whose targeted failure appears only in some seeds (a device that rescues bad branches, for example), a gain near 0 on already-good seeds is normal, so before results consider judging by the mean paired difference instead of a condition such as "> 0 on every seed".
+- During development, judge a single-seed row by the baseline spread of 03 §4.2.
+- For final adoption with several seeds: for a row that adds something, require the paired-interval lower bound > 0 and a difference at least twice the single-seed spread; for a row that removes something (simplification), require the paired-interval lower bound to exceed the pre-set tolerated loss (−margin). Measure the spread by actually running the same configuration with several seeds. Label results whose lower bound across several seeds does not exceed 0 as "1-seed result".
+- When setting a decision line as a ratio of shares, measure each bin's base share (area, sample count) before registration and check that the line can be crossed mathematically (1 ÷ base share ≥ line). If it cannot, set the line on another scale such as a per-cell rate. A line that cannot be crossed returns "absent" regardless of the result and cannot test the hypothesis.
+- When choosing the judging score, check the field's convention first. A common convention is to judge on one validation split and only report the test split, measured with the same checkpoint. A two-split average may also be used if fixed before results, but if the researcher chooses the convention, re-pin to it.
+- If judging splits disagree in direction for a row run once (e.g., validation down, test up), judge that row only by the registered score, and pin a new judging score for later rows before their results. The purpose is not to read only the side that came out well (the cherry-picking ban of 00 principle 5); do not re-explain it as "protecting the score by never looking at the test split".
+- If the paired interval of a new result includes 0, lower the strength of the claim (the wording rule for the manuscript is 06 §2, "Tie claim words to intervals"), and if a result contradicts a previous claim, withdraw the claim.
+
+### 1.3 Choosing the next row
+Choose the next row so it follows from the measured failure and the overview the researcher drew; if adding things keeps failing, extract rules first. When candidates keep failing, the checks accumulate with the number of failures: from the second, a table of the base's remaining headroom; from the third, the information-source map; when several added rows in a row do not improve, the rule table as well.
+- Choose the next move after a failed row on the overview the researcher drew (03 §7.2).
+- When lifting an existing constraint, lift it only as a component of the method tied to a measured failure, keep a separate ablation row, and give the baseline the same resources.
+- If several rows added one at a time on the same base fail to improve in a row, stop adding and extract rules from those rows' results into a table (what raises the score, what lowers it). Write the next module with those rules as conditions, and design only candidates that follow directly from the problem statement. Each row is still one change, but candidates are chosen not as "things to try adding" but as "things that aim at the problem while keeping the rules".
+- **Information-source map**: write it before proposing candidates, and always first when three or more candidates in a row are blocked. Patching one module onto each measured symptom mostly ends up reusing the same model's outputs, so on errors the model does not know, the same information limit blocks it again and again.
+  - Write what information would separate the remaining errors and where it comes from under the current conditions, and for each candidate write in one line whether that information is something the model (teacher) already has or something newly brought in.
+  - Measure once without training whether each information source actually knows the answer: the share of the remaining errors that source gets right, the share of correct cells it breaks, and the score of the map replaced with that source's answers. Use only sources that know the answer as material for candidates.
+  - A design proposal claiming to fix the remaining errors must state in its first line the new information source it uses and the measured evidence that the source knows the answer; if that is empty, send it back before reviewing structure or loss.
+- If two or more candidates in a row are blocked on the same base, before proposing the next candidate write the base's remaining room (the gap to the upper bound in 03 §5.5) and whether the devices already in the base overlap the candidate's mechanism, and put "change the candidate" and "change the base (make room for the module to stand)" in one table for the researcher to choose. On a base with no room, only candidates get used up.
+- **Choose the target by the judging score**: choose candidates, consultation queries, and pre-registrations by their prospect of raising the judging score (e.g., overall mIoU), and leave open which classes it rises in.
+  - Do not propose candidates aimed only at classes that are inherently hard to raise, or registrations that use those classes' values as the judging value. Only candidates with little share to move the judging score remain, and the gains on easy classes are missed. If the hard classes rise too, that is a bonus; use per-class tables only for reading.
+  - After changing the target, remove the old target's cells (e.g., confusion of a specific class pair) from the result report tables, judgment criteria, and analysis scripts' default output, and keep only per-class tables and the judging score. Tools, records, and consultation answers built up around the old target pull the report back toward the old target.
+- Keep rows that were tried but not adopted in the ladder table with their results as they are. Do not put them in the paper (00 principle 16, 04 §5.2).
+
+### 1.4 Pre-measurement without training is for stopping only
+Pre-measurement without training (attaching a device to a trained model and running it forward once) cannot see the effect of training, so it is not used as a reason to proceed, only as a reason to stop.
+- Its only use is checking facts the design relies on: does the targeted phenomenon exist (premise), does the signal the new device will use contain information (information), and even working perfectly, is the share it can fix large enough (upper bound). Do not use it for choosing candidates, setting values, or predicting gains. Do it only when the design is finalized, the premise is uncertain, and training is expensive; otherwise go straight to smoke and training.
+- What to look at is not the size of the number but present or absent. If "absent", close it without training; "present" only qualifies it for a training try. Write in the first line of the report and the registration: "passing makes it worth trying (necessary condition); whether it solves the problem is known only from training; on failure this option is dropped".
+- Do not decide present or absent from one number. Report together (1) the separability (e.g., AUROC), (2) at the point where the signal is used (per threshold, or the replacement rule itself) the number fixed and the number broken and the resulting change in the metric, and (3) values per stratum such as class or size. With several sources, judge each source separately, and do not use the measurement to choose between sources. For a hypothesis with a confusion direction, include directional confusion, range, and confidence together; check in the code the definition of each record field used (a ratio divided by what, in which direction) and write it in the registration document; and for fields not in the records, write whether they can be measured from checkpoints. This is so that no single ambiguously defined metric props up or closes a premise.
+- For a measurement that estimates a model's confidence, error rate, or transition from labels, first check in a table whether every related model (the main model, auxiliary heads, the teacher) has already trained on those labels. On seen labels errors hardly occur, so the estimate skews toward 0 or the identity matrix; report together where out-of-sample labels come from (retraining on split groups, held-out labels) and the cost.
+- Before results, check whether the measurement can in principle move the judgment. For hyperparameters of a borrowed method, check that the units and range of the quantity they act on match the original paper (normalizing the input changes them), and compute the maximum effect first. If the result is exactly 0, suspect the form of the measurement before concluding.
+- If the target set was chosen by that model's outputs (wrong answers, confidence), check whether a metric measured with the same model's representations is determined by the selection alone (circularity), and include reference points (another model, a random set, a label-using upper bound). If circular, "absent" is not evidence. When one such flaw is found, recheck at once the other "absent / not" judgments in the same batch of work, and the places where "not" was said in words without measurement.
+- Closing as "absent" closes only the one form the measurement imitated. Keep axes of a different form (replacement versus removal, frozen versus jointly trained, one-shot versus feedback, per-cell versus per-image input) open by writing them in the result document as "outside this measurement"; if the same form fails several times, close only that form and ask the researcher whether to test the remaining axes as training rows.
+- If the measurement said "present" but training stays low, do not conclude it was a measurement error or a single code mistake. Both can be right while the link between them breaks (the signal fades during training, the source comes to resemble the teacher, changed answers harden through the teacher, side effects outside the measured region, the loss cannot use the information, noise). Check implementation → missing standard techniques → the broken link, and for this register in the mechanism measurements that quantities measured beforehand are also logged during training with the same definitions.
+
+### 1.5 Mechanism measurement of a row that rose
+When a row passes the judgment criterion, before adding the next row, measure, as the next thing after the score, "did the targeted problem actually shrink?", using the checkpoints of the row that rose and the row directly below it (the base). No retraining.
+- Scores also rise from regularization, compute, training length, and chance, so the problem → component correspondence holds only when the targeted errors and the internal state change together. The remaining share becomes the next component's target, and this measurement grounds the paper's analysis section and ablations. Measured later in bulk, the shares cannot be separated between rows that have already piled up.
+- Write what to measure in the design document before results, as "what to measure if it rises" (02 §2.1 ⑥). A measurement chosen after seeing results fits its interpretation to the results.
+- Measure the two rows side by side in the same run, with the same tools, definitions, and data lists as when the problem was first measured (02 §2.1 ②), using existing measurement tools first. Do not stop at one number; report the count of targeted errors, the cause metric, and per-stratum values together.
+
+| Result | How to read it and the next move |
+| --- | --- |
+| Targeted errors and the cause metric shrink together, and a share remains | Design the next component aimed at the remaining share, and use these values as that component's judgment baseline and smoke-check items |
+| Errors shrank but the cause metric is unchanged | It was fixed by another path. Propose to the researcher a measurement or ablation row that separates that path |
+| Only the score rose; errors and cause are unchanged | The gain came from elsewhere. Withdraw the problem → component claim and propose a control row that separates the source of the gain (compute, regularization, etc.). The row stays in the ladder table as is |
+| Losses appear where nothing was targeted | Write the location of the side effect (with the base share and density of 03 §8.4) as a constraint for the next design |
+- The next component's design, control rows, and replacing the base are decided by the researcher after seeing these results.
+
+## 2. Evaluation data and labels
+How to handle evaluation data and human labels so that criteria or choices are not changed after seeing results. Test data and code are sealed and looked at only once, and deviations from the plan and leakage-check results are stated in every report. Human labels have their self-reproducibility measured, and automatic labels are not used as ground truth before human approval. Choosing qualitative examples to show in figures follows 06 §2.
+
+- Split test data with a fixed seed and seal it; first verify the evaluation process on the rehearsal half, then look at the main test only once.
+- Run the final test by checking out the frozen commit into a separate workspace, and check the code hash before running.
+- Freezing and sealing are safeguards against looking at results and picking only good values (cherry-picking under 00 principle 5). They do not block analyses that re-aggregate already saved test runs and predictions with later code (new metrics, other groupings, reweighting). If the gate blocks even this, keep a separate entry point that "only reads what is saved", and do not do new runs, re-scoring, or threshold changes through that path.
+- State deviations from the pre-results plan (including anything chosen differently from the pre-set rules): what was changed and why, with numbers; mark results that came from exploration separately from the confirmatory results registered before results.
+- Attach a leakage checklist to each report, writing for each item "none" and its basis in one line: incomplete separation of training and evaluation (no test set, preprocessing before splitting, feature selection on the test set, duplicate samples), features not available at prediction time, test distribution different from the distribution the claim is about (temporal leakage, non-independence, sampling bias).
+- Do human evaluation first with machine scores sealed; if a flaw is found, preserve that round as void without opening the scores.
+- Choose values on the validation split and write "validation-selected" in the result document. Values chosen on the test split create optimistic gains. Keep external models trained on the target labels only as reference rows.
+- Measure labels' self-reproducibility (agreement rate, κ) by relabeling after a time gap with the order reshuffled. State in the paper any label procedure that changed from the plan.
+- Inspect benchmark items visually with model predictions hidden, remove whole categories as the unit, and if the decision was made after results, record how.
+- Automatic detection results are not ground truth before human approval, and uncertain cases are not confirmed as negative. Set thresholds for automatic labels using training labels only, and confirm them by agreement with validation labels.

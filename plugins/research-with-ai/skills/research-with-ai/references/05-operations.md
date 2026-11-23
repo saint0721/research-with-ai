@@ -99,9 +99,11 @@ Assumes the agent runs on a laptop and computation runs on a remote server. Thre
 ### 3.1 Launching and stopping
 - Launch long jobs detached from the shell (`setsid nohup … &`). A plain background job dies when the connection drops. Prefix `bash` for scripts without execute permission.
 - Register the launch order, the command and the runner's argument format in the operations document as is, so they are not confused each time.
+- Each time a training run is launched, write one run document: what is run (row, configuration, commit, script, GPU, seed, status log, watcher), what methodology it is (in plain words and field terms, what was changed against the base), what was measured before (linking to premise measurements and related result documents, with the key numbers and verdicts), the judgment criterion and branch points, and the result document when it ends. Make it and the design and result documents point to each other, and base later discussion on this document.
 - After launch, check the start line in the queue log, and report "training started" only after seeing the actual training start line.
 - Stop processes only by ID. Killing by name pattern also kills the command itself or other people's jobs.
 - If the remote shell environment differs (e.g., the virtual environment is not activated), specify the executable path. Run long interactive work inside a terminal multiplexer.
+- Make dangerous scripts stop first when arguments or required variables are missing. Rules tied to tools, such as how to write files from the shell, go into the global instructions, not the method documents (Installation and usage guide §1.4).
 
 ### 3.2 Shared resources and environment
 - Do not use GPUs that others are using. Use only permitted GPUs, only in the agreed time slots. For time-limited GPUs, the runner refuses starts outside the window and makes jobs finish before the deadline.
@@ -112,13 +114,15 @@ Assumes the agent runs on a laptop and computation runs on a remote server. Thre
 ### 3.3 Keeping GPUs full
 While one row runs, finish the next row's design, code and tests, and launch it as soon as the running row finishes or is stopped. If a confirmation training run fits on one GPU and there is an idle GPU, register the judgment criteria and launch it right away instead of waiting for unrelated jobs to finish.
 - The CPU prepares the next input in advance.
-- Small jobs that cannot fill a GPU go into a second slot on a GPU with spare memory. Training never goes into a second slot, and a job type run for the first time runs alone to measure peak memory before packing. After packing, measure GPU utilization a few times, and for GPUs running two jobs together check the run ledger for out-of-memory failures. If there are failures, take that job type out of the second slot.
+- Small jobs that cannot fill a GPU go into a second slot on a GPU with spare memory. Training never goes into a second slot (when one training job uses nearly all of a GPU, putting two together does not raise throughput and only delays results). When there are more training rows than GPUs, chain the remaining rows in turn behind the GPU that finishes first. A small job of a type run for the first time runs alone to measure peak memory before packing. After packing, measure GPU utilization a few times, and for GPUs running two jobs together check the run ledger for out-of-memory failures. If there are failures, take that job type out of the second slot.
+- When putting several runs that each do not use a full GPU onto one GPU, measure peak memory per run in a smoke run with the same configuration (including the evaluation and saving at the end of an epoch), and if the sum exceeds the line that leaves headroom on GPU capacity, launch one fewer. If usage right after launch exceeds that line, reduce before the end of the first epoch. The memory peak comes late, as at the end of an epoch, so launching by estimate kills several runs at once and also breaks the condition of running them at the same time.
 - Run pre-measurements on an idle GPU with a memory cap and low priority.
 - Early stopping: match past rows' learning curves against their final verdicts, register before results a line on a value that can be measured reliably mid-run ("rows this far behind have never passed by the end"), and stop a row that crosses it. Do not adopt on mid-run values (rows that led mid-run have failed the final verdict). Score a stopped row's saved checkpoint for the record as well.
 
 ### 3.4 Backups and moving machines
 - Keep raw data read-only and keep one copy in another place.
 - Back up results against server outages, and do not stop at backups; also test restoring. Write the restore steps in the backup folder, and do not copy again results or checkpoints already in other storage. Secrets (API keys, credentials, SSH keys) do not go into backups; enter them again on the new machine.
+- When re-scoring a trained model on another machine or copy, check before running that the weight file exists and its hash, and first compare part of the scoring output against the saved predictions. Some scorers run on the base model without error when the weights are missing, so a silent substitution can be recorded as the trained model's result.
 - When returning equipment or moving work to another machine, first move results, figures and documents to the machine you will work on, write in the operations document what will and will not be done on that machine (e.g. no training, only manuscript edits), and change paths in configuration files (hook settings, etc.) to the new machine's values.
 
 ## 4. Watchers and monitors
@@ -136,6 +140,7 @@ Attach a watcher in the order below.
 - Do not read long logs with tail; extract the needed lines with remote grep. With long-line logs, the tail window misses result lines.
 - When a local watcher is cut by the laptop sleeping or moving and the researcher asks, check the server's queue log first, not the watcher output. The agent does not touch network settings.
 - Watch with **one agent-free monitor pane**, not with agent workers. It shows one line per run every 2 minutes (epochs, latest value, done/error) and sits as one pane below the chat pane. The leader judges.
+- Show on the monitor, along with progress (which epoch), the values the researcher actually looks at for judgment, but only values with the same definition as the judgment scoring (cells excluded, checkpoint used). Before showing them, match against one saved score, and if a value has a different definition, note the difference on screen and drop the comparison-against-base column. The researcher reads the trend on screen as a result, so a value defined differently from the judgment can lead to a judgment in the opposite direction.
 
 ## 5. Security and cost
 Leave personal data and secrets nowhere in commands, output or records, and cap and pre-compute runs that cost money. A leaked value cannot be taken back, and an uncapped run burns through usage in moments.

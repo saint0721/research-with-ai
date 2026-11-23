@@ -66,6 +66,14 @@ Automatic triggering alone can miss cases. Add this block to the instructions th
 - When the user corrects you or sets a new way of working, edit the matching method document in [method folder] in the same turn and add one line to [improvement log]. Lessons you inferred yourself go to [improvement candidates] and you ask the user once.
 ```
 
+Rules tied to tools and the working environment are kept out of the method documents and go in the same global instructions. The block below collects such rules that came up while using this method; adapt it to your tools:
+
+```markdown
+## Shell and workspace
+- Write files that contain Markdown or code with the file-write tool. If you must write from the shell, use only a quoted heredoc (`<<'EOF'`); an unquoted heredoc runs backtick commands inside the text.
+- When the user asks you to open a new tab, session or window in their workspace, start what they normally run there (usually an agent session) and give it its first instruction (for example, read the handoff note), instead of handing back an empty pane or instructions. If it is unclear what to start, ask once.
+```
+
 ### Connect to a research repository
 
 Do not copy the skill into a project's `AGENTS.md` or `CLAUDE.md`. Write only the values specific to that project; the skill holds the method.
@@ -150,11 +158,12 @@ Core principles (from `references/00-overview-and-principles.md`):
 | `00-overview-and-principles.md` | How to read (section table per task), principles, approval scope, research flow and direction changes, operations, stop-and-check signals |
 | `01-tools-and-rules.md` | Tools, instruction layers, memory, skills, hooks, LLM wiki and note vault, documentation, incremental improvement |
 | `02-topic-question-prior-work.md` | Topic, seven-step method derivation, questions, decision rules and task definition, prior work, gaps and novelty |
-| `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, development order, in-training measurement, judgement |
+| `03-experiment-and-model.md` | Design conversation, scientific and loss review, reproducibility, fair comparison, code, development order, in-training measurement |
 | `04-writing.md` | Scientific writing principles (audience and claim strength, argument structure, words and quantities, sentences, figures, tables and citations), honest reporting of evidence, the writing process, checking against the venue |
 | `05-operations.md` | Leader and workers, long jobs, servers and GPUs, monitoring, security and cost, commits |
 | `06-critique-and-review.md` | Mock review, feedback handling, manuscript checks and proofreading, submission requirements, external documents |
 | `07-ai-errors.md` | Error types with their signals and countermeasures |
+| `08-judgment-and-evaluation.md` | Diagnosing results, adoption and choosing the next row, training-free pre-measurement, measuring why a row improved, evaluation data and labels |
 
 The documents contain no case studies. Numbers and names from one project would bias the agent's judgement, so every lesson is written as a general rule with its reason.
 
@@ -228,7 +237,8 @@ research-with-ai/
 │   │           ├── 04-writing.md
 │   │           ├── 05-operations.md
 │   │           ├── 06-critique-and-review.md
-│   │           └── 07-ai-errors.md
+│   │           ├── 07-ai-errors.md
+│   │           └── 08-judgment-and-evaluation.md
 │   └── research-with-ai-ko/              # Korean edition (same layout)
 ├── CITATION.cff
 ├── LICENSE
@@ -260,7 +270,7 @@ This skill grew out of daily research work between a researcher and AI agents. I
 | [Hamming](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton & Steinhardt](https://arxiv.org/abs/1807.03341), [J.-B. Huang](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208) | 02 §2 Seven-step method derivation | Used as the basis of each step and arranged into a procedure | See originals |
 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) | 03 §7 Development practices | Each practice is mapped to its section and source in 03 §7 | See originals |
 | [Sandve et al. 2013](https://doi.org/10.1371/journal.pcbi.1003285), [Wilson et al. 2017](https://doi.org/10.1371/journal.pcbi.1005510), [Sculley et al. 2015](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems), [Anthropic, Building effective agents (2024)](https://www.anthropic.com/engineering/building-effective-agents), [Anthropic, How we built our multi-agent research system (2025)](https://www.anthropic.com/engineering/multi-agent-research-system), [Cemri et al. 2025](https://arxiv.org/abs/2503.13657), [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) | 05 Operations | Mapped practice by practice in the evidence table at the head of 05; rules added for briefs, permissions, usage caps, raw-data preservation and commit size | See originals |
-| [Melis et al. 2018](https://arxiv.org/abs/1707.05589), [Oliver et al. 2018](https://arxiv.org/abs/1804.09170), [Musgrave et al. 2020](https://doi.org/10.1007/978-3-030-58595-2_41), [Henderson et al. 2018](https://arxiv.org/abs/1709.06560), [Bouthillier et al. 2021](https://arxiv.org/abs/2103.03098), [Agarwal et al. 2021](https://arxiv.org/abs/2108.13264), [Dodge et al. 2019](https://doi.org/10.18653/v1/D19-1224), [Kapoor & Narayanan 2023](https://doi.org/10.1016/j.patter.2023.100804), [Nosek et al. 2018](https://doi.org/10.1073/pnas.1708274114), [Pineau et al. 2021](https://jmlr.org/papers/v22/20-303.html) | 03 §4.2, §5, §10; 04 §7 Fair comparison and reproducibility | Recommendations checked in the original papers and summarized as rules; mapped practice by practice in the 03 §5 evidence table | See originals |
+| [Melis et al. 2018](https://arxiv.org/abs/1707.05589), [Oliver et al. 2018](https://arxiv.org/abs/1804.09170), [Musgrave et al. 2020](https://doi.org/10.1007/978-3-030-58595-2_41), [Henderson et al. 2018](https://arxiv.org/abs/1709.06560), [Bouthillier et al. 2021](https://arxiv.org/abs/2103.03098), [Agarwal et al. 2021](https://arxiv.org/abs/2108.13264), [Dodge et al. 2019](https://doi.org/10.18653/v1/D19-1224), [Kapoor & Narayanan 2023](https://doi.org/10.1016/j.patter.2023.100804), [Nosek et al. 2018](https://doi.org/10.1073/pnas.1708274114), [Pineau et al. 2021](https://jmlr.org/papers/v22/20-303.html) | 03 §4.2, §5; 08 §2; 04 §7 Fair comparison and reproducibility | Recommendations checked in the original papers and summarized as rules; mapped practice by practice in the 03 §5 evidence | See originals |
 | [The Craft of Scientific Writing, 4th ed.](https://doi.org/10.1007/978-1-4419-8288-9) (Michael Alley, Springer, 2018) | 04 Scientific writing | Principles of audience and purpose, precision and clarity, avoiding ambiguity, connecting ideas, beginning with the familiar, organization, emphasis and the writing process are summarized in our own words as rules. No text from the book is reproduced | Copyrighted book |
 | [Gopen & Swan, "The Science of Scientific Writing"](https://www.americanscientist.org/blog/the-long-view/the-science-of-scientific-writing) (American Scientist, 1990) | 04 Sentence rules (paragraph openers, topic position) | The information-position principle is the basis of the paragraph-opening rule | See original |
 

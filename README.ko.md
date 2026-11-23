@@ -66,6 +66,14 @@ https://github.com/saint0721/research-with-ai 의 research-with-ai 스킬을 설
 - When the user corrects you or sets a new way of working, edit the matching method document in [method folder] in the same turn and add one line to [improvement log]. Lessons you inferred yourself go to [improvement candidates] and you ask the user once.
 ```
 
+도구와 작업 환경에 묶인 규칙은 방법 문서에 두지 않고 같은 전역 지침에 둠. 아래 문단은 이 방법을 쓰며 생긴 환경 규칙이며, 쓰는 도구에 맞게 고쳐 넣음:
+
+```markdown
+## Shell and workspace
+- Write files that contain Markdown or code with the file-write tool. If you must write from the shell, use only a quoted heredoc (`<<'EOF'`); an unquoted heredoc runs backtick commands inside the text.
+- When the user asks you to open a new tab, session or window in their workspace, start what they normally run there (usually an agent session) and give it its first instruction (for example, read the handoff note), instead of handing back an empty pane or instructions. If it is unclear what to start, ask once.
+```
+
 ### 연구 저장소에 연결
 
 연구 저장소의 `AGENTS.md`나 `CLAUDE.md`에는 스킬 내용을 복사하지 않고, 그 연구에만 해당하는 값만 적음. 방법은 스킬이 맡음.
@@ -150,11 +158,12 @@ IMPROVE_LOG="$HOME/notes/research-method/개선 일지.md"          # "공개 �
 | `00-overview-and-principles.md` | 읽는 법(일별로 읽을 절 표), 원칙, 승인 범위, 연구 흐름과 방향 전환, 운영, 멈추고 확인할 신호 |
 | `01-tools-and-rules.md` | 도구, 지침 계층, 메모리, 스킬, 훅, LLM 위키와 노트 저장소, 문서화, 점진 개선 |
 | `02-topic-question-prior-work.md` | 주제, 방법 도출 7단계, 질문·판정 규칙·과제 정의, 선행연구, 공백과 신규성 |
-| `03-experiment-and-model.md` | 설계 대화, 과학적·손실 검토, 재현성, 공정 비교, 코드, 개발 순서, 학습 중 측정, 판정 |
+| `03-experiment-and-model.md` | 설계 대화, 과학적·손실 검토, 재현성, 공정 비교, 코드, 개발 순서, 학습 중 측정 |
 | `04-writing.md` | 과학적 글쓰기 원리(독자·주장의 크기, 논증 구성, 낱말과 정량 표현, 문장·그림·표·인용), 근거의 정직한 보고, 쓰는 과정, 게재처 기준 점검 |
 | `05-operations.md` | 리더와 워커, 긴 작업, 서버와 GPU, 감시, 보안과 비용, 커밋 |
 | `06-critique-and-review.md` | 모의 심사, 피드백 처리, 원고 검증·교정, 투고 요건, 외부 문서 |
 | `07-ai-errors.md` | 오류 유형별 신호와 대응 |
+| `08-judgment-and-evaluation.md` | 결과 진단·채택·다음 줄 고르기, 학습 없는 사전 측정, 오른 줄의 기제 측정, 평가 데이터와 라벨 |
 
 문서에는 사례가 없음. 특정 연구의 숫자와 이름이 섞이면 에이전트의 판단이 한쪽으로 끌리므로, 모든 교훈을 일반 규칙과 이유로 씀.
 
@@ -220,7 +229,7 @@ research-with-ai/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/research-with-ai/
 │   │       ├── SKILL.md                  # 입구
-│   │       └── references/               # 00~07 문서
+│   │       └── references/               # 00~08 문서
 │   │   └── (한국어판) evals/             # 행동 시험(claude plugin eval)
 │   └── research-with-ai-ko/              # 한국어판 (같은 구조)
 ├── CITATION.cff
@@ -253,7 +262,7 @@ research-with-ai/
 | [Hamming](https://www.cs.virginia.edu/~robins/YouAndYourResearch.html), [Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism), [Black](https://perceiving-systems.blog/en/news/novelty-in-science), [Lipton·Steinhardt](https://arxiv.org/abs/1807.03341), [J.-B. Huang](https://github.com/jbhuang0604/awesome-tips), [RegNet](https://arxiv.org/abs/2003.13678), [Simple Baselines](https://arxiv.org/abs/1804.06208) | 02 2장 방법 도출 7단계 | 각 단계의 근거로 삼아 절차로 정리함 | 원문 참조 |
 | [ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) | 03 7장 개발 관행 | 관행마다 03 7장에서 본문 위치와 근거를 짝지음 | 원문 참조 |
 | [Sandve 외 2013](https://doi.org/10.1371/journal.pcbi.1003285), [Wilson 외 2017](https://doi.org/10.1371/journal.pcbi.1005510), [Sculley 외 2015](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems), [Anthropic, Building effective agents (2024)](https://www.anthropic.com/engineering/building-effective-agents), [Anthropic, How we built our multi-agent research system (2025)](https://www.anthropic.com/engineering/multi-agent-research-system), [Cemri 외 2025](https://arxiv.org/abs/2503.13657), [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) | 05 실행 운영 | 관행마다 05 머리의 근거 표에 짝짓고, 지시서·권한·사용량 상한·원자료 보존·커밋 단위 규칙을 더함 | 원문 참조 |
-| [Melis 외 2018](https://arxiv.org/abs/1707.05589), [Oliver 외 2018](https://arxiv.org/abs/1804.09170), [Musgrave 외 2020](https://doi.org/10.1007/978-3-030-58595-2_41), [Henderson 외 2018](https://arxiv.org/abs/1709.06560), [Bouthillier 외 2021](https://arxiv.org/abs/2103.03098), [Agarwal 외 2021](https://arxiv.org/abs/2108.13264), [Dodge 외 2019](https://doi.org/10.18653/v1/D19-1224), [Kapoor·Narayanan 2023](https://doi.org/10.1016/j.patter.2023.100804), [Nosek 외 2018](https://doi.org/10.1073/pnas.1708274114), [Pineau 외 2021](https://jmlr.org/papers/v22/20-303.html) | 03 4.2·5장·10장, 04 7장 공정 비교·재현성 | 원문 본문에서 권고를 확인해 규칙으로 요약하고, 03 5장 근거 표에 관행마다 짝지음 | 원문 참조 |
+| [Melis 외 2018](https://arxiv.org/abs/1707.05589), [Oliver 외 2018](https://arxiv.org/abs/1804.09170), [Musgrave 외 2020](https://doi.org/10.1007/978-3-030-58595-2_41), [Henderson 외 2018](https://arxiv.org/abs/1709.06560), [Bouthillier 외 2021](https://arxiv.org/abs/2103.03098), [Agarwal 외 2021](https://arxiv.org/abs/2108.13264), [Dodge 외 2019](https://doi.org/10.18653/v1/D19-1224), [Kapoor·Narayanan 2023](https://doi.org/10.1016/j.patter.2023.100804), [Nosek 외 2018](https://doi.org/10.1073/pnas.1708274114), [Pineau 외 2021](https://jmlr.org/papers/v22/20-303.html) | 03 4.2·5장, 08 2장, 04 7장 공정 비교·재현성 | 원문 본문에서 권고를 확인해 규칙으로 요약하고, 03 5장 근거에 관행마다 짝지음 | 원문 참조 |
 | [The Craft of Scientific Writing, 4th ed.](https://doi.org/10.1007/978-1-4419-8288-9) (Michael Alley, Springer, 2018) | 04 과학적 글쓰기 | 독자·목적, 정밀함과 명료함, 모호함 피하기, 생각 잇기, 익숙한 것에서 새것으로, 구성, 강조, 쓰는 과정의 원리를 우리 말로 요약해 규칙으로 씀. 책의 문장은 옮기지 않음 | 저작권 도서 |
 | [Gopen & Swan, "The Science of Scientific Writing"](https://www.americanscientist.org/blog/the-long-view/the-science-of-scientific-writing) (American Scientist, 1990) | 04 문장 규칙(문단 첫머리·주제 위치) | 정보 위치 원칙을 문단 첫 문장 규칙의 근거로 삼음 | 원문 참조 |
 

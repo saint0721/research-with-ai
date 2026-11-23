@@ -3,9 +3,9 @@
 | Item | Content |
 | --- | --- |
 | Purpose | Lets you, from this document alone, design experiments with an AI agent, build a fair and reproducible environment, and develop, measure, and judge a model one step at a time |
-| When to read | When designing a new module, loss, or experiment; when setting the run environment and comparison conditions; when writing code and launching training; when judging results and choosing the next row |
+| When to read | When designing a new module, loss, or experiment; when setting the run environment and comparison conditions; when writing code and launching training |
 | Outputs | A finalized design document, a fixed run environment and protocol settings, module code with tests, training runs with complete records, a result document and one ladder-table row |
-| Structure | §0 workflow, §1–§10 methods |
+| Structure | §0 workflow, §1–§8 methods. Result judgment and evaluation data are in 08 |
 
 ## 0. Workflow
 The chapters an experiment passes through from design to judgment, and each chapter's output.
@@ -17,7 +17,7 @@ The chapters an experiment passes through from design to judgment, and each chap
 | Preparation | 4 Experiment environment, 5 Fairness | Fixed run environment, protocol settings |
 | Implementation | 6 Writing code | Module files, tests |
 | Execution | 7 Development and execution, 8 In-training measurement | Smoke results, training run, hand-drawn overview |
-| Judgment | 9 Judgment and next row, 9.5 Mechanism measurement of a row that rose, 10 Evaluation data and labels | Result document, one ladder-table row, mechanism measurement results, next-row candidates |
+| Judgment | 08 Result judgment and evaluation data | Result document, one ladder-table row, next-row candidates |
 
 ## 1. Design dialogue
 Model design is a dialogue: the researcher raises a topic, the AI finds what to borrow and candidates and recommends one, and the researcher asks, challenges, and chooses. No code or measurement starts before the design is finalized.
@@ -32,8 +32,7 @@ The design dialogue cycles through three stages: topic, questions, and choice. W
 Before answering a topic, first check that the AI and the researcher mean the same thing. A design written while meanings diverge drifts off the research's axis, so the aligned meaning is kept for use in later sessions as well.
 - Restate the topic in one sentence to check it, then answer according to its type. For borrowing, give the original equations, code, and values and where they go; for a problem, the measurement and candidate causes; for improvement, the missing standard techniques and the axes to change (loss, placement, strength); for a concern, the conditions under which the risk occurs and the safeguards; for an inference, the right and wrong parts, with evidence.
 - When corrected that the proposals have drifted from the research's center, acknowledge why they drifted and return the design to the researcher's axis.
-- If the researcher asks whether their concepts differ, the AI first states its own definition, aligns it, and rewrites the design. Explain a module's behavior as what happens from one input going in to coming out, and the stage it attaches to (input processing, intermediate representation, output).
-- Record the aligned explanation in the topic page's "In plain words" section so later sessions use the same meaning.
+- If the researcher asks whether their concepts differ, the AI first states its own definition, aligns it, and rewrites the design. Explain a module's behavior as what happens from one input going in to coming out, and the stage it attaches to (input processing, intermediate representation, output), and record the aligned explanation in the topic page's "In plain words" section so later sessions use the same meaning.
 
 ### 1.3 How the AI proposes candidates
 Candidates are given in the same frame so the researcher can lay them side by side and choose. For each candidate, first state what it changes and any fact that could block it, and give only one recommendation, with a reason.
@@ -42,12 +41,12 @@ Candidates are given in the same frame so the researcher can lay them side by si
 - For each candidate, first state in one line which target (ground truth, self-made answers, etc.) of which data (e.g., labelled data, unlabelled data) the module changes. When the data the research question targets and the data the candidate handles diverge, the researcher can hardly notice.
 - Attach one line each giving the meaning of any newly coined word in a candidate and the reason a loss or target is set that way, and redefine abbreviations used earlier, including their size and source. Also state any fact in existing measurements that could block the candidate. Bringing up a blocking fact late forces a reversal of the chosen option.
 - Recommend only one, with a reason. If it overlaps a direction already tried, say so first. Set detailed values to prior-work standard values and do not ask about them separately.
+- Before stacking parts on a base or proposing a new module, write in a table the design invariants the base's official code keeps (which head learns what, and who makes the targets), and check by code line, for each added part, whether it keeps those invariants. This prevents re-presenting a device the base already has as a new contribution, or a part quietly breaking the base's principle.
 
 ### 1.4 Decisions and delegation
 Follow the researcher's decision only within the scope chosen, and record it in the words chosen. What the AI does differs by the kind of decision (conditional, split, on hold, delegated, correction).
 - Proceed with a conditional go-ahead (e.g., train if smoke succeeds) only within the condition; stop and report if the condition breaks.
-- Split execution is not mixed into one row; split it into rows and run them.
-- On hold, only explain.
+- Split execution is not mixed into one row; split it into rows and run them. On hold, only explain.
 - For a delegated decision, research the evidence and decide, and record that it was delegated and on what evidence.
 - Apply a correction to the design immediately and record what was misunderstood.
 - Record decisions verbatim in the log and in the design document's decision section, and do not record more broadly than what the researcher chose (07 §1).
@@ -60,17 +59,23 @@ Put the constraints to keep (inputs not to use, banned techniques, fairness cond
 ### 1.6 Design document template
 A design document has all the sections below, and an analysis without training also gets a short design document first.
 
+- A new module or row always gets a design document (SDD) first, before it goes into code, and goes to code only after the researcher has read it. A candidate table in a consultation or survey answer, or equations in a dialogue, is not a design document. Write the design document so that from it alone the researcher knows what is changed, why, and how, where it goes in the code, and how to read what comes out: the whole template below + the gradient path (which loss goes to which parameters) + code location and switch + same-result check and smoke gate + the difference from past failed rows. A thin design document raises the same questions again at code and result interpretation.
+
 | Section | Contents |
 | --- | --- |
 | Problem and goal | The measured failure and what this design aims to reduce |
-| What is borrowed | Parts taken from prior papers and code, original equations and standard values |
+| What is borrowed | Parts taken from prior papers and code, original equations and standard values. Show the researcher in one table the points set differently from the official code and equations (loss, weight, direction, input augmentation, threshold), and for each item get and record a decision of keep or change and how the paper states it. If an accidental porting choice hardens, it gets confused with official reproduction and breaks comparison fairness |
 | Equations | The equations that fit on one page and the meaning of each symbol (explained separately to the researcher in plain words) |
 | Controls and tables | Hypothesis written before results, rows to compare, compute-matched controls, the control variable that tests the mechanism, the shape of the ablation table |
 | Benefit and role | Expected margin, adoption chance, novelty role in the paper |
 | Researcher questions | Verbatim questions and answers, and what they changed |
 | Decision | What was decided and by whom; for delegated decisions, the evidence |
+| Premise measurement results (at the top) | Run the measurements without training that the design relies on before the SDD, and put the pre-results criteria, result table, and judgment at the very top of the document |
+| What to do right after passing | What continues without asking once the review passes (code, tests, sameness check, smoke criteria, training rows, seeds, GPU placement, judgment rule, automatic scoring and analysis) |
 
+- Write the SDD after running the premise measurements first, with their results at the top. At the end, write what to do right after the review passes (the whole run flow), so that after passing it proceeds without asking the researcher again. An SDD written without measurement is discarded whole when a premise dies, and without the after-passing steps there is one more turn between review and execution.
 - Even a draft has the whole template and the review sections (§2 scientific review, 3.1 choosing the loss, 3.2 loss table, the new mechanism metrics in §8) from the start. For a small row (one base technique, say), do not delete sections that do not apply; write "not applicable" and why. A shortened draft misses the problems the missing sections would show (for example, the base and the intervention changing together relative to the previous row, so the variables are not separated).
+- Even when a measurement or check without training was registered as one section inside another design document, write one result document per measurement when it finishes (what is looked at and why, in plain words; pre-results criteria; result table; reading and next). Ending it with one line in the progress log makes the researcher ask again what was measured.
 - Analyses and re-aggregations without training also get a short design document first: purpose, inputs (existing files used), metrics and how intervals are computed, gates fixed before results (how each outcome will be read), and what will not change. Write the result document in the order gate passed or not → result table → reading for the researcher → next move.
 
 ## 2. Scientific validity review
@@ -150,22 +155,11 @@ Keep in the run folder everything about what each run ran with and how, and have
 When adding seeds or rows on another machine, check the transferred material against the original by file count, bytes, and hash, and re-measure one existing value with the same code to confirm it matches (reproduction gate) before writing new values. Write in the result document that the machine differed. If the samples drawn differ per seed, check before training that the auxiliary inputs attached to those samples (precomputed boxes, feature caches, etc.) cover the new samples. Fill what is missing with the same code and the same configuration, do not regenerate existing values, and add that handling to the design document before results.
 
 ## 5. Fairness setup
-How to fix comparison conditions before the experiment so that comparison results reflect only the difference between methods. Resources and evaluation are matched across all methods, and what to count and how to combine it is set before results. The practices below rest on the following sources on comparison fairness.
-
-| Practice | Where in this document | Source |
-| --- | --- | --- |
-| Run comparison methods with the same implementation, base, and tuning budget | 5.4 | Melis et al., ICLR 2018 · Oliver et al., NeurIPS 2018 · Musgrave et al., ECCV 2020 · Henderson et al., AAAI 2018 |
-| Keep the validation set at a realistically usable size | 5.2 | Oliver et al., NeurIPS 2018 |
-| Look at sources of spread beyond the seed | 4.2 | Bouthillier et al., MLSys 2021 |
-| Use intervals and robust aggregates with few runs | 5.6, 9.2 | Agarwal et al., NeurIPS 2021 · Henderson et al., AAAI 2018 |
-| Report the tuning budget together with validation performance | 5.7 | Dodge et al., EMNLP-IJCNLP 2019 |
-| Check leakage by type | Ch. 10 | Kapoor & Narayanan, Patterns 2023 |
-| Register before results, and state deviations from the plan and exploratory results separately | Ch. 10, 00 principle 5 | Nosek et al., PNAS 2018 |
+How to fix comparison conditions before the experiment so that comparison results reflect only the difference between methods. Resources and evaluation are matched across all methods, and what to count and how to combine it is set before results. The practices, with where they sit and their sources, are: the same implementation, base, and tuning budget for comparison methods (5.4; Melis et al. ICLR 2018, Oliver et al. NeurIPS 2018, Musgrave et al. ECCV 2020, Henderson et al. AAAI 2018), a validation set of realistically usable size (5.2; Oliver et al. 2018), sources of spread beyond the seed (4.2; Bouthillier et al. MLSys 2021), intervals and robust aggregates with few runs (5.6, 08 §1.2; Agarwal et al. NeurIPS 2021, Henderson et al. 2018), reporting the tuning budget together with validation performance (5.7; Dodge et al. EMNLP-IJCNLP 2019), leakage checks by type (08 §2; Kapoor & Narayanan, Patterns 2023), and registration before results with deviations from the plan and exploratory results stated separately (08 §2, 00 principle 5; Nosek et al., PNAS 2018).
 
 ### 5.1 Protected keys
 Values that decide the comparison are set in one place only, the protocol configuration, and every method is evaluated with the same values and the same evaluator.
-- Keep split, ground truth, number of updates, batch, learning-rate schedule, evaluation method, and seed only in the protocol configuration. If a method configuration changes these values, the validator refuses.
-- Comparison methods use the same protocol and the same evaluator.
+- Keep split, ground truth, number of updates, batch, learning-rate schedule, evaluation method, and seed only in the protocol configuration. If a method configuration changes these values, the validator refuses, and comparison methods use the same protocol and the same evaluator.
 - Evaluate all fixed metrics at once at a fixed point (e.g., last epoch). Do not keep a separate path that re-scores a metric.
 
 ### 5.2 Resources and devices
@@ -205,8 +199,7 @@ A method for measuring, before fixing the base (baseline method and training con
 2. Compute the remaining gap (upper bound − base) and the filled ratio ((base − lower bound) ÷ (upper bound − lower bound)).
 3. Write them next to the same three scores from prior papers of the same family. If both the lower and upper bounds are higher than the prior work's, the training conditions themselves differ, so first reproduce the prior conditions with the original code to separate the cause of the difference.
 4. If the remaining gap is not sufficiently larger than the variation between base runs, reset the conditions (data ratio, training conditions, comparison protocol) before fixing the base.
-- When reproducing prior numbers, use the original code and original schedule as they are, and change nothing except execution links such as paths and file names. Record in the result document how defects of the original code were worked around.
-- When the conditions change, do not carry over numbers and adoption judgments from the earlier conditions (01 §6.1).
+- When reproducing prior numbers, use the original code and original schedule as they are, and change nothing except execution links such as paths and file names. Record in the result document how defects of the original code were worked around. When the conditions change, do not carry over numbers and adoption judgments from the earlier conditions (01 §6.1).
 
 ### 5.6 Samples, seeds, and aggregation
 Rules for fixing what to count and how to combine it before results, so that only favorable values cannot be picked.
@@ -236,8 +229,8 @@ Scientific code serves truth, not users, and the worst outcome is a plausible-lo
 ### 6.2 Structure
 Split code by feature so that turning a new feature on or off does not touch the core training code.
 - One module = one file + one switch. Keep core training code fixed; put a new feature in its own file as a registered class and turn it on via configuration. Do not let features pile up in one file.
+- Keep experiment modules pluggable: the core training code does not know module names and calls only fixed hook points (initialization, pseudo-label weight, loss to add, after step, end of epoch), and module files attach by registration. If adopted, keep it; if dropped, deleting just the file (and its tests and configuration) removes it from the code, so branches and old keys of closed rows do not pile up in the core code. Extract computations shared across modules (paths, records, shared ops) into one shared file.
 - Split folders by pipeline stage (data → training → judgment → evaluation, etc.), and mirror the same stage folder structure for tests. Collect run shell scripts in one folder.
-- Extract computations shared by several modules (paths, records, shared ops) into one shared file.
 
 ### 6.3 Tests
 Tests check that equations and code agree, that a new module is attached as intended, and that a pass verdict can be trusted. A test becomes the condition for the next step only when it runs in the real environment and is judged by its exit status.
@@ -251,10 +244,9 @@ Tests check that equations and code agree, that a new module is attached as inte
 - Size checks to the risk. Do not re-measure facts already shown by a measurement. If the official code is used as is and the only changes are a few lines guarded by switches, confirm equivalence by reviewing the changed lines and a short smoke, without a separate training run. Before launching a new check run, write in one line "what does this result change?", and if it changes nothing, do not launch it.
 
 ### 6.4 Moving and running code
-Code is written in one place and sent to the server only by a fixed path; when launching several runs or scaling up, weigh dependencies and cost first.
+Code is written in one place and sent to the server only by a fixed path; when launching several runs or scaling up, weigh dependencies and cost first. Who takes a short code change follows 05 §1.
 - Write code in one place (the working repository) and send it to the run server only through a fixed sync path (bundle transfer, etc.). Move the tags the scripts use along with it. Do not move code by pasting it into a terminal.
 - Run from a fixed copy per commit, and do not touch code that a running run reads.
-- Who takes a short code change follows 05 §1.
 - When launching several runs at once, bundle only those that do not depend on each other's verdict (independent conditions, folds, seeds). Launch a run whose content is set by an earlier run's verdict after that verdict. Launched together, a change that will be rejected leaks into the later run.
 - Before moving from a small scale to a large one, estimate per processing unit how time and memory grow with scale, and check the estimate once against progress during the run (amount processed, memory). If it deviates widely, stop, fix, confirm the small scale gives the same result, and run again. An estimate scaled only by data size misses the per-unit cost and can be off several-fold.
 
@@ -264,8 +256,8 @@ When closing a row that was not adopted, move its module file to an archive fold
 - When moving or renaming, fix references in documents and code together, and check there are no broken links. Do not put result data (output folders) in git. Track the manuscript in git but exclude build artifacts.
 
 ### 6.6 Understanding code
-- Keep a walkthrough document that follows one data item from input to result by file and line number, so the researcher can follow the code.
-- The walkthrough pairs paper sections with code locations, and notes any place where the paper's description and the code differ.
+- Keep a walkthrough document that follows one data item from input to result by file and line number, so the researcher can follow the code. The walkthrough pairs paper sections with code locations, and notes any place where the paper's description and the code differ.
+- Before stating as a design rationale or mechanism explanation what a part learns, which model is scored, or where an input piece comes from, trace and confirm it in the code: every place that writes that parameter (not only losses and the optimizer but direct assignments such as end-of-epoch copies and averages), the save time of the checkpoint used for scoring and the order relative to state changes (overwrite, averaging, moving-average copy), and the source of each input piece (which data, position, pair). Also check that it does not contradict related facts found in the same turn. Speaking from one line at the end of the training loop hardens a wrong fact into a design premise.
 
 ## 7. Development and execution
 The assembly-style development procedure of building up the model by changing one thing at a time, and the method of learning the design by drawing it by hand while training runs. Based on common practices that major vision research followed when building models (reproduce a standard baseline and freeze it, change one factor at a time, a ladder-table row per change, screen cheaply then confirm at scale, adopt only gains larger than seed-to-seed variation, find the cause of a failed step before dropping it, attach new parts as their own files and configuration) ([ConvNeXt](https://arxiv.org/abs/2201.03545), [DINOv2](https://arxiv.org/abs/2304.07193), [MAE](https://arxiv.org/abs/2111.06377), [RegNet](https://arxiv.org/abs/2003.13678), [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook), [Karpathy, "A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/), [Detectron2](https://github.com/facebookresearch/detectron2), [MMSegmentation](https://github.com/open-mmlab/mmsegmentation)).
@@ -332,7 +324,7 @@ Keep records machine-readable so a script builds the result document, and fill m
 - If a value missing from a finished experiment is needed, measure it from the saved checkpoints instead of retraining. Also when a recording device such as diagnostics or seed fixing is newly added, do not rerun a setting that already has results; turn it on from the runs still to come. When rerunning training steps from a checkpoint, compare the first-step loss magnitude with the original experiment to confirm the internal state is right.
 
 ### 8.4 How to read the records
-After results come in, explain "why it came out that way" with the questions below.
+After results come in, explain "why it came out that way" with the questions below, and use that explanation as the basis for the diagnosis and choosing the next row in 08 §1.
 
 | Question | Records to look at |
 | --- | --- |
@@ -341,73 +333,6 @@ After results come in, explain "why it came out that way" with the questions bel
 | When did they diverge? | Per-bin performance differences, loss trajectories |
 | Where was it gained and where lost? | Per-class metrics, error locations, per-stage values |
 | Was training healthy? | Gradient-clipping rate, NaN/Inf, skew in prediction distribution, quality of self-made answers |
-- When using the error share of a region or group as evidence, write it next to that region's base share (area, sample count), and say "it errs more there" only when the density (errors ÷ base) differs. An error share equal to the base share is a number that shows nothing (the same applies to the diagnosis in §9).
-- Use the explanation as the basis for diagnosis and choosing the next row in §9.
-
-## 9. Judgment and next row
-Rules for deciding adoption, holding, or adjustment after results come in, and choosing the next row. 9.1–9.3 judge trained rows, 9.4 covers measurement before training, and 9.5 covers measurement after a row rises.
-
-### 9.1 Diagnosing a row that did not improve
-Before discarding a row that did not improve, diagnose the cause. Look in the order implementation check → missing standard techniques (sharpening, normalization, weight schedules, a weight that matches a new loss's scale to the other losses, etc.) → in-training measurement (8.4) and checkpoint analysis. A diagnostic report starts with one line each on the implementation check and on missing standard techniques, and only then moves to measurement analysis. When a measurement stands out it is easy to skip the first two steps, and then an implementation error or a plain scale imbalance is misread as a problem of mechanism.
-
-Choices after diagnosis follow the rules below.
-- The researcher chooses the fix. Do not automatically run pre-decided fix candidates.
-- When checking the structure, use prior-work standard values; tune values such as weights and temperatures only after the structure has shown an effect.
-
-### 9.2 Adoption and the judging score
-Adopt only by the threshold and judging score fixed before results. The threshold exists to pick good rows; the rule only guards against reading noise as gain. Changing the criterion or score to fit results after seeing them picks only the side that came out well, so change the criterion only before seeing that row's results (including seeds not yet run); after seeing them, change it from the next row on. If it was changed after seeing part of the same row's results (earlier seeds), record that fact and whether the row would also have passed the original criterion in the judgment record.
-- Fix the adoption threshold before results in a pre-registration document.
-- When asking to keep a rule, explain it with the measured noise size the rule guards against (re-running the same setup, seed spread), and, if results are not yet in, give the researcher the option to change the criterion as choices (keep, relax, adopt by the researcher's judgment). A rule that sounds like form detached from its purpose leaves the researcher without grounds to decide.
-- For a component whose targeted failure appears only in some seeds (a device that rescues bad branches, for example), a gain near 0 on already-good seeds is normal, so before results consider judging by the mean paired difference instead of a condition such as "> 0 on every seed".
-- During development, judge a single-seed row by the baseline spread of 4.2.
-- For final adoption with several seeds: for a row that adds something, require the paired-interval lower bound > 0 and a difference at least twice the single-seed spread; for a row that removes something (simplification), require the paired-interval lower bound to exceed the pre-set tolerated loss (−margin). Measure the spread by actually running the same configuration with several seeds. Label results whose lower bound across several seeds does not exceed 0 as "1-seed result".
-- When setting a decision line as a ratio of shares, measure each bin's base share (area, sample count) before registration and check that the line can be crossed mathematically (1 ÷ base share ≥ line). If it cannot, set the line on another scale such as a per-cell rate. A line that cannot be crossed returns "absent" regardless of the result and cannot test the hypothesis.
-- When choosing the judging score, check the field's convention first. A common convention is to judge on one validation split and only report the test split, measured with the same checkpoint. A two-split average may also be used if fixed before results, but if the researcher chooses the convention, re-pin to it.
-- If judging splits disagree in direction for a row run once (e.g., validation down, test up), judge that row only by the registered score, and pin a new judging score for later rows before their results. The purpose is not to read only the side that came out well (the cherry-picking ban of 00 principle 5); do not re-explain it as "protecting the score by never looking at the test split".
-- If the paired interval of a new result includes 0, lower the strength of the claim (e.g., "outperforms" → "comparable"). If a result contradicts a previous claim, withdraw the claim.
-
-### 9.3 Choosing the next row
-Choose the next row so it follows from the measured failure and the overview the researcher drew; if adding things keeps failing, extract rules first.
-- Choose the next move after a failed row on the overview the researcher drew (7.2).
-- When lifting an existing constraint, lift it only as a component of the method tied to a measured failure, keep a separate ablation row, and give the baseline the same resources.
-- If several rows added one at a time on the same base fail to improve in a row, stop adding and extract rules from those rows' results into a table (what raises the score, what lowers it). Write the next module with those rules as conditions, and design only candidates that follow directly from the problem statement. Each row is still one change, but candidates are chosen not as "things to try adding" but as "things that aim at the problem while keeping the rules".
-- Keep rows that were tried but not adopted in the ladder table with their results as they are. Do not put them in the paper (00 principle 16, 04 §5.2).
-
-### 9.4 Pre-measurement without training is for stopping only
-Pre-measurement without training (attaching a device to a trained model and running it forward once) cannot see the effect of training, so it is not used as a reason to proceed, only as a reason to stop.
-- Its only use is checking facts the design relies on: does the targeted phenomenon exist (premise), does the signal the new device will use contain information (information), and even working perfectly, is the share it can fix large enough (upper bound). Do not use it for choosing candidates, setting values, or predicting gains. Do it only when the design is finalized, the premise is uncertain, and training is expensive; otherwise go straight to smoke and training.
-- What to look at is not the size of the number but present or absent. If "absent", close it without training; "present" only qualifies it for a training try. Write in the first line of the report and the registration: "passing makes it worth trying (necessary condition); whether it solves the problem is known only from training; on failure this option is dropped".
-- Do not decide present or absent from one number. Report together (1) the separability (e.g., AUROC), (2) at the point where the signal is used (per threshold, or the replacement rule itself) the number fixed and the number broken and the resulting change in the metric, and (3) values per stratum such as class or size. With several sources, judge each source separately, and do not use the measurement to choose between sources.
-- Before results, check whether the measurement can in principle move the judgment. For hyperparameters of a borrowed method, check that the units and range of the quantity they act on match the original paper (normalizing the input changes them), and compute the maximum effect first. If the result is exactly 0, suspect the form of the measurement before concluding.
-- If the target set was chosen by that model's outputs (wrong answers, confidence), check whether a metric measured with the same model's representations is determined by the selection alone (circularity), and include reference points (another model, a random set, a label-using upper bound). If circular, "absent" is not evidence. When one such flaw is found, recheck at once the other "absent / not" judgments in the same batch of work, and the places where "not" was said in words without measurement.
-- Closing as "absent" closes only the one form the measurement imitated. Keep axes of a different form (replacement versus removal, frozen versus jointly trained, one-shot versus feedback, per-cell versus per-image input) open by writing them in the result document as "outside this measurement"; if the same form fails several times, close only that form and ask the researcher whether to test the remaining axes as training rows.
-- If the measurement said "present" but training stays low, do not conclude it was a measurement error or a single code mistake. Both can be right while the link between them breaks (the signal fades during training, the source comes to resemble the teacher, changed answers harden through the teacher, side effects outside the measured region, the loss cannot use the information, noise). Check implementation → missing standard techniques → the broken link, and for this register in the mechanism measurements that quantities measured beforehand are also logged during training with the same definitions.
-
-### 9.5 Mechanism measurement of a row that rose
-When a row passes the judgment criterion, before adding the next row, measure, as the next thing after the score, "did the targeted problem actually shrink?", using the checkpoints of the row that rose and the row directly below it (the base). No retraining.
-- Scores also rise from regularization, compute, training length, and chance, so the problem → component correspondence holds only when the targeted errors and the internal state change together. The remaining share becomes the next component's target, and this measurement grounds the paper's analysis section and ablations. Measured later in bulk, the shares cannot be separated between rows that have already piled up.
-- Write what to measure in the design document before results, as "what to measure if it rises" (02 §2.1 ⑥). A measurement chosen after seeing results fits its interpretation to the results.
-- Measure the two rows side by side in the same run, with the same tools, definitions, and data lists as when the problem was first measured (02 §2.1 ②), using existing measurement tools first. Do not stop at one number; report the count of targeted errors, the cause metric, and per-stratum values together.
-
-| Result | How to read it and the next move |
-| --- | --- |
-| Targeted errors and the cause metric shrink together, and a share remains | Design the next component aimed at the remaining share, and use these values as that component's judgment baseline and smoke-check items |
-| Errors shrank but the cause metric is unchanged | It was fixed by another path. Propose to the researcher a measurement or ablation row that separates that path |
-| Only the score rose; errors and cause are unchanged | The gain came from elsewhere. Withdraw the problem → component claim and propose a control row that separates the source of the gain (compute, regularization, etc.). The row stays in the ladder table as is |
-| Losses appear where nothing was targeted | Write the location of the side effect (with the base share and density of 8.4) as a constraint for the next design |
-- The next component's design, control rows, and replacing the base are decided by the researcher after seeing these results.
-
-## 10. Evaluation data and labels
-How to handle evaluation data and human labels so that criteria or choices are not changed after seeing results. Test data and code are sealed and looked at only once, and deviations from the plan and leakage-check results are stated in every report. Human labels have their self-reproducibility measured, and automatic labels are not used as ground truth before human approval.
-
-- Split test data with a fixed seed and seal it; first verify the evaluation process on the rehearsal half, then look at the main test only once.
-- Run the final test by checking out the frozen commit into a separate workspace, and check the code hash before running.
-- Freezing and sealing are safeguards against looking at results and picking only good values (cherry-picking under 00 principle 5). They do not block analyses that re-aggregate already saved test runs and predictions with later code (new metrics, other groupings, reweighting). If the gate blocks even this, keep a separate entry point that "only reads what is saved", and do not do new runs, re-scoring, or threshold changes through that path.
-- State deviations from the pre-results plan (including anything chosen differently from the pre-set rules): what was changed and why, with numbers; mark results that came from exploration separately from the confirmatory results registered before results.
-- Attach a leakage checklist to each report, writing for each item "none" and its basis in one line: incomplete separation of training and evaluation (no test set, preprocessing before splitting, feature selection on the test set, duplicate samples), features not available at prediction time, test distribution different from the distribution the claim is about (temporal leakage, non-independence, sampling bias).
-- Do human evaluation first with machine scores sealed; if a flaw is found, preserve that round as void without opening the scores.
-- Choose values on the validation split and write "validation-selected" in the result document. Values chosen on the test split create optimistic gains. Keep external models trained on the target labels only as reference rows.
-- Measure labels' self-reproducibility (agreement rate, κ) by relabeling after a time gap with the order reshuffled. State in the paper any label procedure that changed from the plan.
-- Inspect benchmark items visually with model predictions hidden, remove whole categories as the unit, and if the decision was made after results, record how.
-- Automatic detection results are not ground truth before human approval, and uncertain cases are not confirmed as negative. Set thresholds for automatic labels using training labels only, and confirm them by agreement with validation labels.
-- Choosing qualitative examples to show in figures follows 06 §2.
+- When using the error share of a region or group as evidence, write it next to that region's base share (area, sample count), and say "it errs more there" only when the density (errors ÷ base) differs. An error share equal to the base share is a number that shows nothing (the same applies to the diagnosis in 08 §1).
+- When naming one pair's class confusion as the next module's target or room, write in a table both directions and their sum, and both classes' metrics, together with the comparison target, not the cell count of one direction, and state the room as the difference in the sum. When correcting, too, state both the boundary-shift share and the difference in the sum as numbers. Looking at one direction only reads a boundary shift (moving errors from one side to the other) as room to fix.
+- When interpreting a new module's effect through diagnostic measurements or in-training curves, register the same measurement for the base model too (checkpoint of the same seed and same epoch), and for a difference in curves first check whether the same shape appears in other rows with the same seed. Otherwise absolute values without a control, or the base's fluctuation, are read as the module's effect, and the control measurement ends up run separately later.

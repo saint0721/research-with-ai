@@ -5,4 +5,4 @@ description: 'How to use an AI agent as a research collaborator (domain-agnostic
 
 # research-with-ai
 
-For any research work, first read only chapter 1 (how to read) and chapter 2 (principles) of `references/00-overview-and-principles.md` and follow them. Do not read the other documents in full: when you start a task, read only the section that the chapter 1 table lists for that task (`references/` 01–07). Find a section by its heading (`## n.`, `### n.m`) and read up to the next heading of the same level. Installation and setup are described in the repository README.
+For any research work, first read only chapter 1 (how to read) and chapter 2 (principles) of `references/00-overview-and-principles.md` and follow them. Do not read the other documents in full: when you start a task, read only the section that the chapter 1 table lists for that task (`references/` 01–08). Find a section by its heading (`## n.`, `### n.m`) and read up to the next heading of the same level. Installation and setup are described in the repository README.

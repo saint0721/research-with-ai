@@ -20,31 +20,51 @@ The order to follow when something odd is found in AI output, and the output of 
 ## 1. Judgment and interpretation errors
 Errors that arise when the AI reads results or proposes directions. They come out as plausible sentences, so they are easy to miss unless the evidence is checked separately. Most come from mixing measured facts with estimates, or the researcher's decisions with the AI's interpretation, so the responses converge on rechecking records, sources and code and writing the two apart. Before judging results or proposing a direction, hold the signals in this table against it.
 
+### 1.1 Proposals and rejections
+Errors when putting forward directions or candidates, or screening others' proposals.
+
+| Error type | Signal | Response |
+| --- | --- | --- |
+| Re-proposing a closed direction | Proposes again, under a new name, a direction already tested and closed | Before proposing, search the log, decision records and rejection list, and disclose any overlap first (00 principle 4) |
+| Blocking a proposal with weak negative evidence | Blocks a new proposal by citing an old failed row without disclosing that the row came from one seed, an old judgment rule or a different target | State the conditions of the cited row and check whether it is still a failure under the current rule, separating "failed" from "no gain seen under one condition" (00 principle 4) |
+| Rejecting a proposal from memory | Rejects an external review's or the researcher's proposal as "not applicable" or "not there" from memory alone | Find the manuscript section, code or data table that would be the evidence and write its location in the reason for rejection (00 principle 4) |
+| Misunderstanding the existing implementation | Proposes as a new contribution something the baseline code already does | Read the relevant code directly before proposing |
+| Judging from the paper text only | Explains a prior method's behavior only from the paper's sentences | Check the actual behavior in the public code (02 §4.2) |
+| Frame skewed toward a specific technique | Every proposal is built around a specific technique rather than the problem | Rebuild proposals from the measured problem, and keep the technique in the role of a tool |
+| Expectation on weak grounds | States expected performance assertively, and the grounds collapse at the next question | Mark expectations as estimates with their grounds, and correct immediately when the grounds weaken |
+| Plausible theorems and proofs | When an idea is formalized as a proposition or theorem, the proof reads smoothly but an assumption is missing or a step is wrong | Do not use it as a result until a person has checked each step or it has been checked with a formal verification tool or a numerical counterexample search. Mark an unchecked theorem as a conjecture |
+
+### 1.2 Interpreting results
+Errors when reading and judging measurement results.
+
 | Error type | Signal | Response |
 | --- | --- | --- |
 | Over-reading early fluctuation | Says "it is improving" from mean differences in the first few epochs | Fix the judgment point in advance and judge on values after training stabilizes |
-| Using a pre-measurement as grounds to proceed | Cites a small gain from a measurement without training as evidence that "it will work" | Use it only as grounds to stop (03 §9.4). Gains without training repeatedly flip sign once trained |
-| Re-proposing a closed direction | Proposes again, under a new name, a direction already tested and closed | Before proposing, search the log, decision records and rejection list, and disclose any overlap first (00 principle 4) |
-| Recording a broader decision | Records a wider decision than the researcher chose, or records the leader's interpretation as if it were the researcher's decision | Record the decision in the researcher's own words, and ask back if the scope is unclear. Mark interpretations and follow-on rules the leader added separately as "leader proposal", and do not turn them into rules before the researcher confirms them. Once an added sentence spreads into several documents its source cannot be traced, and it gets proposed again on the strength of that sentence |
-| Unfounded explanation | Answers with unmeasured examples as if they were evidence | When asked for evidence, check the records first, and separate what was measured from what is estimated |
-| Judging from the paper text only | Explains a prior method's behavior only from the paper's sentences | Check the actual behavior in the public code (02 §4.2) |
-| Expectation on weak grounds | States expected performance assertively, and the grounds collapse at the next question | Mark expectations as estimates with their grounds, and correct immediately when the grounds weaken |
-| Judging results against a sentence stated in advance | When results differ from the expectation sentence stated at proposal time, reports them as "unfavorable" | Judge against the paper's actual claim, the base rate of the experimental setting, and the comparison reference (the best fixed policy). Write expectation sentences only as hypotheses |
-| Over-reading fairness rules | Blocks, or proposes tagging in the manuscript as "post-hoc manipulation" or "not a test", things such as picking figure examples, improving the method after validation, choosing metrics and table layout, ablation tables on the validation split, and re-aggregating saved test runs. Raises settled points again as risks | The cause is applying the wording of the rule while forgetting its purpose (preventing cherry-picking). Before blocking or flagging, check against the purpose of 00 principle 5 and the settled correction items (04 §4), and do not block unless it is a matter of picking only good values to make the numbers |
-| Following an overturned decision from old records | Reads an old sentence from memory or a guide that differs from a decision the researcher changed (submission scope, worker use, seed procedure, etc.) and follows it as is | In the turn where the decision is overturned, fix or delete the old memory or guide sentence (01 §4.1). When using a rule as grounds, check its date against recent decisions |
+| Using a pre-measurement as grounds to proceed | Cites a small gain from a measurement without training as evidence that "it will work" | Use it only as grounds to stop (08 §1.4). Gains without training repeatedly flip sign once trained |
 | Concluding from part of the metrics | Draws a conclusion from one metric only | Look again at all judgment metrics and correct the conclusion |
-| Declaring a weak result an idea failure | Concludes "no effect" right away when results are flat or bad | Diagnose in the order of 03 §9.1 |
-| Frame skewed toward a specific technique | Every proposal is built around a specific technique rather than the problem | Rebuild proposals from the measured problem, and keep the technique in the role of a tool |
-| Misunderstanding the existing implementation | Proposes as a new contribution something the baseline code already does | Read the relevant code directly before proposing |
+| Declaring a weak result an idea failure | Concludes "no effect" right away when results are flat or bad | Diagnose in the order of 08 §1.1 |
+| Judging results against a sentence stated in advance | When results differ from the expectation sentence stated at proposal time, reports them as "unfavorable" | Judge against the paper's actual claim, the base rate of the experimental setting, and the comparison reference (the best fixed policy). Write expectation sentences only as hypotheses |
 | Reasoning beyond the condition | Says a result under one condition also holds under other conditions | Mark it as an estimate until measured again |
 | Numeric unit errors | Mixes percentage points with relative ratios | Recompute numbers from the source and state the unit alongside |
+| Unfounded explanation | Answers with unmeasured examples as if they were evidence | When asked for evidence, check the records first, and separate what was measured from what is estimated |
+| Treating labels and plans as facts | Judges a constraint (security, export) or interprets an observation on the basis of a descriptive label of a resource or material, or a procedure a plan document says is scheduled | State in the answer that the grounds are a label or plan, and if the judgment closes off options or changes an interpretation, confirm the fact once with the researcher before concluding. Labels and plans easily diverge from reality |
+| Over-reading fairness rules | Blocks, or proposes tagging in the manuscript as "post-hoc manipulation" or "not a test", things such as picking figure examples, improving the method after validation, choosing metrics and table layout, ablation tables on the validation split, and re-aggregating saved test runs. Raises settled points again as risks | The cause is applying the wording of the rule while forgetting its purpose (preventing cherry-picking). Before blocking or flagging, check against the purpose of 00 principle 5 and the settled correction items (04 §4), and do not block unless it is a matter of picking only good values to make the numbers |
+
+### 1.3 Decisions and records
+Errors when carrying over and recording the researcher's decisions.
+
+| Error type | Signal | Response |
+| --- | --- | --- |
+| Making the researcher's value judgments | Recommends "dropping" a candidate because of novelty risk or resemblance to an earlier manuscript, asserts the researcher's past work as an achievement, or assigns tasks by pairing them with people | Show the resemblances and constraints, and ask for the judgment as options (00 principle 1) |
+| Recording a broader decision | Records a wider decision than the researcher chose, or records the leader's interpretation as if it were the researcher's decision | Record the decision in the researcher's own words, and ask back if the scope is unclear. Mark interpretations and follow-on rules the leader added separately as "leader proposal", and do not turn them into rules before the researcher confirms them. Once an added sentence spreads into several documents its source cannot be traced, and it gets proposed again on the strength of that sentence |
+| Following an overturned decision from old records | Reads an old sentence from memory or a guide that differs from a decision the researcher changed (submission scope, worker use, seed procedure, etc.) and follows it as is | In the turn where the decision is overturned, fix or delete the old memory or guide sentence (01 §4.1). When using a rule as grounds, check its date against recent decisions |
 
 ## 2. Experiment and code errors
 Errors that arise when designing and running experiments or changing code. Numbers come out even when results are wrong, so when results look odd, suspect the execution path first. The other axis is experiments and checks without a reason. Before proposing an experiment, retraining or check, weigh the decision its result would change and the results that already exist; most response details are in the matching sections of 03.
 
 | Error type | Signal | Response |
 | --- | --- | --- |
-| Auto-running a pre-set fix | After a failure, immediately runs a pre-decided fix without diagnosing | 03 §9.1 |
+| Auto-running a pre-set fix | After a failure, immediately runs a pre-decided fix without diagnosing | 08 §1.1 |
 | Proposing experiments without a reason | Proposes an experiment "because resources are idle" | State the expected gain and role first, and do not propose if there are none (00 principle 10) |
 | Retraining to get values that already exist | Reruns a finished experiment, or after adding a recording device reruns a baseline row that already has results | 03 §8.3 |
 | Excessive checking and proving | Re-measures facts already shown, or proposes checks that change no decision. The researcher ends up asking "why are we doing this again?" | There are three causes: after being burned once by a hidden difference, checks extend even where there is no risk; the decision a check would change is not asked before checking; doing many checks is mistaken for being careful. Response: 03 §6.3 |
@@ -90,7 +110,8 @@ Errors that arise in conversation and run operations. Most reappear after the co
 | Error type | Signal | Response |
 | --- | --- | --- |
 | Using terms without explanation | The researcher asks "what does that mean?" or "explain it simply" | Explain in plain words with concrete magnitudes and examples. Measurement results, too, first say with examples "what was measured and what came out", then attach the table (00 §4.3) |
-| Misidentifying the referent | Takes a numbered item (table, section, figure), or a word that can also be read as a different target from the previous work ("main", "title"), as something else and makes a long proposal | For a number, find that exact label and restate in one line what it is before starting. For a word readable as two targets, write in the first line of the proposal which unit of which document is being handled, and confirm first if it differs from the flow of the previous work |
+| Misidentifying the referent | Guesses as the most recent one a numbered item (table, section, figure), a word that can also be read as a different target from the previous work ("main", "title"), or a demonstrative with two or more candidates ("that one from before"), and gives a long answer | For a number, find that exact label and restate in one line what it is before starting. For a word readable as two targets, write in the first line of the proposal which unit of which document is being handled, and confirm first if it differs from the flow of the previous work. For a demonstrative, confirm by naming the candidates in one line, or answer both briefly |
+| Confusing option markers | Reads an answer the researcher gave by marker alone as the same marker in a different list | Use markers that do not overlap across lists, and restate an answer received as a marker alone by the name inside it (00 §4.3) |
 | Misjudging a deadline | Says the deadline has passed from an AoE or UTC date alone | Convert to the researcher's local time, write date and time together, and say whether it has passed by comparing with the current local time |
 | Misreporting progress | Reports a job still in pre-check as "training" | 05 §3 |
 | Guessing times | Times in the records differ from reality | 01 §6.1 |
