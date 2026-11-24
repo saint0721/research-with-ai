@@ -21,6 +21,7 @@ Do not read the whole document every time; read only the sections the current wo
 | Deriving a method from measured failures | 02 §2 |
 | Setting questions, judgment rules and the task definition | 02 §3 |
 | Surveying prior work | 02 §4 |
+| Recording judgments on papers read, or updating the paper ledger | 01 §5.5, 02 §4.2 |
 | Judging novelty, targets and alternatives | 02 §5 |
 | Designing modules and losses | 03 §1–3 |
 | Fixing the execution environment and reproducibility | 03 §4 |
